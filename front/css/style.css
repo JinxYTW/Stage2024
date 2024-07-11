@@ -2,7 +2,17 @@
 
 body {
     background-color: #f0f5f5; /* Couleur de fond bleu clair pour l'arrière-plan */
-    padding-top: 80px; /* Ajoute de l'espace en haut pour le logo */
+}
+
+.logo-container {
+    max-width: 100%; /* Assurez-vous que le logo ne dépasse pas de la largeur du conteneur */
+    text-align: right; /* Alignement du texte à droite pour le logo */
+}
+
+@media (max-width: 768px) {
+    .logo-container {
+        text-align: center; /* Centrez le logo lorsque la largeur de l'écran est inférieure à 768px */
+    }
 }
 
 .container {
@@ -19,11 +29,4 @@ body {
 
 .form-group label {
     font-weight: bold; /* Texte en gras pour les étiquettes de formulaire */
-}
-
-/* CSS pour positionner le logo */
-.logo-container {
-    position: absolute;
-    top: 20px; /* Ajustez selon la marge souhaitée depuis le haut */
-    right: 20px; /* Ajustez selon la marge souhaitée depuis la droite */
 }
