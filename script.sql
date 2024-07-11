@@ -11,7 +11,7 @@ Stock (id, #bon_commande_id, date_livraison, etat)
 Notif (id, #utilisateur_id, message, lu, date_notification)
 */
 
-REATE DATABASE IF NOT EXISTS GestionMateriel;
+CREATE DATABASE IF NOT EXISTS GestionMateriel;
 USE GestionMateriel;
 
 -- Table Utilisateur
