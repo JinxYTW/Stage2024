@@ -1,11 +1,130 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accueil</title>
+    <title>Page d'accueil - Centre Médical</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/stylehome.css">
 </head>
+
 <body>
-    
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar gauche -->
+            <div class="col-md-3 bg-light sidebar">
+                <div class="p-3">
+
+
+                    <div class="user-info text-center mb-3">
+                        <img src="user-avatar.png" alt="Utilisateur" class="img-fluid rounded-circle">
+                        <h5 class="mt-2">RAVAT Idriss</h5>
+                        <p>Responsable</p>
+                        <p class="text-muted">Notifications (1)</p>
+                        <p>Votre commande n°SI974 a été livrée</p>
+                    </div>
+
+
+                    <hr>
+                    <div class="command-search mb-3">
+                        <h6>Recherche de commande</h6>
+                        <form>
+                            <div class="form-group">
+                                <label for="order-number">par n° :</label>
+                                <input type="text" id="order-number" class="form-control" placeholder="SI...">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="order-date">par date :</label>
+                                <input type="text" id="order-date" class="form-control" placeholder="DD/MM/AAAA">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="order-article">par article ou entreprise :</label>
+                                <input type="text" id="order-article" class="form-control" placeholder="...">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="order-domain">par domaine :</label>
+                                <select id="order-domain" class="form-control">
+                                    <option>Sélectionner</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="order-client">par commanditaire :</label>
+                                <input type="text" id="order-client" class="form-control" placeholder="...">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block">Lancer la recherche</button>
+                        </form>
+                    </div>
+
+
+                    <hr>
+                    <div class="mb-3">
+                        <h6>Demande de matériel/logiciel</h6>
+                        <button class="btn btn-primary btn-block">Faire une demande</button>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <h6>Questionner les stocks</h6>
+                        <button class="btn btn-primary btn-block">Faire une demande</button>
+                    </div>
+
+
+                </div>
+            </div>
+            <!-- Contenu principal -->
+            <div class="col-md-9 main-content">
+                <div class="p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3>Devis et commandes :</h3>
+                        <img src="../css/img/logo.png" alt="CHU La Réunion" class="img-fluid" style="max-width: 200px;">
+                    </div>
+                    <div class="bg-light p-3 rounded">
+                        <h4>Mai 2023</h4>
+                        <div class="order-list mt-3">
+
+
+                            <!-- Exemple de commande -->
+                            <div class="order-item p-2 mb-2 bg-white rounded shadow-sm">
+                                <div class="d-flex justify-content-between align-items-center">
+
+                                    <div>
+                                        <p class="mb-1"><strong>COMMANDE SI974</strong></p>
+                                        <p class="mb-1">PROJET ESANTE</p>
+                                        <p class="mb-1">Commandée par XXXXXXXXXX</p>
+                                    </div>
+
+                                    <div>
+                                        <button class="btn btn-outline-info btn-sm">Etat de la demande</button>
+                                        <p class="mb-1">Commande livrée, facture validée</p>
+                                    </div>
+
+                                    <div>
+                                        <button class="btn btn-outline-secondary btn-sm">Devis</button>
+                                        <button class="btn btn-outline-secondary btn-sm">BC</button>
+                                        <button class="btn btn-outline-secondary btn-sm">Livraison</button>
+                                        <p class="mb-1">20/05/2023</p>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <!-- Répéter pour les autres commandes -->
+                        </div>
+
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

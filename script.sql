@@ -10,7 +10,7 @@ Relance (id, #bon_commande_id, date_relance, message, reponse)
 Stock (id, #bon_commande_id, date_livraison, etat)
 Notif (id, #utilisateur_id, message, lu, date_notification)
 */
-
+DROP DATABASE IF EXISTS GestionMateriel;
 CREATE DATABASE IF NOT EXISTS GestionMateriel;
 USE GestionMateriel;
 
