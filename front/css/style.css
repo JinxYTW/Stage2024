@@ -1,0 +1,29 @@
+/* style.css */
+
+body {
+    background-color: #f0f5f5; /* Couleur de fond bleu clair pour l'arrière-plan */
+    padding-top: 80px; /* Ajoute de l'espace en haut pour le logo */
+}
+
+.container {
+    max-width: 400px; /* Réduire la largeur du conteneur pour le formulaire */
+    margin: 0 auto; /* Centrer horizontalement le conteneur */
+    padding: 20px; /* Espacement interne réduit pour le formulaire */
+}
+
+.bg-white {
+    background-color: #ffffff; /* Couleur de fond blanche pour le formulaire */
+    border-radius: 10px; /* Coins arrondis pour un aspect plus doux */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Ombre légère pour le contour */
+}
+
+.form-group label {
+    font-weight: bold; /* Texte en gras pour les étiquettes de formulaire */
+}
+
+/* CSS pour positionner le logo */
+.logo-container {
+    position: absolute;
+    top: 20px; /* Ajustez selon la marge souhaitée depuis le haut */
+    right: 20px; /* Ajustez selon la marge souhaitée depuis la droite */
+}

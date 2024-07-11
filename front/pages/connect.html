@@ -1,11 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion</title>
+    <!-- Inclure jQuery avant Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css">
+    
 </head>
 <body>
-    
+    <div class="logo-container">
+        <img src="../css/img/logo.png" alt="Logo de l'entreprise" class="img-fluid">
+    </div>
+
+    <div class="container text-center p-4"> 
+        <div class="bg-white rounded p-4 shadow"> 
+            <h1 class="mb-4">Connexion</h1>
+            <form>
+                <input type="hidden" name="action" value="connect">
+
+                <div class="form-group">
+                    <label for="username">Nom d'utilisateur</label>
+                    <input type="text" name="username" id="usernameco" class="form-control" placeholder="Entrer votre nom d'utilisateur" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <input type="password" name="password" id="passwordco" class="form-control" placeholder="Entrer votre mot de passe" required>
+                </div>
+
+                <button type="submit" id="submitco" class="btn btn-primary btn-block">Se connecter</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
