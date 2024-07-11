@@ -1,8 +1,8 @@
 /* 
-Utilisateur (id, nom, prenom, email, mot_de_passe, role)
+Utilisateur (id, nom, prenom, email,username, mot_de_passe, role)
 Projet (id, nom, description)
 Fournisseur (id, nom, adresse, email, telephone)
-Demande (id, #utilisateur_id, #projet_id, description, quantite, urgence, etat, date_demande)
+Demande (id, #utilisateur_id, #projet_id,referant,domaine,typeof,marque,reference,pour,ou,marche,justification, descriptif, quantite, urgence, etat, date_demande)
 Devis (id, #demande_id, #fournisseur_id, montant, fichier_pdf, etat, date_devis)
 BonCommande (id, #devis_id, #utilisateur_id, etat, fichier_pdf, date_creation)
 Facture (id, #bon_commande_id, montant, fichier_pdf, etat, date_facture)
@@ -20,6 +20,7 @@ CREATE TABLE Utilisateur (
     nom VARCHAR(255) NOT NULL,
     prenom VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
+    username VARCHAR(255) NOT NULL,
     mot_de_passe VARCHAR(255) NOT NULL,
     role ENUM('membre', 'responsable', 'directeur', 'admin') NOT NULL
 );
@@ -45,7 +46,16 @@ CREATE TABLE Demande (
     id INT AUTO_INCREMENT PRIMARY KEY,
     utilisateur_id INT,
     projet_id INT,
-    description TEXT,
+    referant VARCHAR(255),
+    domaine VARCHAR(255),
+    typeof VARCHAR(255),
+    marque VARCHAR(255),
+    reference VARCHAR(255),
+    pour VARCHAR(255),
+    ou VARCHAR(255),
+    marche VARCHAR(255),
+    justification TEXT,
+    descriptif TEXT,
     quantite INT NOT NULL,
     urgence ENUM('basse', 'moyenne', 'haute') NOT NULL,
     etat ENUM('envoyée', 'en cours de traitement', 'annulée', 'finalisée') DEFAULT 'envoyée',
