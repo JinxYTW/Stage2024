@@ -13,5 +13,6 @@ def jinx_hash(password):
 
     return sha256_hash
 
-mdp = "password"
-print(jinx_hash(mdp))
+
+
+

@@ -7,7 +7,7 @@ Devis (id, #demande_id, #fournisseur_id, montant, fichier_pdf, etat, date_devis)
 BonCommande (id, #devis_id, #utilisateur_id, etat, fichier_pdf, date_creation)
 Facture (id, #bon_commande_id, montant, fichier_pdf, etat, date_facture)
 Relance (id, #bon_commande_id, date_relance, message, reponse)
-Stock (id, #bon_commande_id, date_livraison, etat)
+Stock (id, #bon_commande_id, description,quantite)
 Notif (id, #utilisateur_id, message, lu, date_notification)
 */
 DROP DATABASE IF EXISTS GestionMateriel;
@@ -22,7 +22,7 @@ CREATE TABLE Utilisateur (
     email VARCHAR(255) NOT NULL,
     username VARCHAR(255) NOT NULL,
     mot_de_passe VARCHAR(255) NOT NULL,
-    role ENUM('membre', 'responsable', 'directeur', 'admin') NOT NULL
+    role ENUM('membre', 'responsable','respDevis','respDevisTel','stock', 'directeur', 'adminteam') NOT NULL
 );
 
 -- Table Projet
@@ -102,6 +102,13 @@ CREATE TABLE Relance (
     reponse BOOLEAN DEFAULT FALSE
 );
 
+-- Table Stock
+CREATE TABLE Stock (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    bon_commande_id INT,
+    description TEXT,
+    quantite INT NOT NULL
+);
 
 
 -- Table Notif
@@ -127,5 +134,17 @@ ALTER TABLE Facture ADD CONSTRAINT fk_facture_boncommande FOREIGN KEY (bon_comma
 
 ALTER TABLE Relance ADD CONSTRAINT fk_relance_boncommande FOREIGN KEY (bon_commande_id) REFERENCES BonCommande(id);
 
+ALTER TABLE Stock ADD CONSTRAINT fk_stock_boncommande FOREIGN KEY (bon_commande_id) REFERENCES BonCommande(id);
 
 ALTER TABLE Notif ADD CONSTRAINT fk_notification_utilisateur FOREIGN KEY (utilisateur_id) REFERENCES Utilisateur(id);
+
+-- Remplissage Table
+
+INSERT INTO Utilisateur (nom, prenom, email, username, mot_de_passe, role) VALUES 
+('random','un','random@chu.re','machin','51962cb4910a4e69486f0b4b3ac1fa148a5f9456cdb975e568e0b415f155b6e7','membre'),
+('responsable','un','responsable@chur.re','geredestrucs','4fd7fde6445787d3b0994d476c2fa6da1d89e8edb20bc5ce37e733b24ee45fee','responsable'),
+('responsable','devis','responsabledevis@chu.re','geredestrucsdevis','5d049da9dbece353143dfbf6e4dd5a9b5386e1a297b4c531c2479b7917430362','respDevis'),
+('responsable','devistel','responsabledevistel@chu.re','geredestrucsdevistel','ce2667b45246fdfebf9ce4718d6e916ae22815f6540c29e7236c5bad73334b9c','respDevisTel'),
+('stock','un','stock@chu.re','gerelesstoks','d928bc3b82d8eb7df1130a822e15e1065fe80fb4898eb7b36a9ebe43034d7cfb','stock'),
+('directeur','un','directeur@chu.re','dirigedestrucs','aa07deca25865fcc95fd7a610533507cf3c36d6e012a58b9053cc406868864b6','directeur'),
+('admin','team','adiminteam@chu.re','faitdestrucs','0c2e9e5290b94e9e913f1a64cfcabed420d4c28cbc85601130d14224cec7b3f4','adminteam');
