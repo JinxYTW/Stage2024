@@ -26,6 +26,7 @@ public class App {
 
         WebServer webserver = new WebServer();
         webserver.listen(8080);
+        System.out.println("Server started on port 8080");
 
         webserver.getRouter().post("/api/login",(WebServerContext context)->{
             System.out.println("POST /api/login");

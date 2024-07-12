@@ -27,8 +27,11 @@ public class UtilisateurController {
         JsonObject requestBody = context.getRequest().extractBody(JsonObject.class);
         String username = requestBody.get("username").getAsString();
         String password = requestBody.get("password").getAsString();
+        System.out.println("Username: " + username);
+        System.out.println("Password: " + password);
 
         String hashedPassword = HashUtil.jinxHash(password);
+        System.out.println("Hashed password: " + hashedPassword);
 
         UtilisateurDao utilisateurDao = new UtilisateurDao();
         Utilisateur utilisateur = utilisateurDao.findByUsernameAndPassword(username, hashedPassword);
@@ -42,7 +45,8 @@ public class UtilisateurController {
             responseJson.addProperty("userId", utilisateur.id());
             context.getResponse().json(responseJson);
             System.out.println("Login successful");
-        } else {
+        } 
+        else {
             JsonObject responseJson = new JsonObject();
             responseJson.addProperty("status", "fail");
             responseJson.addProperty("message", "Invalid username or password");

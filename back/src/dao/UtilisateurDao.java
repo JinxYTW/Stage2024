@@ -32,7 +32,7 @@ public class UtilisateurDao {
                     resultSet.getString("nom"),
                     resultSet.getString("prenom"),
                     resultSet.getString("email"),
-                    resultSet.getString("motDePasse"),
+                    resultSet.getString("mot_de_passe"),
                     resultSet.getString("role")
                 );
             }
