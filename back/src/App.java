@@ -27,7 +27,10 @@ public class App {
         WebServer webserver = new WebServer();
         webserver.listen(8080);
 
-        
+        webserver.getRouter().post("/api/login",(WebServerContext context)->{
+            System.out.println("POST /api/login");
+            myutilisateurController.login(context);
+        });
         
 
 
@@ -39,6 +42,12 @@ public class App {
         webServer.getSSE().addEventListeners(WebServerSSEEventType.CONNECT, connectCallback);
         webServer.getSSE().addEventListeners(WebServerSSEEventType.SUBSCRIBE, subscribeCallback);
         webServer.getSSE().addEventListeners(WebServerSSEEventType.UNSUBSCRIBE, unsubscribeCallback);
+
+
+
+
+
+
         System.out.println("Hello, World!");
     }
 }
