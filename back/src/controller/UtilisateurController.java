@@ -50,16 +50,19 @@ public class UtilisateurController {
             System.out.println("Utilisateur: " + utilisateur);
 
             if (utilisateur != null) {
-                String jwt = createJWT(utilisateur.id());
-                String jsonResponse = "{ \"status\": \"success\", \"message\": \"Login successful\", \"token\": \"" + jwt + "\", \"userId\": " + utilisateur.id() + " }";
+                //String jwt = createJWT(utilisateur.id());
+                //String jsonResponse = "{ \"status\": \"success\", \"message\": \"Login successful\", \"token\": \"" + jwt + "\", \"userId\": " + utilisateur.id() + " }";
+                String jsonResponse = "{ \"status\": \"success\", \"message\": \"Login successful\" }";
                 response.json(jsonResponse);
                 System.out.println("Login successful");
-            } else {
+            } 
+            else {
                 String jsonResponse = "{ \"status\": \"fail\", \"message\": \"Invalid username or password\" }";
                 response.json(jsonResponse);
                 System.out.println("Invalid username or password");
             }
-        } catch (Exception e) {
+        } 
+        catch (Exception e) {
             String jsonResponse = "{ \"status\": \"error\", \"message\": \"An error occurred: " + e.getMessage() + "\" }";
             response.json(jsonResponse);
             e.printStackTrace();
@@ -67,6 +70,7 @@ public class UtilisateurController {
     }
 
     private String createJWT(int userId) {
+        System.out.println("Creating JWT for user ID: " + userId);
         String secretKey = System.getenv("JWT_SECRET_KEY");
         long currentTimeMillis = System.currentTimeMillis();
         Date now = new Date(currentTimeMillis);
@@ -76,6 +80,11 @@ public class UtilisateurController {
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userId);
+
+        System.out.println("JWT secret key: " + secretKey);
+        System.out.println("JWT issued at: " + now);
+        System.out.println("JWT expiration: " + expiration);
+
 
         return Jwts.builder()
                 .setClaims(claims)

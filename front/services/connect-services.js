@@ -14,8 +14,10 @@ class ConnectServices {
             if (!response.ok) {
                 throw new Error('Network response was not ok ' + response.statusText);
             }
-
-            return await response.json();
+            const jsonResponse = await response.json(); // Lire le corps de la réponse une seule fois
+            console.log("Login successful");
+            console.log(jsonResponse);
+            return jsonResponse;
         } catch (error) {
             console.error('There was a problem with the fetch operation:', error);
         }

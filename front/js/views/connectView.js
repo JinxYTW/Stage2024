@@ -22,10 +22,13 @@ class connectView {
     async handleLogin() {
         console.log("Handling login");
         const username = this.usernameField.value;
+        console.log("Username:", username);
         const password = this.passwordField.value;
+        console.log("password:",password);
 
         try {
             const result = await this.connectServices.login(username, password);
+            console.log("Login result:", result);
 
             if (result && result.status === 'success') {
                 console.log('Connexion réussie :', result);
