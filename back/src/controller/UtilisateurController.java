@@ -7,17 +7,36 @@ import utils.HashUtil;
 import webserver.WebServerContext;
 import webserver.WebServerResponse;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 public class UtilisateurController {
+    private String secretKey;
 
-    public UtilisateurController() {}
+    public UtilisateurController() {
+        loadSecretKey();
+    }
+
+     private void loadSecretKey() {
+        Properties properties = new Properties();
+        try (InputStream input = new FileInputStream("back/config/application.properties")) {
+            properties.load(input);
+            secretKey = properties.getProperty("jwt.secret.key");
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Gérer l'erreur de chargement du fichier properties
+            // Vous pouvez choisir de logguer l'erreur ou de lancer une exception
+        }
+    }
 
     public void login(WebServerContext context) {
         WebServerResponse response = context.getResponse();
@@ -51,6 +70,7 @@ public class UtilisateurController {
 
             if (utilisateur != null) {
                 //String jwt = createJWT(utilisateur.id());
+                //System.out.println("JWT: " + jwt);
                 //String jsonResponse = "{ \"status\": \"success\", \"message\": \"Login successful\", \"token\": \"" + jwt + "\", \"userId\": " + utilisateur.id() + " }";
                 String jsonResponse = "{ \"status\": \"success\", \"message\": \"Login successful\" }";
                 response.json(jsonResponse);
@@ -71,31 +91,34 @@ public class UtilisateurController {
 
     private String createJWT(int userId) {
         System.out.println("Creating JWT for user ID: " + userId);
-        String secretKey = System.getenv("JWT_SECRET_KEY");
+    
         long currentTimeMillis = System.currentTimeMillis();
         Date now = new Date(currentTimeMillis);
-
+    
         long expirationTime = currentTimeMillis + 3600 * 1000; // 1 hour
         Date expiration = new Date(expirationTime);
-
+    
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userId);
-
+    
         System.out.println("JWT secret key: " + secretKey);
         System.out.println("JWT issued at: " + now);
         System.out.println("JWT expiration: " + expiration);
-
-
-        return Jwts.builder()
+    
+        String jwt = Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(expiration)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
+
+        System.out.println("JWT created: " + jwt);        
+    
+        return jwt;
     }
 
     private Claims decodeJWT(String jwt) {
-        String secretKey = System.getenv("JWT_SECRET_KEY");
+        
         try {
             return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwt).getBody();
         } catch (Exception e) {

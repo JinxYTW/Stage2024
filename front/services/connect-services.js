@@ -16,7 +16,7 @@ class ConnectServices {
             }
             const jsonResponse = await response.json(); // Lire le corps de la réponse une seule fois
             console.log("Login successful");
-            console.log(jsonResponse);
+            console.log("Login response JSON:", jsonResponse);
             return jsonResponse;
         } catch (error) {
             console.error('There was a problem with the fetch operation:', error);

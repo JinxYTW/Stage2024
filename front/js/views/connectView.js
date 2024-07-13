@@ -27,15 +27,28 @@ class connectView {
         console.log("password:",password);
 
         try {
-            const result = await this.connectServices.login(username, password);
+            let result = await this.connectServices.login(username, password);
             console.log("Login result:", result);
+
+             // Débogage de la condition
+             console.log("Type of result:", typeof result);
+             console.log("Result content:", JSON.stringify(result));
+ 
+             // Convertir la chaîne JSON en objet si nécessaire
+             if (typeof result === 'string') {
+                 result = JSON.parse(result);
+                 console.log("Type of result after parsing:", typeof result);
+             }
+ 
+             console.log("Parsed result:", result);
+             console.log("Result status:", result.status);
 
             if (result && result.status === 'success') {
                 console.log('Connexion réussie :', result);
                 localStorage.setItem('jwtToken', result.token); // Stocker le token JWT dans le localStorage
                 if (utilisateurAuthentifie()) {
                     console.log('Utilisateur authentifié');
-                    window.location.href = `home.html?user=${result.userId}`;
+                    //window.location.href = `home.html?user=${result.userId}`;
                 } else {
                     console.error('Utilisateur non authentifié malgré la connexion réussie.');
                 }
