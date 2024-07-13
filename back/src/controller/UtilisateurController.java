@@ -1,57 +1,68 @@
 package controller;
-import java.util.ArrayList;
+
+import com.google.gson.Gson;
+import dao.UtilisateurDao;
+import models.Utilisateur;
+import utils.HashUtil;
+import webserver.WebServerContext;
+import webserver.WebServerResponse;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.google.gson.JsonObject;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
-import webserver.WebServerContext;
-import webserver.WebServerResponse;
-
-import dao.UtilisateurDao;
-import models.Utilisateur;
-import utils.HashUtil;
-
 public class UtilisateurController {
 
-    public UtilisateurController() {
-        
-    }
+    public UtilisateurController() {}
+
     public void login(WebServerContext context) {
-        System.out.println("Entering login method");
-        JsonObject requestBody = context.getRequest().extractBody(JsonObject.class);
-        String username = requestBody.get("username").getAsString();
-        String password = requestBody.get("password").getAsString();
-        System.out.println("Username: " + username);
-        System.out.println("Password: " + password);
+        WebServerResponse response = context.getResponse();
+        try {
+            System.out.println("Entering login method");
 
-        String hashedPassword = HashUtil.jinxHash(password);
-        System.out.println("Hashed password: " + hashedPassword);
+            // Extraction des données du corps de la requête
+            String body = context.getRequest().getBodyAsString();
+            System.out.println("Request body: " + body);
 
-        UtilisateurDao utilisateurDao = new UtilisateurDao();
-        Utilisateur utilisateur = utilisateurDao.findByUsernameAndPassword(username, hashedPassword);
+            // Désérialisation du JSON en objet Java
+            Gson gson = new Gson();
+            LoginRequest loginRequest = gson.fromJson(body, LoginRequest.class);
 
-        if (utilisateur != null) {
-            String jwt = createJWT(utilisateur.id());
-            JsonObject responseJson = new JsonObject();
-            responseJson.addProperty("status", "success");
-            responseJson.addProperty("message", "Login successful");
-            responseJson.addProperty("token", jwt);
-            responseJson.addProperty("userId", utilisateur.id());
-            context.getResponse().json(responseJson);
-            System.out.println("Login successful");
-        } 
-        else {
-            JsonObject responseJson = new JsonObject();
-            responseJson.addProperty("status", "fail");
-            responseJson.addProperty("message", "Invalid username or password");
-            context.getResponse().json(responseJson);
-            System.out.println("Invalid username or password");
+            if (loginRequest == null || loginRequest.getUsername() == null || loginRequest.getPassword() == null) {
+                throw new IllegalArgumentException("Missing username or password");
+            }
+
+            String username = loginRequest.getUsername();
+            String password = loginRequest.getPassword();
+
+            System.out.println("Username: " + username);
+            System.out.println("Password: " + password);
+
+            String hashedPassword = HashUtil.jinxHash(password);
+            System.out.println("Hashed password: " + hashedPassword);
+
+            UtilisateurDao utilisateurDao = new UtilisateurDao();
+            Utilisateur utilisateur = utilisateurDao.findByUsernameAndPassword(username, hashedPassword);
+            System.out.println("Utilisateur: " + utilisateur);
+
+            if (utilisateur != null) {
+                String jwt = createJWT(utilisateur.id());
+                String jsonResponse = "{ \"status\": \"success\", \"message\": \"Login successful\", \"token\": \"" + jwt + "\", \"userId\": " + utilisateur.id() + " }";
+                response.json(jsonResponse);
+                System.out.println("Login successful");
+            } else {
+                String jsonResponse = "{ \"status\": \"fail\", \"message\": \"Invalid username or password\" }";
+                response.json(jsonResponse);
+                System.out.println("Invalid username or password");
+            }
+        } catch (Exception e) {
+            String jsonResponse = "{ \"status\": \"error\", \"message\": \"An error occurred: " + e.getMessage() + "\" }";
+            response.json(jsonResponse);
+            e.printStackTrace();
         }
     }
 
@@ -60,7 +71,6 @@ public class UtilisateurController {
         long currentTimeMillis = System.currentTimeMillis();
         Date now = new Date(currentTimeMillis);
 
-        // Set expiration to 1 hour from now
         long expirationTime = currentTimeMillis + 3600 * 1000; // 1 hour
         Date expiration = new Date(expirationTime);
 
@@ -88,5 +98,26 @@ public class UtilisateurController {
         Claims claims = decodeJWT(jwt);
         return claims != null && !claims.isEmpty();
     }
-    
+
+    // Classe interne pour représenter la requête de connexion
+    private static class LoginRequest {
+        private String username;
+        private String password;
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+    }
 }

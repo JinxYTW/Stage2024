@@ -1,7 +1,7 @@
-class ConnectServices{
-    constructor(){}
+class ConnectServices {
+    constructor() {}
     async login(username, password) {
-        console.log("ok")
+        console.log("Attempting login");
         try {
             const response = await fetch('http://127.0.0.1:8080/api/login', {
                 method: 'POST',
@@ -22,4 +22,4 @@ class ConnectServices{
     }
 }
 
-export {ConnectServices};
+export { ConnectServices };

@@ -58,6 +58,10 @@ public class WebServerRequest {
         return (T)this.body;
     }
 
+    public String getBodyAsString() {
+        return readStreamAsString();
+    }
+
     private String readStreamAsString()
     {
         try {
