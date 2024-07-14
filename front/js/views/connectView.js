@@ -48,7 +48,7 @@ class connectView {
                 localStorage.setItem('jwtToken', result.token); // Stocker le token JWT dans le localStorage
                 if (utilisateurAuthentifie()) {
                     console.log('Utilisateur authentifié');
-                    //window.location.href = `home.html?user=${result.userId}`;
+                    window.location.href = `home.html?user=${result.userId}`;
                 } else {
                     console.error('Utilisateur non authentifié malgré la connexion réussie.');
                 }

@@ -15,9 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
+import org.apache.commons.codec.binary.Base64;
 
 public class UtilisateurController {
     private String secretKey;
@@ -69,10 +68,10 @@ public class UtilisateurController {
             System.out.println("Utilisateur: " + utilisateur);
 
             if (utilisateur != null) {
-                //String jwt = createJWT(utilisateur.id());
-                //System.out.println("JWT: " + jwt);
-                //String jsonResponse = "{ \"status\": \"success\", \"message\": \"Login successful\", \"token\": \"" + jwt + "\", \"userId\": " + utilisateur.id() + " }";
-                String jsonResponse = "{ \"status\": \"success\", \"message\": \"Login successful\" }";
+                String jwt = createJWT(utilisateur.id());
+                System.out.println("JWT: " + jwt);
+                String jsonResponse = "{ \"status\": \"success\", \"message\": \"Login successful\", \"token\": \"" + jwt + "\", \"userId\": " + utilisateur.id() + " }";
+                //String jsonResponse = "{ \"status\": \"success\", \"message\": \"Login successful\" }";
                 response.json(jsonResponse);
                 System.out.println("Login successful");
             } 
@@ -101,19 +100,28 @@ public class UtilisateurController {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userId);
     
+        System.out.println("JWT claims: " + claims);
         System.out.println("JWT secret key: " + secretKey);
         System.out.println("JWT issued at: " + now);
         System.out.println("JWT expiration: " + expiration);
     
-        String jwt = Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(expiration)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
-
-        System.out.println("JWT created: " + jwt);        
+        String jwt;
+        try {
+            byte[] secretKeyBytes = Base64.decodeBase64(secretKey);
+            jwt = Jwts.builder()
+                    .setClaims(claims)
+                    .setIssuedAt(now)
+                    .setExpiration(expiration)
+                    .signWith(SignatureAlgorithm.HS256, secretKeyBytes)
+                    .compact();
     
+            System.out.println("JWT created: " + jwt);
+        } catch (Exception e) {
+            System.err.println("Error creating JWT: " + e.getMessage());
+            e.printStackTrace();
+            jwt = null; // Ou une gestion d'erreur appropriée
+        }
+        
         return jwt;
     }
 
