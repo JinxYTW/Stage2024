@@ -1,11 +1,168 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demande</title>
+    <title>Demande de Matériel - CHU La Réunion</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar gauche -->
+            <div class="col-md-3 bg-light sidebar">
+                <div class="p-3">
+                    <div class="user-info text-center mb-3" id="user_recap">
+                        <img src="../css/img/useravatar.png" alt="Utilisateur" class="img-fluid rounded-circle">
+                        <h5 class="mt-2" id="user_nomprenom">Jinx</h5>
+                        <p id="user_role">Responsable</p>
+                        <p class="text-muted" id="notif_zone">Notifications (1)</p>
+                        <p id="last_notif">Votre commande n°SI974 a été livrée</p>
+                    </div>
+                    <hr>
+                    <div class="command-search mb-3">
+                        <h6>Recherche de commande</h6>
+                        <form>
+                            <div class="form-group">
+                                <label for="order-number">par n° :</label>
+                                <input type="text" id="order-number" class="form-control" placeholder="SI...">
+                            </div>
+                            <div class="form-group">
+                                <label for="order-date">par date :</label>
+                                <input type="text" id="order-date" class="form-control" placeholder="DD/MM/AAAA">
+                            </div>
+                            <div class="form-group">
+                                <label for="order-article">par article ou entreprise :</label>
+                                <input type="text" id="order-article" class="form-control" placeholder="...">
+                            </div>
+                            <div class="form-group">
+                                <label for="order-domain">par domaine :</label>
+                                <select id="order-domain" class="form-control">
+                                    <option>Sélectionner</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="order-client">par commanditaire :</label>
+                                <input type="text" id="order-client" class="form-control" placeholder="...">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Lancer la recherche</button>
+                        </form>
+                    </div>
+                    <hr>
+                    <div class="mb-3">
+                        <h6>Demande de matériel/logiciel</h6>
+                        <button class="btn btn-primary btn-block">Faire une demande</button>
+                    </div>
+                    <div class="mb-3">
+                        <h6>Questionner les stocks</h6>
+                        <button class="btn btn-primary btn-block">Faire une demande</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Contenu principal -->
+            <div class="col-md-9 main-content">
+                <div class="p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <img src="../css/img/logo.png" alt="CHU La Réunion" class="img-fluid" style="max-width: 200px;">
+                    </div>
+                    <div class="bg-light p-3 rounded">
+                        <h4>Demande de matériel</h4>
+                        <form>
+                            <div class="form-group">
+                                <label for="project">La demande de matériel se fait-elle dans le cadre d'un projet ?</label>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="project-switch">
+                                    <label class="form-check-label" for="project-switch"></label>
+                                </div>
+                                <div class="form-group" id="project-form">
+                                    <label for="project">Nom du projet</label>
+                                    <input type="text" class="form-control" id="project_name">
+                                </div>
+                                <div class="form-group" id="project-form">
+                                    <label for="project">Domaine du projet</label>
+                                    <select id="project" class="form-control" id="project_domain">
+                                        <option>SI</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="referent">Référent dans la DSI</label>
+                                    <select id="referent" class="form-control" id="referent_select">
+                                        <option>RAVAT Idriss</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="urgency">Niveau d'urgence</label>
+                                    <div class="d-flex">
+                                        <button type="button" class="btn btn-outline-success mr-2" id="urgence_level_1">1</button>
+                                        <button type="button" class="btn btn-outline-warning mr-2" id="urgence_level_2">2</button>
+                                        <button type="button" class="btn btn-outline-danger" id="urgence_level_3">3</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="type">Type d'article</label>
+                                <select id="type" class="form-control" id="aricle_select">
+                                    <option>IMPRIMANTE</option>
+                                </select>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label for="quantity">Quantité</label>
+                                    <input type="number" class="form-control" id="quantity" value="30">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="brand">Marque</label>
+                                    <input type="text" class="form-control" id="brand">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="site">Pour le site</label>
+                                    <select id="site" class="form-control">
+                                        <option>NORD</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="reference">Référence</label>
+                                    <input type="text" class="form-control" id="reference">
+                                </div>
+                            </div>
+                            <div class="form-group mb-4">
+                                <label for="details">Pour qui ?/Pour quel service ?</label>
+                                <input type="text" class="form-control" id="details_w">
+                            </div>
+                            <div class="form-group">
+                                <label for="details">Objet / autres précisions</label>
+                                <textarea id="details" class="form-control"></textarea>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="market">Marché</label>
+                                    <select id="market_select" class="form-control">
+                                        <option>HORS-MARCHE</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="justification">Justification</label>
+                                    <input type="text" class="form-control" id="justification" value="Aucun marché établi">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="additional-details">Ajoutez des précisions concernant votre demande ici :</label>
+                                <textarea id="additional-details" class="form-control"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block" id="ask_button">Valider la demande</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

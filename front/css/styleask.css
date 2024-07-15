@@ -1,0 +1,63 @@
+/* style.css */
+
+body {
+    background-color: #f0f5f5;
+}
+
+.sidebar {
+    height: 100vh;
+    position: sticky;
+    top: 0;
+}
+
+.user-info img {
+    width: 100px;
+}
+
+.main-content {
+    overflow-y: auto;
+    height: 100vh;
+}
+
+.order-item {
+    border-left: 5px solid #007bff;
+}
+
+.order-item .btn-outline-info {
+    border-color: #007bff;
+    color: #007bff;
+}
+
+.order-item .btn-outline-secondary {
+    border-color: #6c757d;
+    color: #6c757d;
+}
+
+.form-check-input:checked {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.form-check-label::after {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-outline-success {
+    border-color: #28a745;
+    color: #28a745;
+}
+
+.btn-outline-warning {
+    border-color: #ffc107;
+    color: #ffc107;
+}
+
+.btn-outline-danger {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+textarea {
+    resize: none;
+}
