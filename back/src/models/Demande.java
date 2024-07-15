@@ -19,7 +19,8 @@ public record Demande(
     int quantite,
     Urgence urgence,
     Etat etat,
-    Timestamp date_demande
+    Timestamp date_demande,
+    String pdfPath
 ) {
     public enum Urgence {
         basse, moyenne, haute

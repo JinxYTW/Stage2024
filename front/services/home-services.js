@@ -47,6 +47,27 @@ class homeServices {
         }
     }
 
+    async generatePdf(demandeId) {
+        console.log(`Generating PDF for demande ID: ${demandeId}`);
+        try {
+            const response = await fetch(`http://127.0.0.1:8080/api/generatePdf?id=${demandeId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error('La génération du PDF a échoué');
+            }
+            const data = await response.json();
+            return data.pdfPath;
+        } catch (error) {
+            console.log("Erreur dans la génération du PDF", error);
+            return null;
+        }
+    }
+
 }
 
 

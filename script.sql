@@ -2,7 +2,7 @@
 Utilisateur (id, nom, prenom, email,username, mot_de_passe, role)
 Projet (id, nom, description)
 Fournisseur (id, nom, adresse, email, telephone)
-Demande (id, #utilisateur_id, #projet_id,referant,domaine,typeof,marque,reference,pour,ou,marche,justification, descriptif, quantite, urgence, etat, date_demande)
+Demande (id, #utilisateur_id, #projet_id,referant,domaine,typeof,marque,reference,pour,ou,marche,justification, descriptif, quantite, urgence, etat, date_demande,pdfPath)
 Devis (id, #demande_id, #fournisseur_id, montant, fichier_pdf, etat, date_devis)
 BonCommande (id, #devis_id, #utilisateur_id, etat, fichier_pdf, date_creation)
 Facture (id, #bon_commande_id, montant, fichier_pdf, etat, date_facture)
@@ -59,7 +59,8 @@ CREATE TABLE Demande (
     quantite INT NOT NULL,
     urgence ENUM('basse', 'moyenne', 'haute') NOT NULL,
     etat ENUM('envoyée', 'en cours de traitement', 'annulée', 'finalisée') DEFAULT 'envoyée',
-    date_demande TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    date_demande TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    pdfPath VARCHAR(255)
 );
 
 -- Table Devis
@@ -148,3 +149,17 @@ INSERT INTO Utilisateur (nom, prenom, email, username, mot_de_passe, role) VALUE
 ('stock','un','stock@chu.re','gerelesstoks','d928bc3b82d8eb7df1130a822e15e1065fe80fb4898eb7b36a9ebe43034d7cfb','stock'),
 ('directeur','un','directeur@chu.re','dirigedestrucs','aa07deca25865fcc95fd7a610533507cf3c36d6e012a58b9053cc406868864b6','directeur'),
 ('admin','team','adiminteam@chu.re','faitdestrucs','0c2e9e5290b94e9e913f1a64cfcabed420d4c28cbc85601130d14224cec7b3f4','adminteam');
+
+-- Insérer un projet pour l'utilisateur avec ID 1
+INSERT INTO Projet (nom, description)
+VALUES ('Stage', 'Faut que ça fonctionne');
+
+-- Insérer une demande pour l'utilisateur avec ID 1
+INSERT INTO Demande (utilisateur_id, projet_id, referant, domaine, typeof, marque, reference, pour, ou, marche, justification, descriptif, quantite, urgence)
+VALUES (1, 1, 'Jinx', 'Oskour', 'Test', 'Mayday', 'xoxo', 'unjour', 'site', 'Marché de référence', 'Justification détaillée', 'Description de la demande', 10, 'haute');
+
+-- Insérer une notification pour l'utilisateur avec ID 1
+INSERT INTO Notif (utilisateur_id, message, lu)
+VALUES (1, 'Tu me vois', FALSE);
+
+

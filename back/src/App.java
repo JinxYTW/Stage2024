@@ -44,6 +44,13 @@ public class App {
         });
 
 
+        webserver.getRouter().get("/api/generatePdf", (WebServerContext context) -> {
+            System.out.println("GET /api/generatePdf");
+            mydemandeController.generatePdf(context);
+        });
+
+
+
         //-------------- SSE ----------------------------
         WebServer webServer = new WebServer();
         ConnectCallback connectCallback = new ConnectCallback();

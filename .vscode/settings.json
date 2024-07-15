@@ -8,6 +8,27 @@
         "back/lib/jackson-annotations-2.13.0.jar",
         "back/lib/jackson-core-2.13.0.jar",
         "back/lib/jackson-databind-2.13.0.jar",
-        "back/lib/jaxb-api-2.3.1.jar"
+        "back/lib/jaxb-api-2.3.1.jar",
+        "back/lib/jwt/commons-codec-1.15.jar",
+        "back/lib/jwt/jackson-annotations-2.13.0.jar",
+        "back/lib/jwt/jackson-core-2.13.0.jar",
+        "back/lib/jwt/jackson-databind-2.13.0.jar",
+        "back/lib/jwt/jaxb-api-2.3.1.jar",
+        "back/lib/jwt/jjwt-0.9.1.jar",
+        "back/lib/itext/barcodes-7.2.1.jar",
+        "back/lib/itext/bcpkix-jdk15on-1.69.jar",
+        "back/lib/itext/bcprov-jdk15on-1.69.jar",
+        "back/lib/itext/bcutil-jdk15on-1.69.jar",
+        "back/lib/itext/commons-7.2.1.jar",
+        "back/lib/itext/font-asian-7.2.1.jar",
+        "back/lib/itext/forms-7.2.1.jar",
+        "back/lib/itext/hyph-7.2.1.jar",
+        "back/lib/itext/io-7.2.1.jar",
+        "back/lib/itext/kernel-7.2.1.jar",
+        "back/lib/itext/layout-7.2.1.jar",
+        "back/lib/itext/pdfa-7.2.1.jar",
+        "back/lib/itext/sign-7.2.1.jar",
+        "back/lib/itext/styled-xml-parser-7.2.1.jar",
+        "back/lib/itext/svg-7.2.1.jar"
     ]
 }

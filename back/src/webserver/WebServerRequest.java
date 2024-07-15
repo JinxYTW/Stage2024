@@ -2,7 +2,9 @@ package webserver;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.HashMap;
+import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -27,6 +29,29 @@ public class WebServerRequest {
     public String getPath() {
         return this.exchange.getRequestURI().getPath();
     }
+
+    public Map<String, String> getQueryParams() {
+        Map<String, String> queryParams = new HashMap<>();
+        URI requestedUri = exchange.getRequestURI();
+        String query = requestedUri.getQuery();
+        
+        if (query != null) {
+            String[] pairs = query.split("&");
+            for (String pair : pairs) {
+                int idx = pair.indexOf("=");
+                try {
+                    String key = idx > 0 ? pair.substring(0, idx) : pair;
+                    String value = idx > 0 && pair.length() > idx + 1 ? pair.substring(idx + 1) : null;
+                    queryParams.put(key, value);
+                } catch (Exception e) {
+                    // Log or handle any parsing exception
+                }
+            }
+        }
+        
+        return queryParams;
+    }
+
 
     public void setParams(HashMap<String, String> params) {
         this.params.clear();
