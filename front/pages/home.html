@@ -16,12 +16,12 @@
                 <div class="p-3">
 
 
-                    <div class="user-info text-center mb-3">
-                        <img src="user-avatar.png" alt="Utilisateur" class="img-fluid rounded-circle">
-                        <h5 class="mt-2">RAVAT Idriss</h5>
-                        <p>Responsable</p>
-                        <p class="text-muted">Notifications (1)</p>
-                        <p>Votre commande n°SI974 a été livrée</p>
+                    <div class="user-info text-center mb-3" id="user_recap">
+                        <img src="../css/img/useravatar.png" alt="Utilisateur" class="img-fluid rounded-circle">
+                        <h5 class="mt-2" id="user_nomprenom">Jinx</h5>
+                        <p id="user_role">Zaun</p>
+                        <p class="text-muted" id="notif_zone">Notifications (1)</p>
+                        <p id="last_notif">Votre commande n°SI974 a été livrée</p>
                     </div>
 
 
@@ -64,13 +64,13 @@
                     <hr>
                     <div class="mb-3">
                         <h6>Demande de matériel/logiciel</h6>
-                        <button class="btn btn-primary btn-block">Faire une demande</button>
+                        <button class="btn btn-primary btn-block" id="ask_something">Faire une demande</button>
                     </div>
 
 
                     <div class="mb-3">
                         <h6>Questionner les stocks</h6>
-                        <button class="btn btn-primary btn-block">Faire une demande</button>
+                        <button class="btn btn-primary btn-block" id="check_something">Faire une demande</button>
                     </div>
 
 
@@ -85,12 +85,12 @@
                     </div>
                     <div class="bg-light p-3 rounded">
                         <h4>Mai 2023</h4>
-                        <div class="order-list mt-3">
+                        <div class="order-list mt-3" id="zone_commande">
 
 
                             <!-- Exemple de commande -->
                             <div class="order-item p-2 mb-2 bg-white rounded shadow-sm">
-                                <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex justify-content-between align-items-center" >
 
                                     <div>
                                         <p class="mb-1"><strong>COMMANDE SI974</strong></p>
@@ -126,6 +126,6 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script type="module " src="../js/home.js"></script>
+    <script type="module" src="../js/home.js"></script>
 </body>
 </html>

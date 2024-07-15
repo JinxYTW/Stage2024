@@ -32,7 +32,16 @@ public class App {
             System.out.println("POST /api/login");
             myutilisateurController.login(context);
         });
+
+        webserver.getRouter().get("/api/getNames/:id",(WebServerContext context)->{
+            System.out.println("GET /api/:id/names");
+            //String id = context.getRequest().getParam("id");
+            myutilisateurController.getNames(context);
+        });
         
+        webserver.getRouter().get("/api/getRole/:id", (WebServerContext context) -> {
+            myutilisateurController.getRole(context);
+        });
 
 
         //-------------- SSE ----------------------------

@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Vérifier si l'utilisateur est authentifié avant de charger la page protégée
     if (!utilisateurAuthentifie()) {
         console.log('Utilisateur non authentifié');
-        //window.location.href = 'connect.html';
+        window.location.href = 'connect.html';
     } else {
         new homeController();
     }

@@ -42,4 +42,48 @@ public class UtilisateurDao {
         }
         return null;
     }
+
+    public String getNames (int id) {
+        String res="";
+        try {
+            SomethingDatabase my_Database = new SomethingDatabase();
+
+            String request = "SELECT nom, prenom FROM Utilisateur WHERE id = ?";
+            PreparedStatement statement = my_Database.prepareStatement(request);
+            statement.setInt(1, id);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                res = resultSet.getString("nom") + " " + resultSet.getString("prenom");
+                return res;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            
+}
+        return res;
+        
+    }
+
+    public String getRole(int id) {
+        String role = "";
+        try {
+            SomethingDatabase my_Database = new SomethingDatabase();
+
+            String request = "SELECT role FROM Utilisateur WHERE id = ?";
+            PreparedStatement statement = my_Database.prepareStatement(request);
+            statement.setInt(1, id);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                role = resultSet.getString("role");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return role;
+    }
 }

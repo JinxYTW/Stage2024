@@ -160,4 +160,38 @@ public class UtilisateurController {
             this.password = password;
         }
     }
+
+    public String getNames( WebServerContext context) {
+        WebServerResponse response = context.getResponse();
+        String res="";
+        int id = Integer.parseInt(context.getRequest().getParam("id"));
+        try {
+            UtilisateurDao utilisateurDao = new UtilisateurDao();
+            res = utilisateurDao.getNames(id);
+            response.json(res);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        
+    }
+        return res;
+}
+public String getRole(WebServerContext context) {
+    WebServerResponse response = context.getResponse();
+    String role = "";
+    try {
+        String idParam = context.getRequest().getParam("id");
+        int id = Integer.parseInt(idParam);
+
+        UtilisateurDao utilisateurDao = new UtilisateurDao();
+        role = utilisateurDao.getRole(id);
+
+        response.json(role);
+        System.out.println("Role: " + role);
+    } catch (Exception e) {
+        String jsonResponse = "{ \"status\": \"error\", \"message\": \"An error occurred: " + e.getMessage() + "\" }";
+        response.json(jsonResponse);
+        e.printStackTrace();
+    }
+    return role;
+}
 }
