@@ -1,3 +1,5 @@
+import java.io.File;
+
 import controller.*; // Import all controllers
 import models.Devis;
 import webserver.WebServer;
@@ -48,6 +50,27 @@ public class App {
             System.out.println("GET /api/generatePdf");
             mydemandeController.generatePdf(context);
         });
+
+        webserver.getRouter().get("/pdf/Devis/:filename", (WebServerContext context) -> {
+    String fileName = context.getRequest().getParam("filename");
+    String filePath = "back/src/pdf/Devis/" + fileName;
+    
+    // Lire le fichier et le renvoyer en réponse
+    try {
+        File file = new File(filePath);
+        if (!file.exists()) {
+            context.getResponse().notFound("Fichier non trouvé");
+            return;
+        }
+        
+        // Renvoyer le fichier en réponse
+        context.getResponse().setContentType("application/pdf");
+        context.getResponse().sendFile(file);
+    } catch (Exception e) {
+        e.printStackTrace();
+        context.getResponse().serverError("Erreur serveur lors de la récupération du fichier PDF");
+    }
+});
 
 
 

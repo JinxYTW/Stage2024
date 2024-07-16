@@ -33,6 +33,7 @@ public class DemandeController {
             UtilisateurDao utilisateurDao = new UtilisateurDao();
             String demandeurName = utilisateurDao.getNames(demande.utilisateur_id());
     
+            System.out.println("Generating PDF...");
             String pdfPath = demandeDao.generatePdf(demande, demandeurName);
             System.out.println("pdfPath: " + pdfPath);
             if (pdfPath == null) {
@@ -40,11 +41,16 @@ public class DemandeController {
                 return;
             }
     
+            System.out.println("Saving PDF path...");
             demandeDao.savePdfPath(demandeId, pdfPath);
+            System.out.println("PDF path saved");
     
             JsonObject json = new JsonObject();
             json.addProperty("pdfPath", pdfPath);
+            System.out.println("PDF path sent");
+            System.out.println("Sending JSON response: " + json);
             response.json(json);
+            
         } catch (NumberFormatException e) {
             e.printStackTrace();
             response.serverError("Format incorrect pour le paramètre 'id'");

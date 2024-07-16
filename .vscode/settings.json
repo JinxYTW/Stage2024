@@ -29,6 +29,8 @@
         "back/lib/itext/pdfa-7.2.1.jar",
         "back/lib/itext/sign-7.2.1.jar",
         "back/lib/itext/styled-xml-parser-7.2.1.jar",
-        "back/lib/itext/svg-7.2.1.jar"
+        "back/lib/itext/svg-7.2.1.jar",
+        "back/lib/itext/slf4j-api-2.0.9.jar",
+        "back/lib/itext/slf4j-simple-2.0.9.jar"
     ]
 }

@@ -1,5 +1,7 @@
 package webserver;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -80,4 +82,27 @@ public class WebServerResponse {
 
         return this.exchange.getResponseBody();
     }
+    public void setContentType(String contentType) {
+        Headers headers = this.exchange.getResponseHeaders();
+        headers.add("Content-Type", contentType);
+    }
+
+    public void sendFile(File file) {
+    try {
+        // Lire le fichier en tant que tableau de bytes
+        FileInputStream fis = new FileInputStream(file);
+        byte[] buffer = new byte[(int) file.length()];
+        fis.read(buffer);
+        fis.close();
+
+        // Envoyer la réponse avec le contenu du fichier
+        OutputStream os = this.exchange.getResponseBody();
+        this.exchange.sendResponseHeaders(200, file.length());
+        os.write(buffer);
+        os.close();
+    } catch (IOException e) {
+        e.printStackTrace();
+        this.serverError("Erreur serveur lors de l'envoi du fichier");
+    }
+}
 }

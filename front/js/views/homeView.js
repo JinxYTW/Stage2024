@@ -19,8 +19,13 @@ class homeView{
                 
                 //Problème ici
                 const pdfPath = await this.homeServices.generatePdf(demandeId);
+                console.log('Opening PDF at:', pdfPath);
                 if (pdfPath) {
-                    window.open(pdfPath, '_blank');
+                    const adjustedPdfUrl = `http://127.0.0.1:8080/${pdfPath.replace('back/src/', '')}`;
+                    console.log('Opening PDF at:', adjustedPdfUrl);
+
+                        // Ouvrir le PDF dans une nouvelle fenêtre
+                    window.open(adjustedPdfUrl, '_blank');
                 } else {
                     alert("Échec de la génération du PDF.");
                 }

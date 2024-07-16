@@ -47,6 +47,7 @@ public class DemandeDao {
                     resultSet.getTimestamp("date_demande"),
                     resultSet.getString("pdfPath")
                 );
+                
             }
 
         } catch (Exception e) {
@@ -73,17 +74,27 @@ public class DemandeDao {
     public String generatePdf(Demande demande, String demandeurName) {
         String pdfPath = "back/src/pdf/Devis/demande_" + demande.id() + ".pdf";
         try {
+            System.out.println("Initializing PDF writer...");
             PdfWriter writer = new PdfWriter(new FileOutputStream(pdfPath));
+            System.out.println("Initializing PDF document...");
             PdfDocument pdfDoc = new PdfDocument(writer);
+            System.out.println("Initializing document...");
             Document document = new Document(pdfDoc);
-
+            System.out.println("Adding title to PDF...");
+    
             LocalDate currentDate = LocalDate.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
             String formattedDate = currentDate.format(formatter);
 
+            System.out.println("Demandeur name: " + demandeurName);
+            System.out.println("Formatted date: " + formattedDate);
+    
             String title = "Demande par " + demandeurName + " le " + formattedDate;
-
+    
+            System.out.println("Adding title to PDF: " + title);
             document.add(new Paragraph(title));
+            
+            System.out.println("Adding fields to PDF...");
             document.add(new Paragraph("ID: " + demande.id()));
             document.add(new Paragraph("Référant: " + demande.referant()));
             document.add(new Paragraph("Domaine: " + demande.domaine()));
@@ -99,8 +110,10 @@ public class DemandeDao {
             document.add(new Paragraph("Urgence: " + demande.urgence().name()));
             document.add(new Paragraph("État: " + demande.etat().name()));
             document.add(new Paragraph("Date de demande: " + demande.date_demande().toString()));
-
+    
+            System.out.println("Closing document...");
             document.close();
+            System.out.println("PDF generated successfully.");
         } catch (Exception e) {
             e.printStackTrace();
             return null;

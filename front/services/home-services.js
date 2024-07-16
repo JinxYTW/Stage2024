@@ -56,11 +56,13 @@ class homeServices {
                     'Content-Type': 'application/json'
                 }
             });
+            console.log(`Response status: ${response.status}`); // Ajoutez ce log
             
             if (!response.ok) {
                 throw new Error('La génération du PDF a échoué');
             }
             const data = await response.json();
+            console.log('Data received:', data); // Ajoutez ce log
             return data.pdfPath;
         } catch (error) {
             console.log("Erreur dans la génération du PDF", error);
