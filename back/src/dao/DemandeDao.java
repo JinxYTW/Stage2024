@@ -154,4 +154,39 @@ public class DemandeDao {
         cell.setBorder(new SolidBorder(ColorConstants.BLACK, 1));
         return cell;
     }
+
+    public int createDemande(Demande demande) {
+        try {
+            SomethingDatabase myDatabase = new SomethingDatabase();
+
+            String query = "INSERT INTO Demande (utilisateur_id, projet_id, referant, domaine, typeof, marque, reference, pour, ou, marche, justification, descriptif, quantite, urgence, etat, date_demande) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            PreparedStatement statement = myDatabase.prepareStatement(query);
+            statement.setInt(1, demande.utilisateur_id());
+            statement.setInt(2, demande.projet_id());
+            statement.setString(3, demande.referant());
+            statement.setString(4, demande.domaine());
+            statement.setString(5, demande.typeof());
+            statement.setString(6, demande.marque());
+            statement.setString(7, demande.reference());
+            statement.setString(8, demande.pour());
+            statement.setString(9, demande.ou());
+            statement.setString(10, demande.marche());
+            statement.setString(11, demande.justification());
+            statement.setString(12, demande.descriptif());
+            statement.setInt(13, demande.quantite());
+            statement.setString(14, demande.urgence().name());
+            statement.setString(15, demande.etat().name());
+            statement.setTimestamp(16, demande.date_demande());
+
+            statement.executeUpdate();
+
+            ResultSet resultSet = statement.getGeneratedKeys();
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+    }
+    return -1;
+}
 }

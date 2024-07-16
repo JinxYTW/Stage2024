@@ -51,6 +51,11 @@ public class App {
             mydemandeController.generatePdf(context);
         });
 
+        webserver.getRouter().post("/api/ask", (WebServerContext context) -> {
+            System.out.println("POST /api/ask");
+            mydemandeController.createDemande(context);
+        });
+
         webserver.getRouter().get("/pdf/Devis/:filename", (WebServerContext context) -> {
     String fileName = context.getRequest().getParam("filename");
     String filePath = "back/src/pdf/Devis/" + fileName;

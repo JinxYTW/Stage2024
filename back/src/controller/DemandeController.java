@@ -5,9 +5,43 @@ import dao.UtilisateurDao;
 import models.Demande;
 import webserver.WebServerContext;
 import webserver.WebServerResponse;
+
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 public class DemandeController {
+
+    public void createDemande(WebServerContext context) {
+        WebServerResponse response = context.getResponse();
+        System.out.println("DemandeController.createDemande");
+        try {
+            String demandeJson = context.getRequest().getQueryParams().get("demande");
+            System.out.println("demandeJson: " + demandeJson);
+    
+            if (demandeJson == null) {
+                response.serverError("Paramètre 'demande' manquant dans la requête");
+                return;
+            }
+    
+            Demande demande = new Gson().fromJson(demandeJson, Demande.class);
+            System.out.println("demande: " + demande);
+    
+            DemandeDao demandeDao = new DemandeDao();
+            int demandeId = demandeDao.createDemande(demande);
+            System.out.println("demandeId: " + demandeId);
+    
+            JsonObject json = new JsonObject();
+            json.addProperty("demandeId", demandeId);
+            System.out.println("Sending JSON response: " + json);
+            response.json(json);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.serverError("Erreur serveur");
+        }
+    }
+
+
     public void generatePdf(WebServerContext context) {
         WebServerResponse response = context.getResponse();
         System.out.println("DemandeController.generatePdf");
