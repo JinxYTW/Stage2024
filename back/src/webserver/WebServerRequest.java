@@ -25,11 +25,12 @@ public class WebServerRequest {
     public String getMethod() {
         return this.exchange.getRequestMethod();
     }
-
+    
     public String getPath() {
         return this.exchange.getRequestURI().getPath();
     }
 
+    //Nouvelle méthode qui récupère les paramètres de la requête lorsqu'il y a présence de "?" dans l'URL
     public Map<String, String> getQueryParams() {
         Map<String, String> queryParams = new HashMap<>();
         URI requestedUri = exchange.getRequestURI();

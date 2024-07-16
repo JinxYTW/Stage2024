@@ -36,6 +36,7 @@ public class WebServerResponse {
         this.send(200, gson.toJson(object));
     }
 
+    //Nouvelle méthode pour envoyer un statut personnalisé
     public void status(int statusCode, String message) {
         this.send(statusCode, message);
     }
@@ -87,6 +88,8 @@ public class WebServerResponse {
         headers.add("Content-Type", contentType);
     }
 
+
+    //Nouvelle méthode pour envoyer un fichier
     public void sendFile(File file) {
     try {
         // Lire le fichier en tant que tableau de bytes

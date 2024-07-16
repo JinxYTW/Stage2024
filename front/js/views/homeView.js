@@ -1,5 +1,5 @@
 import { homeServices } from "../../services/home-services.js";
-
+import { utilisateurAuthentifie } from "../../services/auth.js"; 
 class homeView{
     constructor() {
         this.userName = document.getElementById('user_nomprenom');
@@ -16,15 +16,20 @@ class homeView{
                     alert("L'identifiant de la demande est manquant.");
                     return;
                 }
+
+                // Vérifier si l'utilisateur est authentifié
+                if (!utilisateurAuthentifie()) {
+                    alert("Vous devez être authentifié pour accéder à cette ressource.");
+                    return;
+                }
                 
-                //Problème ici
                 const pdfPath = await this.homeServices.generatePdf(demandeId);
                 console.log('Opening PDF at:', pdfPath);
                 if (pdfPath) {
                     const adjustedPdfUrl = `http://127.0.0.1:8080/${pdfPath.replace('back/src/', '')}`;
                     console.log('Opening PDF at:', adjustedPdfUrl);
 
-                        // Ouvrir le PDF dans une nouvelle fenêtre
+                    // Ouvrir le PDF dans une nouvelle fenêtre
                     window.open(adjustedPdfUrl, '_blank');
                 } else {
                     alert("Échec de la génération du PDF.");
@@ -34,6 +39,7 @@ class homeView{
 
         this.updateUserNames();
         this.updateUserRole();
+        this.bindAskSomething();
     }
 
     bindAskSomething(){
@@ -49,8 +55,13 @@ class homeView{
         return urlParams.get('user');
     }
 
-    async handleAskSomething(){
-        //A completer
+    async handleAskSomething() {
+        const userId = this.getDemandeIdFromUrl();
+        if (userId) {
+            window.location.href = `ask.html?user=${userId}`;
+        } else {
+            alert('User ID not found in the URL.');
+        }
     }
 
 
