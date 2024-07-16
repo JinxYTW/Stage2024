@@ -6,10 +6,13 @@ import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.borders.SolidBorder;
 
 import database.SomethingDatabase;
 import models.Demande;
@@ -72,7 +75,19 @@ public class DemandeDao {
     }
 
     public String generatePdf(Demande demande, String demandeurName) {
-        String pdfPath = "back/src/pdf/Devis/demande_" + demande.id() + ".pdf";
+        // Récupérer la date de la demande et la formater
+        LocalDate demandeDate = demande.date_demande().toLocalDateTime().toLocalDate();
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        String formattedDate = demandeDate.format(dateFormatter);
+        
+        // Remplacer les espaces et caractères non valides par des underscores
+        String sanitizedDemandeurName = demandeurName.replaceAll("[^a-zA-Z0-9]", "_");
+        String sanitizedDomaine = demande.domaine().replaceAll("[^a-zA-Z0-9]", "_");
+        
+        // Construire le nom du fichier PDF
+        String pdfFileName = "demande_" + sanitizedDemandeurName + "_" + formattedDate + "_" + sanitizedDomaine + ".pdf";
+        String pdfPath = "back/src/pdf/Devis/" + pdfFileName;
+
         try {
             System.out.println("Initializing PDF writer...");
             PdfWriter writer = new PdfWriter(new FileOutputStream(pdfPath));
@@ -80,36 +95,48 @@ public class DemandeDao {
             PdfDocument pdfDoc = new PdfDocument(writer);
             System.out.println("Initializing document...");
             Document document = new Document(pdfDoc);
-            System.out.println("Adding title to PDF...");
-    
-            LocalDate currentDate = LocalDate.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-            String formattedDate = currentDate.format(formatter);
-
-            System.out.println("Demandeur name: " + demandeurName);
-            System.out.println("Formatted date: " + formattedDate);
-    
-            String title = "Demande par " + demandeurName + " le " + formattedDate;
-    
-            System.out.println("Adding title to PDF: " + title);
-            document.add(new Paragraph(title));
             
-            System.out.println("Adding fields to PDF...");
-            document.add(new Paragraph("ID: " + demande.id()));
-            document.add(new Paragraph("Référant: " + demande.referant()));
-            document.add(new Paragraph("Domaine: " + demande.domaine()));
-            document.add(new Paragraph("Type: " + demande.typeof()));
-            document.add(new Paragraph("Marque: " + demande.marque()));
-            document.add(new Paragraph("Référence: " + demande.reference()));
-            document.add(new Paragraph("Pour: " + demande.pour()));
-            document.add(new Paragraph("Où: " + demande.ou()));
-            document.add(new Paragraph("Marché: " + demande.marche()));
-            document.add(new Paragraph("Justification: " + demande.justification()));
-            document.add(new Paragraph("Descriptif: " + demande.descriptif()));
-            document.add(new Paragraph("Quantité: " + demande.quantite()));
-            document.add(new Paragraph("Urgence: " + demande.urgence().name()));
-            document.add(new Paragraph("État: " + demande.etat().name()));
-            document.add(new Paragraph("Date de demande: " + demande.date_demande().toString()));
+            // Adding title
+            Paragraph title = new Paragraph("Demande de " + demandeurName + " - " + formattedDate)
+                    .setFontSize(20)
+                    .setBold()
+                    .setMarginBottom(20);
+            document.add(title);
+    
+            // Adding a table
+            float[] columnWidths = {1, 3}; // Largeurs des colonnes
+            Table table = new Table(columnWidths);
+            
+            table.addCell(createCell("ID:"));
+            table.addCell(createCell(demande.id() + ""));
+            table.addCell(createCell("Référant:"));
+            table.addCell(createCell(demande.referant()));
+            table.addCell(createCell("Domaine:"));
+            table.addCell(createCell(demande.domaine()));
+            table.addCell(createCell("Type:"));
+            table.addCell(createCell(demande.typeof()));
+            table.addCell(createCell("Marque:"));
+            table.addCell(createCell(demande.marque()));
+            table.addCell(createCell("Référence:"));
+            table.addCell(createCell(demande.reference()));
+            table.addCell(createCell("Pour:"));
+            table.addCell(createCell(demande.pour()));
+            table.addCell(createCell(demande.ou()));
+            table.addCell(createCell(demande.marche()));
+            table.addCell(createCell("Justification:"));
+            table.addCell(createCell(demande.justification()));
+            table.addCell(createCell("Descriptif:"));
+            table.addCell(createCell(demande.descriptif()));
+            table.addCell(createCell("Quantité:"));
+            table.addCell(createCell(demande.quantite() + ""));
+            table.addCell(createCell("Urgence:"));
+            table.addCell(createCell(demande.urgence().name()));
+            table.addCell(createCell("État:"));
+            table.addCell(createCell(demande.etat().name()));
+            table.addCell(createCell("Date de demande:"));
+            table.addCell(createCell(demande.date_demande().toString()));
+    
+            document.add(table);
     
             System.out.println("Closing document...");
             document.close();
@@ -119,5 +146,12 @@ public class DemandeDao {
             return null;
         }
         return pdfPath;
+    }
+    
+    private com.itextpdf.layout.element.Cell createCell(String content) {
+        com.itextpdf.layout.element.Cell cell = new com.itextpdf.layout.element.Cell().add(new Paragraph(content));
+        cell.setPadding(5);
+        cell.setBorder(new SolidBorder(ColorConstants.BLACK, 1));
+        return cell;
     }
 }

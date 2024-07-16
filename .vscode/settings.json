@@ -31,6 +31,10 @@
         "back/lib/itext/styled-xml-parser-7.2.1.jar",
         "back/lib/itext/svg-7.2.1.jar",
         "back/lib/itext/slf4j-api-2.0.9.jar",
-        "back/lib/itext/slf4j-simple-2.0.9.jar"
+        "back/lib/itext/slf4j-simple-2.0.9.jar",
+        "back/lib/itext/commons-8.0.4.jar",
+        "back/lib/itext/io-8.0.4.jar",
+        "back/lib/itext/kernel-8.0.4.jar",
+        "back/lib/itext/layout-8.0.4.jar"
     ]
 }
