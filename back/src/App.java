@@ -87,6 +87,7 @@ public class App {
         webServer.getSSE().addEventListeners(WebServerSSEEventType.CONNECT, connectCallback);
         webServer.getSSE().addEventListeners(WebServerSSEEventType.SUBSCRIBE, subscribeCallback);
         webServer.getSSE().addEventListeners(WebServerSSEEventType.UNSUBSCRIBE, unsubscribeCallback);
+        
 
 
 

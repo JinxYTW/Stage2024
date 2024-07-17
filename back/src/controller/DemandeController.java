@@ -74,9 +74,29 @@ public class DemandeController {
         
         response.json(responseJson);
 
+        emitNewDemandeEvent(context, demandeId, demande);
+        System.out.println("Demande créée avec succès");
+
     } catch (Exception e) {
         e.printStackTrace();
         response.serverError("Erreur serveur");
+    }
+}
+
+private void emitNewDemandeEvent(WebServerContext context, int demandeId, Demande demande) {
+    System.out.println("Emitting newDemande event");
+    try {
+        JsonObject json = new JsonObject();
+        json.addProperty("utilisateur_id", demande.utilisateur_id());
+        json.addProperty("demandeId", demandeId);
+        json.addProperty("projet_nom", demande.projet_nom());
+        json.addProperty("etat", demande.etat().toString());
+
+        System.out.println("json: " + json);
+
+        context.getSSE().emit("newDemande", json);
+    } catch (Exception e) {
+        e.printStackTrace();
     }
 }
 

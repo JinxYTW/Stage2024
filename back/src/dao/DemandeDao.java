@@ -200,6 +200,7 @@ public class DemandeDao {
             if (resultSet.next()) {
                 
                 demandeId = resultSet.getInt("last_id");
+                
             }
         }
     } catch (SQLException e) {

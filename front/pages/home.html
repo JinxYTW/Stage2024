@@ -83,9 +83,9 @@
                         <h3>Devis et commandes :</h3>
                         <img src="../css/img/logo.png" alt="CHU La Réunion" class="img-fluid" style="max-width: 200px;">
                     </div>
-                    <div class="bg-light p-3 rounded">
+                    <div class="bg-light p-3 rounded" id="zone_commande">
                         <h4>Mai 2023</h4>
-                        <div class="order-list mt-3" id="zone_commande">
+                        <div class="order-list mt-3" >
 
 
                             <!-- Exemple de commande -->
@@ -93,14 +93,14 @@
                                 <div class="d-flex justify-content-between align-items-center" >
 
                                     <div>
-                                        <p class="mb-1"><strong>COMMANDE SI974</strong></p>
-                                        <p class="mb-1">PROJET ESANTE</p>
-                                        <p class="mb-1">Commandée par XXXXXXXXXX</p>
+                                        <p class="mb-1" id="numero_demande"><strong>COMMANDE SI974</strong></p>
+                                        <p class="mb-1" id="bind_project">PROJET ESANTE</p>
+                                        <p class="mb-1" id="demandeur_nom_prenom">Commandée par XXXXXXXXXX</p>
                                     </div>
 
                                     <div>
                                         <button class="btn btn-outline-info btn-sm generate_pdf" data-demande-id="1">Etat de la demande</button>
-                                        <p class="mb-1">Commande livrée, facture validée</p>
+                                        <p class="mb-1" id="etat_demande">Commande livrée, facture validée</p>
                                     </div>
 
                                     <div>
