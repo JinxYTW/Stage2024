@@ -26,11 +26,11 @@ public class DemandeController {
 
     public void createDemande(WebServerContext context) {
     WebServerResponse response = context.getResponse();
-    System.out.println("DemandeController.createDemande");
+    
     try {
         // Lire le corps de la requête comme une chaîne JSON
         String demandeJson = context.getRequest().getBodyAsString();
-        System.out.println("demandeJson: " + demandeJson);
+      
 
         if (demandeJson == null || demandeJson.isEmpty()) {
             response.serverError("Corps de la requête 'demande' manquant ou vide");
@@ -71,7 +71,7 @@ public class DemandeController {
         // Construire la réponse JSON
         JsonObject responseJson = new JsonObject();
         responseJson.addProperty("demandeId", demandeId);
-        System.out.println("Sending JSON response: " + responseJson);
+        
         response.json(responseJson);
 
     } catch (Exception e) {
@@ -83,10 +83,10 @@ public class DemandeController {
 
     public void generatePdf(WebServerContext context) {
         WebServerResponse response = context.getResponse();
-        System.out.println("DemandeController.generatePdf");
+        
         try {
             String idParam = context.getRequest().getQueryParams().get("id");
-            System.out.println("idParam: " + idParam);
+            
     
             if (idParam == null) {
                 response.serverError("Paramètre 'id' manquant dans la requête");
@@ -94,7 +94,7 @@ public class DemandeController {
             }
     
             int demandeId = Integer.parseInt(idParam);
-            System.out.println("demandeId: " + demandeId);
+            
     
             DemandeDao demandeDao = new DemandeDao();
             Demande demande = demandeDao.findById(demandeId);
@@ -106,22 +106,21 @@ public class DemandeController {
             UtilisateurDao utilisateurDao = new UtilisateurDao();
             String demandeurName = utilisateurDao.getNames(demande.utilisateur_id());
     
-            System.out.println("Generating PDF...");
+            
             String pdfPath = demandeDao.generatePdf(demande, demandeurName);
-            System.out.println("pdfPath: " + pdfPath);
+            
             if (pdfPath == null) {
                 response.serverError("Échec de la génération du PDF");
                 return;
             }
     
-            System.out.println("Saving PDF path...");
+            
             demandeDao.savePdfPath(demandeId, pdfPath);
-            System.out.println("PDF path saved");
+            
     
             JsonObject json = new JsonObject();
             json.addProperty("pdfPath", pdfPath);
-            System.out.println("PDF path sent");
-            System.out.println("Sending JSON response: " + json);
+            
             response.json(json);
             
         } catch (NumberFormatException e) {

@@ -40,11 +40,11 @@ public class UtilisateurController {
     public void login(WebServerContext context) {
         WebServerResponse response = context.getResponse();
         try {
-            System.out.println("Entering login method");
+            
 
             // Extraction des données du corps de la requête
             String body = context.getRequest().getBodyAsString();
-            System.out.println("Request body: " + body);
+            
 
             // Désérialisation du JSON en objet Java
             Gson gson = new Gson();
@@ -57,15 +57,14 @@ public class UtilisateurController {
             String username = loginRequest.getUsername();
             String password = loginRequest.getPassword();
 
-            System.out.println("Username: " + username);
-            System.out.println("Password: " + password);
+            
 
             String hashedPassword = HashUtil.jinxHash(password);
-            System.out.println("Hashed password: " + hashedPassword);
+            
 
             UtilisateurDao utilisateurDao = new UtilisateurDao();
             Utilisateur utilisateur = utilisateurDao.findByUsernameAndPassword(username, hashedPassword);
-            System.out.println("Utilisateur: " + utilisateur);
+            
 
             if (utilisateur != null) {
                 String jwt = createJWT(utilisateur.id());
@@ -100,10 +99,7 @@ public class UtilisateurController {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userId);
     
-        System.out.println("JWT claims: " + claims);
-        System.out.println("JWT secret key: " + secretKey);
-        System.out.println("JWT issued at: " + now);
-        System.out.println("JWT expiration: " + expiration);
+        
     
         String jwt;
         try {

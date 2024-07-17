@@ -93,7 +93,7 @@ class askView{
                 additional_details
             };
     
-            console.log('Données du formulaire:', formData);
+            
     
             try {
                 // Appeler le service pour créer la demande
@@ -124,7 +124,7 @@ class askView{
         const userId = new URLSearchParams(window.location.search).get('user');
         if (userId) {
             const role = await this.homeServices.getRole(userId);
-            console.log('Role:', role);
+            
             if (role) {
                 this.userRole.textContent = role;
             } else {

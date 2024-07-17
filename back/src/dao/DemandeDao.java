@@ -92,11 +92,11 @@ public class DemandeDao {
         String pdfPath = "back/src/pdf/Devis/" + pdfFileName;
 
         try {
-            System.out.println("Initializing PDF writer...");
+            
             PdfWriter writer = new PdfWriter(new FileOutputStream(pdfPath));
-            System.out.println("Initializing PDF document...");
+            
             PdfDocument pdfDoc = new PdfDocument(writer);
-            System.out.println("Initializing document...");
+            
             Document document = new Document(pdfDoc);
             
             // Adding title
@@ -141,9 +141,9 @@ public class DemandeDao {
     
             document.add(table);
     
-            System.out.println("Closing document...");
+            
             document.close();
-            System.out.println("PDF generated successfully.");
+            
         } catch (Exception e) {
             e.printStackTrace();
             return null;

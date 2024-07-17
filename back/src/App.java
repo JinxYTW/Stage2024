@@ -31,13 +31,13 @@ public class App {
         System.out.println("Server started on port 8080");
 
         webserver.getRouter().post("/api/login",(WebServerContext context)->{
-            System.out.println("POST /api/login");
+            
             myutilisateurController.login(context);
         });
 
         webserver.getRouter().get("/api/getNames/:id",(WebServerContext context)->{
-            System.out.println("GET /api/:id/names");
-            //String id = context.getRequest().getParam("id");
+            
+            
             myutilisateurController.getNames(context);
         });
         
@@ -47,12 +47,12 @@ public class App {
 
 
         webserver.getRouter().get("/api/generatePdf", (WebServerContext context) -> {
-            System.out.println("GET /api/generatePdf");
+            
             mydemandeController.generatePdf(context);
         });
 
         webserver.getRouter().post("/api/ask", (WebServerContext context) -> {
-            System.out.println("POST /api/ask");
+            
             mydemandeController.createDemande(context);
         });
 
