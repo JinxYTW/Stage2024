@@ -1,7 +1,7 @@
 class homeServices {
     constructor() {}
 
-    async  getNames(userId){
+    async getNames(userId){
         try {
             console.log(`Fetching names for user ID: ${userId}`);
 
