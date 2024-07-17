@@ -2,7 +2,13 @@ import { homeController } from "./controllers/homeController.js";
 import { utilisateurAuthentifie } from "../services/auth.js"; // Importer la fonction utilisateurAuthentifie()
 import { SSEClient } from '../libs/sse-client.js';
 
-async function run() {
+function test(data,myHomeController){
+    console.log('Demande ID:', data);
+    myHomeController.test();
+}
+    
+
+async function run(myHomeController) {
     const baseUrl = "localhost:8080"; 
 
     const sseClientWaiting = new SSEClient(baseUrl);
@@ -15,11 +21,10 @@ async function run() {
 
         console.log('Abonnement à l\'événement \'newDemande\'...');
         // Abonnement à l'événement 'newDemande'
-        await sseClientWaiting.subscribe('newDemande', (data) => {
-            console.log('Nouvelle demande créée :', data);
+        await sseClientWaiting.subscribe('newDemande', (data) => test(data,myHomeController)).then(()=>console.log('test'));
             // Mettez à jour l'interface utilisateur avec les données de la nouvelle demande
             // Exemple : ajouter la demande à la liste des demandes récentes sur votre page
-        });
+        
         console.log('Abonnement réussi à l\'événement \'newDemande\'');
 
         
@@ -38,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log('Utilisateur non authentifié');
         window.location.href = 'connect.html';
     } else {
-        new homeController();
-        run();
+        const myHomeController =new homeController();
+        run(myHomeController);
     }
 });

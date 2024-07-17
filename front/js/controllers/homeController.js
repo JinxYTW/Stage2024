@@ -5,6 +5,9 @@ class homeController{
         this.homeView = new homeView();
         this.homeView.bindAskSomething();
     }
+    test(){
+        console.log("Ici")
+    }
 }
 
 export {homeController};
