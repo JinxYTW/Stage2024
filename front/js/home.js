@@ -21,7 +21,7 @@ async function run(myHomeController) {
 
         console.log('Abonnement à l\'événement \'newDemande\'...');
         // Abonnement à l'événement 'newDemande'
-        await sseClientWaiting.subscribe('newDemande', (data) => test(data,myHomeController)).then(()=>console.log('test'));
+        await sseClientWaiting.subscribe('newDemande', (data) => test(data,myHomeController)).then(()=>console.log('Le SSE Fonctionne !'));
             // Mettez à jour l'interface utilisateur avec les données de la nouvelle demande
             // Exemple : ajouter la demande à la liste des demandes récentes sur votre page
         
