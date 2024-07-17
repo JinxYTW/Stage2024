@@ -28,7 +28,7 @@ CREATE TABLE Utilisateur (
 -- Table Projet
 CREATE TABLE Projet (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    nom VARCHAR(255) NOT NULL,
+    nom VARCHAR(255) UNIQUE NOT NULL,
     description TEXT
 );
 
@@ -45,7 +45,7 @@ CREATE TABLE Fournisseur (
 CREATE TABLE Demande (
     id INT AUTO_INCREMENT PRIMARY KEY,
     utilisateur_id INT,
-    projet_id INT,
+    projet_nom VARCHAR(255),
     referant VARCHAR(255),
     domaine VARCHAR(255),
     typeof VARCHAR(255),
@@ -123,7 +123,7 @@ CREATE TABLE Notif (
 
 -- Ajout des clés étrangères
 ALTER TABLE Demande ADD CONSTRAINT fk_demande_utilisateur FOREIGN KEY (utilisateur_id) REFERENCES Utilisateur(id);
-ALTER TABLE Demande ADD CONSTRAINT fk_demande_projet FOREIGN KEY (projet_id) REFERENCES Projet(id);
+ALTER TABLE Demande ADD CONSTRAINT fk_demande_projet FOREIGN KEY (projet_nom) REFERENCES Projet(nom);
 
 ALTER TABLE Devis ADD CONSTRAINT fk_devis_demande FOREIGN KEY (demande_id) REFERENCES Demande(id);
 ALTER TABLE Devis ADD CONSTRAINT fk_devis_fournisseur FOREIGN KEY (fournisseur_id) REFERENCES Fournisseur(id);
@@ -151,12 +151,14 @@ INSERT INTO Utilisateur (nom, prenom, email, username, mot_de_passe, role) VALUE
 ('admin','team','adiminteam@chu.re','faitdestrucs','0c2e9e5290b94e9e913f1a64cfcabed420d4c28cbc85601130d14224cec7b3f4','adminteam');
 
 -- Insérer un projet pour l'utilisateur avec ID 1
-INSERT INTO Projet (nom, description)
-VALUES ('Stage', 'Faut que ça fonctionne');
+INSERT INTO Projet (nom, description) VALUES
+('', ''),
+ ('Stage', 'Faut que ça fonctionne');
+
 
 -- Insérer une demande pour l'utilisateur avec ID 1
-INSERT INTO Demande (utilisateur_id, projet_id, referant, domaine, typeof, marque, reference, pour, ou, marche, justification, descriptif, quantite, urgence)
-VALUES (1, 1, 'Jinx', 'Oskour', 'Test', 'Mayday', 'xoxo', 'unjour', 'site', 'Marché de référence', 'Justification détaillée', 'Description de la demande', 10, 'haute');
+INSERT INTO Demande (utilisateur_id, projet_nom, referant, domaine, typeof, marque, reference, pour, ou, marche, justification, descriptif, quantite, urgence)
+VALUES (1, "", 'Jinx', 'Oskour', 'Test', 'Mayday', 'xoxo', 'unjour', 'site', 'Marché de référence', 'Justification détaillée', 'Description de la demande', 10, 'haute');
 
 -- Insérer une notification pour l'utilisateur avec ID 1
 INSERT INTO Notif (utilisateur_id, message, lu)

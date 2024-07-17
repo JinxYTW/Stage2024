@@ -3,6 +3,7 @@ package dao;
 import java.io.FileOutputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -16,6 +17,8 @@ import com.itextpdf.layout.borders.SolidBorder;
 
 import database.SomethingDatabase;
 import models.Demande;
+
+import dao.ProjetDao;
 
 public class DemandeDao {
 
@@ -33,7 +36,7 @@ public class DemandeDao {
                 return new Demande(
                     resultSet.getInt("id"),
                     resultSet.getInt("utilisateur_id"),
-                    resultSet.getInt("projet_id"),
+                    resultSet.getString("projet_nom"),
                     resultSet.getString("referant"),
                     resultSet.getString("domaine"),
                     resultSet.getString("typeof"),
@@ -155,14 +158,20 @@ public class DemandeDao {
         return cell;
     }
 
-    public int createDemande(Demande demande) {
+    public int createDemande(Demande demande) throws Exception {
+        int demandeId = -1;
+
+        
         try {
+            
             SomethingDatabase myDatabase = new SomethingDatabase();
 
-            String query = "INSERT INTO Demande (utilisateur_id, projet_id, referant, domaine, typeof, marque, reference, pour, ou, marche, justification, descriptif, quantite, urgence, etat, date_demande) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            
+
+            String query = "INSERT INTO Demande (utilisateur_id, projet_nom, referant, domaine, typeof, marque, reference, pour, ou, marche, justification, descriptif, quantite, urgence, etat, date_demande,pdfPath) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement statement = myDatabase.prepareStatement(query);
             statement.setInt(1, demande.utilisateur_id());
-            statement.setInt(2, demande.projet_id());
+            statement.setString(2, demande.projet_nom());
             statement.setString(3, demande.referant());
             statement.setString(4, demande.domaine());
             statement.setString(5, demande.typeof());
@@ -177,16 +186,26 @@ public class DemandeDao {
             statement.setString(14, demande.urgence().name());
             statement.setString(15, demande.etat().name());
             statement.setTimestamp(16, demande.date_demande());
+            statement.setString(17, demande.pdfPath());
 
-            statement.executeUpdate();
 
-            ResultSet resultSet = statement.getGeneratedKeys();
+            int rowsInserted = statement.executeUpdate();
+
+        if (rowsInserted > 0) {
+            // Exécuter une requête pour obtenir l'ID généré
+            String getIdQuery = "SELECT MAX(id) AS last_id FROM Demande";
+            PreparedStatement getIdStatement = myDatabase.prepareStatement(getIdQuery);
+            ResultSet resultSet = getIdStatement.executeQuery();
+
             if (resultSet.next()) {
-                return resultSet.getInt(1);
+                
+                demandeId = resultSet.getInt("last_id");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
-    return -1;
+
+    return demandeId;
 }
 }

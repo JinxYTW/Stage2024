@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 public record Demande(
     int id,
     int utilisateur_id,
-    int projet_id,
+    String projet_nom,
     String referant,
     String domaine,
     String typeof,

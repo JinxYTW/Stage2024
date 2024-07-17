@@ -58,6 +58,21 @@ body {
     color: #dc3545;
 }
 
+.btn-outline-success.active {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-outline-warning.active {
+    background-color: #ffc107;
+    color: white;
+}
+
+.btn-outline-danger.active {
+    background-color: #dc3545;
+    color: white;
+}
+
 textarea {
     resize: none;
 }

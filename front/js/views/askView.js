@@ -7,18 +7,53 @@ class askView{
     this.initializeForm();
     }
 
+    getUserIdFromUrl() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('user');
+    }
+
     initializeForm() {
         const askButton = document.getElementById('ask_button');
+        const projectSwitch = document.getElementById('project-switch');
+        const projectName = document.getElementById('project_name');
+        const projectDomain = document.getElementById('project_domain');
+        const urgencyButtons = document.getElementById('urgency-buttons');
+    
+        // Fonction pour verrouiller/déverrouiller les champs project_name et project_domain
+        const toggleProjectFields = () => {
+            const isProjectEnabled = projectSwitch.checked;
+            projectName.disabled = !isProjectEnabled;
+            projectDomain.disabled = !isProjectEnabled;
+        };
+    
+        // Ajouter un écouteur d'événement pour le changement de l'état de projectSwitch
+        projectSwitch.addEventListener('change', toggleProjectFields);
+    
+        // Initialiser l'état des champs project_name et project_domain
+        toggleProjectFields();
+    
+        // Ajouter des écouteurs d'événements pour les boutons d'urgence
+        urgencyButtons.addEventListener('click', (event) => {
+            if (event.target.tagName === 'BUTTON') {
+                // Supprimer la classe active de tous les boutons
+                urgencyButtons.querySelectorAll('button').forEach(button => button.classList.remove('active'));
+    
+                // Ajouter la classe active au bouton cliqué
+                event.target.classList.add('active');
+            }
+        });
+    
         askButton.addEventListener('click', async (event) => {
             event.preventDefault();
+
+            const utilisateur_id = this.getUserIdFromUrl();
     
             // Récupérer les valeurs des champs du formulaire
-            const project_switch = document.getElementById('project_switch');
-            const project_name = document.getElementById('project_name').value;
-            const project_domain = document.getElementById('project_domain').value;
-
+            const project_switch = projectSwitch.checked;
+            const project_name = projectName.value;
+            const project_domain = projectDomain.value;
             const referent_select = document.getElementById('referent_select').value;
-            const urgency_level = document.querySelector('.btn-outline-success.btn.active')?.textContent;
+            const urgency_level = document.querySelector('#urgency-buttons .btn.active')?.textContent;
             const aricle_select = document.getElementById('aricle_select').value;
             const quantity = parseInt(document.getElementById('quantity').value);
             const brand = document.getElementById('brand').value;
@@ -30,12 +65,10 @@ class askView{
             const justification = document.getElementById('justification').value;
             const additional_details = document.getElementById('additional-details').value;
     
-            // Vérifier si project_switch existe avant d'accéder à sa propriété checked
-            const project_switch_checked = project_switch ? project_switch.checked : false;
-    
             // Créer un objet avec les données du formulaire
             const formData = {
-                project_switch: project_switch_checked,
+                utilisateur_id,
+                project_switch,
                 project_name,
                 project_domain,
                 referent_select,
@@ -51,6 +84,7 @@ class askView{
                 justification,
                 additional_details
             };
+    
             console.log('Données du formulaire:', formData);
     
             try {
@@ -61,7 +95,8 @@ class askView{
                 // Afficher un message de succès ou rediriger l'utilisateur
                 alert('Demande créée avec succès. ID: ' + response.demandeId);
                 // Redirection vers une autre page après la création réussie
-                window.location.href = 'home.html'; // Remplacez par votre URL de destination
+                const id = this.getUserIdFromUrl();
+                window.location.href = `home.html?user=${id}`; // Remplacez par votre URL de destination
     
             } catch (error) {
                 console.error('Erreur lors de la création de la demande:', error.message);
@@ -69,6 +104,7 @@ class askView{
             }
         });
     }
+    
 
     
 }
