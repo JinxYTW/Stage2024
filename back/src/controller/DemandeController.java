@@ -5,15 +5,93 @@ import dao.UtilisateurDao;
 
 import models.Demande;
 import models.Demande.Urgence;
+import models.Utilisateur;
 import webserver.WebServerContext;
 import webserver.WebServerResponse;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 public class DemandeController {
+
+    public void emitDemandesUtilisateur(WebServerContext context) {
+        try {
+            String body = context.getRequest().getBodyAsString();
+            JsonObject requestBody = new Gson().fromJson(body, JsonObject.class);
+            int utilisateurId = requestBody.get("utilisateurId").getAsInt();
+    
+            DemandeDao demandeDao = new DemandeDao();
+            UtilisateurDao utilisateurDao = new UtilisateurDao();
+            List<Demande> demandes = demandeDao.findDemandesByUtilisateurId(utilisateurId);
+    
+            JsonArray demandesJsonArray = new JsonArray();
+            for (Demande demande : demandes) {
+                JsonObject json = new JsonObject();
+                json.addProperty("demandeId", demande.id());
+                json.addProperty("projet_nom", demande.projet_nom());
+                json.addProperty("etat", demande.etat().toString());
+                json.addProperty("date_demande", demande.date_demande().toString());
+    
+                String demandeurNomPrenom = utilisateurDao.getNames(demande.utilisateur_id());
+                json.addProperty("demandeur_nom_prenom", demandeurNomPrenom);
+    
+                demandesJsonArray.add(json);
+            }
+    
+            context.getSSE().emit("demandesUtilisateur", demandesJsonArray);
+            context.getResponse().ok("Demandes utilisateur émises avec succès");
+    
+        } catch (Exception e) {
+            e.printStackTrace();
+            context.getResponse().serverError("Erreur lors de l'émission des demandes utilisateur");
+        }
+    }
+
+    public void getDemandesByUtilisateur(WebServerContext context) {
+    WebServerResponse response = context.getResponse();
+    int utilisateurId = 1;
+
+    try {
+        DemandeDao demandeDao = new DemandeDao();
+        UtilisateurDao utilisateurDao = new UtilisateurDao();
+        List<Demande> demandes = demandeDao.findDemandesByUtilisateurId(utilisateurId);
+
+        Gson gson = new Gson();
+        JsonArray demandesJsonArray = new JsonArray();
+
+        for (Demande demande : demandes) {
+            JsonObject json = new JsonObject();
+            json.addProperty("demandeId", demande.id());
+            json.addProperty("projet_nom", demande.projet_nom());
+            json.addProperty("etat", demande.etat().toString());
+            json.addProperty("date_demande", demande.date_demande().toString());
+
+            // Utiliser getNames pour obtenir les informations de l'utilisateur
+            String demandeurNomPrenom = utilisateurDao.getNames(demande.id());
+            json.addProperty("demandeur_nom_prenom", demandeurNomPrenom);
+
+            demandesJsonArray.add(json);
+        }
+
+        response.json(demandesJsonArray);
+        System.out.println("Demandes récupérées avec succès");
+        System.out.println("demandesJsonArray: " + demandesJsonArray);
+
+        // Émettre les demandes via SSE
+        System.out.println("Emitting demandesUtilisateur event: " + demandesJsonArray.toString());
+        context.getSSE().emit("demandesUtilisateur", demandesJsonArray);
+        System.out.println("Émission des demandes via SSE");
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        response.serverError("Erreur serveur");
+    }
+}
+
 
     public Urgence mapUrgenceLevel(String level) {
     return switch (level) {

@@ -46,7 +46,7 @@ public class App {
         });
 
 
-        webserver.getRouter().get("/api/generatePdf", (WebServerContext context) -> {
+        webserver.getRouter().get("/api/generatePdfDemande", (WebServerContext context) -> {
             
             mydemandeController.generatePdf(context);
         });
@@ -56,26 +56,26 @@ public class App {
             mydemandeController.createDemande(context);
         });
 
-        webserver.getRouter().get("/pdf/Devis/:filename", (WebServerContext context) -> {
-    String fileName = context.getRequest().getParam("filename");
-    String filePath = "back/src/pdf/Devis/" + fileName;
-    
-    // Lire le fichier et le renvoyer en réponse
-    try {
-        File file = new File(filePath);
-        if (!file.exists()) {
-            context.getResponse().notFound("Fichier non trouvé");
-            return;
-        }
-        
-        // Renvoyer le fichier en réponse
-        context.getResponse().setContentType("application/pdf");
-        context.getResponse().sendFile(file);
-    } catch (Exception e) {
-        e.printStackTrace();
-        context.getResponse().serverError("Erreur serveur lors de la récupération du fichier PDF");
-    }
-});
+        webserver.getRouter().get("/pdf/Demande/:filename", (WebServerContext context) -> {
+            String fileName = context.getRequest().getParam("filename");
+            String filePath = "back/src/pdf/Demande/" + fileName;
+            
+            // Lire le fichier et le renvoyer en réponse
+            try {
+                File file = new File(filePath);
+                if (!file.exists()) {
+                    context.getResponse().notFound("Fichier non trouvé");
+                    return;
+                }
+                
+                // Renvoyer le fichier en réponse
+                context.getResponse().setContentType("application/pdf");
+                context.getResponse().sendFile(file);
+            } catch (Exception e) {
+                e.printStackTrace();
+                context.getResponse().serverError("Erreur serveur lors de la récupération du fichier PDF");
+            }
+        });
 
 
 
@@ -87,6 +87,13 @@ public class App {
         webServer.getSSE().addEventListeners(WebServerSSEEventType.CONNECT, connectCallback);
         webServer.getSSE().addEventListeners(WebServerSSEEventType.SUBSCRIBE, subscribeCallback);
         webServer.getSSE().addEventListeners(WebServerSSEEventType.UNSUBSCRIBE, unsubscribeCallback);
+
+        webserver.getRouter().post("/api/demandes/utilisateur", (WebServerContext context) -> {
+            System.out.println("Demandes utilisateur");
+            mydemandeController.emitDemandesUtilisateur(context);
+        });
+
+        
         
 
 

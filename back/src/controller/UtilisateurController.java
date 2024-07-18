@@ -182,7 +182,7 @@ public String getRole(WebServerContext context) {
         role = utilisateurDao.getRole(id);
 
         response.json(role);
-        System.out.println("Role: " + role);
+        
     } catch (Exception e) {
         String jsonResponse = "{ \"status\": \"error\", \"message\": \"An error occurred: " + e.getMessage() + "\" }";
         response.json(jsonResponse);

@@ -1,6 +1,8 @@
 class homeServices {
     constructor() {}
 
+    
+
     async getNames(userId){
         try {
             console.log(`Fetching names for user ID: ${userId}`);
@@ -47,10 +49,10 @@ class homeServices {
         }
     }
 
-    async generatePdf(demandeId) {
+    async generatePdfDemande(demandeId) {
         console.log(`Generating PDF for demande ID: ${demandeId}`);
         try {
-            const response = await fetch(`http://127.0.0.1:8080/api/generatePdf?id=${demandeId}`, {
+            const response = await fetch(`http://127.0.0.1:8080/api/generatePdfDemande?id=${demandeId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'

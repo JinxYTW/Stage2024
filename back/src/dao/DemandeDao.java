@@ -1,11 +1,14 @@
 package dao;
 
 import java.io.FileOutputStream;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -21,6 +24,51 @@ import models.Demande;
 import dao.ProjetDao;
 
 public class DemandeDao {
+
+    public List<Demande> findDemandesByUtilisateurId(int utilisateurId) {
+        System.out.println("findDemandesByUtilisateurId");
+        List<Demande> demandes = new ArrayList<>();
+        
+        try {
+            SomethingDatabase myDatabase = new SomethingDatabase();
+    
+            String query = "SELECT * FROM Demande WHERE utilisateur_id = ?";
+            PreparedStatement statement = myDatabase.prepareStatement(query);
+            statement.setInt(1, utilisateurId);
+    
+            ResultSet resultSet = statement.executeQuery();
+    
+            while (resultSet.next()) {
+                Demande demande = new Demande(
+                    resultSet.getInt("id"),
+                    resultSet.getInt("utilisateur_id"),
+                    resultSet.getString("projet_nom"),
+                    resultSet.getString("referant"),
+                    resultSet.getString("domaine"),
+                    resultSet.getString("typeof"),
+                    resultSet.getString("marque"),
+                    resultSet.getString("reference"),
+                    resultSet.getString("pour"),
+                    resultSet.getString("ou"),
+                    resultSet.getString("marche"),
+                    resultSet.getString("justification"),
+                    resultSet.getString("descriptif"),
+                    resultSet.getInt("quantite"),
+                    Demande.Urgence.valueOf(resultSet.getString("urgence")),
+                    Demande.Etat.valueOf(resultSet.getString("etat")),
+                    resultSet.getTimestamp("date_demande"),
+                    resultSet.getString("pdfPath")
+                );
+                demandes.add(demande);
+                System.out.println(demande);
+            }
+    
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    
+        return demandes;
+    }
 
     public Demande findById(int id) {
         try {
@@ -89,7 +137,7 @@ public class DemandeDao {
         
         // Construire le nom du fichier PDF
         String pdfFileName = "demande_" + sanitizedDemandeurName + "_" + formattedDate + "_" + sanitizedDomaine + ".pdf";
-        String pdfPath = "back/src/pdf/Devis/" + pdfFileName;
+        String pdfPath = "back/src/pdf/Demande/" + pdfFileName;
 
         try {
             
