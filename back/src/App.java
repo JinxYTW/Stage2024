@@ -30,6 +30,8 @@ public class App {
         webserver.listen(8080);
         System.out.println("Server started on port 8080");
 
+            //-------------- Utilisateur ----------------------------
+
         webserver.getRouter().post("/api/login",(WebServerContext context)->{
             
             myutilisateurController.login(context);
@@ -45,6 +47,7 @@ public class App {
             myutilisateurController.getRole(context);
         });
 
+            //-------------- Demande ----------------------------
 
         webserver.getRouter().get("/api/generatePdfDemande", (WebServerContext context) -> {
             
@@ -77,7 +80,89 @@ public class App {
             }
         });
 
+            //-------------- Devis ----------------------------
 
+        webserver.getRouter().get("/api/generatePdfDevis", (WebServerContext context) -> {
+            
+            mydevisController.generatePdf(context);
+        });
+
+        webserver.getRouter().get("/pdf/Devis/:filename", (WebServerContext context) -> {
+            String fileName = context.getRequest().getParam("filename");
+            String filePath = "back/src/pdf/Devis/" + fileName;
+            
+            // Lire le fichier et le renvoyer en réponse
+            try {
+                File file = new File(filePath);
+                if (!file.exists()) {
+                    context.getResponse().notFound("Fichier non trouvé");
+                    return;
+                }
+                
+                // Renvoyer le fichier en réponse
+                context.getResponse().setContentType("application/pdf");
+                context.getResponse().sendFile(file);
+            } catch (Exception e) {
+                e.printStackTrace();
+                context.getResponse().serverError("Erreur serveur lors de la récupération du fichier PDF");
+            }
+        });
+
+        //-------------- BonCommande ----------------------------
+        webserver.getRouter().get("/api/generatePdfBonCommande", (WebServerContext context) -> {
+            
+            mybonCommandeController.generatePdfBonCommande(context);
+        });
+
+        webserver.getRouter().get("/pdf/BonCommande/:filename", (WebServerContext context) -> {
+            String fileName = context.getRequest().getParam("filename");
+            String filePath = "back/src/pdf/BonCommande/" + fileName;
+            
+            // Lire le fichier et le renvoyer en réponse
+            try {
+                File file = new File(filePath);
+                if (!file.exists()) {
+                    context.getResponse().notFound("Fichier non trouvé");
+                    return;
+                }
+                
+                // Renvoyer le fichier en réponse
+                context.getResponse().setContentType("application/pdf");
+                context.getResponse().sendFile(file);
+            } catch (Exception e) {
+                e.printStackTrace();
+                context.getResponse().serverError("Erreur serveur lors de la récupération du fichier PDF");
+            }
+        });
+
+            //-------------- Facture ----------------------------
+        webserver.getRouter().get("/api/generatePdfFacture", (WebServerContext context) -> {
+                
+                myfactureController.generatePdf(context);
+            });
+
+        webserver.getRouter().get("/pdf/Facture/:filename", (WebServerContext context) -> {
+            String fileName = context.getRequest().getParam("filename");
+            String filePath = "back/src/pdf/Facture/" + fileName;
+            
+            // Lire le fichier et le renvoyer en réponse
+            try {
+                File file = new File(filePath);
+                if (!file.exists()) {
+                    context.getResponse().notFound("Fichier non trouvé");
+                    return;
+                }
+                
+                // Renvoyer le fichier en réponse
+                context.getResponse().setContentType("application/pdf");
+                context.getResponse().sendFile(file);
+            } catch (Exception e) {
+                e.printStackTrace();
+                context.getResponse().serverError("Erreur serveur lors de la récupération du fichier PDF");
+            }
+        });
+
+            //-------------- Relance --------------------------------
 
         //-------------- SSE ----------------------------
         WebServer webServer = new WebServer();

@@ -58,7 +58,7 @@ CREATE TABLE Demande (
     descriptif TEXT,
     quantite INT NOT NULL,
     urgence ENUM('basse', 'moyenne', 'haute') NOT NULL,
-    etat ENUM('envoyée', 'en cours de traitement', 'annulée', 'finalisée') DEFAULT 'envoyée',
+    etat ENUM('envoyée', 'en_cours_de_traitement', 'annulée', 'finalisée') DEFAULT 'envoyée',
     date_demande TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     pdfPath VARCHAR(255)
 );
@@ -70,7 +70,7 @@ CREATE TABLE Devis (
     fournisseur_id INT,
     montant DECIMAL(10, 2) NOT NULL,
     fichier_pdf VARCHAR(255),
-    etat ENUM('à valider', 'validé', 'refusé') DEFAULT 'à valider',
+    etat ENUM('à_valider', 'validé', 'refusé') DEFAULT 'à_valider',
     date_devis TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -79,7 +79,7 @@ CREATE TABLE BonCommande (
     id INT AUTO_INCREMENT PRIMARY KEY,
     devis_id INT,
     utilisateur_id INT,
-    etat ENUM('en édition', 'à valider', 'validé', 'envoyé', 'annulé', 'livré') DEFAULT 'en édition',
+    etat ENUM('en_édition', 'à_valider', 'validé', 'envoyé', 'annulé', 'livré') DEFAULT 'en_édition',
     fichier_pdf VARCHAR(255),
     date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -90,7 +90,7 @@ CREATE TABLE Facture (
     bon_commande_id INT,
     montant DECIMAL(10, 2) NOT NULL,
     fichier_pdf VARCHAR(255),
-    etat ENUM('à valider', 'validée', 'refusée') DEFAULT 'à valider',
+    etat ENUM('à_valider', 'validée', 'refusée') DEFAULT 'à_valider',
     date_facture TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -155,6 +155,11 @@ INSERT INTO Projet (nom, description) VALUES
 ('', ''),
  ('Stage', 'Faut que ça fonctionne');
 
+ -- Insérer un fournisseur
+INSERT INTO Fournisseur (nom, adresse, email, telephone)
+VALUES ('Fournisseur XYZ', '123 Rue du Fournisseur', 'contact@fournisseur.xyz', '+33 123456789');
+
+
 
 -- Insérer une demande pour l'utilisateur avec ID 1
 INSERT INTO Demande (utilisateur_id, projet_nom, referant, domaine, typeof, marque, reference, pour, ou, marche, justification, descriptif, quantite, urgence)
@@ -163,5 +168,18 @@ VALUES (1, "", 'Jinx', 'Oskour', 'Test', 'Mayday', 'xoxo', 'unjour', 'site', 'Ma
 -- Insérer une notification pour l'utilisateur avec ID 1
 INSERT INTO Notif (utilisateur_id, message, lu)
 VALUES (1, 'Tu me vois', FALSE);
+
+-- Insérer un devis pour la demande avec ID 1
+INSERT INTO Devis (demande_id, fournisseur_id, montant, fichier_pdf, etat)
+VALUES (1, 1, 1500.00, 'back/src/pdf/Devis/devis_demandeur_date_domaine.pdf', 'à_valider');
+
+-- Insérer un bon de commande pour le devis avec ID 1 et l'utilisateur avec ID 1
+INSERT INTO BonCommande (devis_id, utilisateur_id, etat, fichier_pdf)
+VALUES (1, 1, 'en_édition', 'back/src/pdf/BonCommande/bon_commande_demandeur_date.pdf');
+
+-- Insérer une facture pour le bon de commande avec ID 1
+INSERT INTO Facture (bon_commande_id, montant, fichier_pdf, etat)
+VALUES (1, 1500.00, 'back/src/pdf/Facture/facture_demandeur_date.pdf', 'à_valider');
+
 
 
