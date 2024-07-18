@@ -25,16 +25,16 @@ import dao.ProjetDao;
 
 public class DemandeDao {
 
-    public List<Demande> findDemandesByUtilisateurId(int utilisateurId) {
-        System.out.println("findDemandesByUtilisateurId");
-        List<Demande> demandes = new ArrayList<>();
+    public List<Demande> findDemandesByUtilisateurId(String utilisateurId) {
         
+        List<Demande> demandes = new ArrayList<>();
+        int utilisateurIdInt = Integer.parseInt(utilisateurId);
         try {
             SomethingDatabase myDatabase = new SomethingDatabase();
     
             String query = "SELECT * FROM Demande WHERE utilisateur_id = ?";
             PreparedStatement statement = myDatabase.prepareStatement(query);
-            statement.setInt(1, utilisateurId);
+            statement.setInt(1, utilisateurIdInt);
     
             ResultSet resultSet = statement.executeQuery();
     
@@ -60,7 +60,7 @@ public class DemandeDao {
                     resultSet.getString("pdfPath")
                 );
                 demandes.add(demande);
-                System.out.println(demande);
+                
             }
     
         } catch (Exception e) {

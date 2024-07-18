@@ -1,7 +1,26 @@
 class homeServices {
     constructor() {}
 
-    
+    async fetchDemandesUtilisateur(myHomeController,user_id) {
+        const utilisateurId = user_id; 
+        try {
+            const response = await fetch(`http://localhost:8080/api/demandes/utilisateur?id=${utilisateurId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ utilisateurId })
+            });
+            console.log(`Response status: ${response.status}`);
+            if (response.ok) {
+                console.log('Initial demandesUtilisateur emitted');
+            } else {
+                console.error('Erreur lors de la récupération des demandes utilisateur');
+            }
+        } catch (error) {
+            console.error('Erreur de réseau lors de la récupération des demandes utilisateur:', error);
+        }
+    }
 
     async getNames(userId){
         try {

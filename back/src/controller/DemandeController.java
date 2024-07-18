@@ -5,7 +5,7 @@ import dao.UtilisateurDao;
 
 import models.Demande;
 import models.Demande.Urgence;
-import models.Utilisateur;
+
 import webserver.WebServerContext;
 import webserver.WebServerResponse;
 
@@ -22,7 +22,7 @@ public class DemandeController {
         try {
             String body = context.getRequest().getBodyAsString();
             JsonObject requestBody = new Gson().fromJson(body, JsonObject.class);
-            int utilisateurId = requestBody.get("utilisateurId").getAsInt();
+            String utilisateurId = context.getRequest().getQueryParams().get("id");
     
             DemandeDao demandeDao = new DemandeDao();
             UtilisateurDao utilisateurDao = new UtilisateurDao();
@@ -53,7 +53,7 @@ public class DemandeController {
 
     public void getDemandesByUtilisateur(WebServerContext context) {
     WebServerResponse response = context.getResponse();
-    int utilisateurId = 1;
+    String utilisateurId = "1";
 
     try {
         DemandeDao demandeDao = new DemandeDao();
