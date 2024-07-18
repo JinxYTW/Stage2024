@@ -4,17 +4,18 @@ import { SSEClient } from '../libs/sse-client.js';
 import { homeServices } from "../services/home-services.js";
 
 const services = new homeServices();
+const myHomeController =new homeController();
 
 function test(data,myHomeController){
     console.log('Demande ID:', data);
     myHomeController.test();
 }
 
-function afficherDemandesUtilisateur(data, myHomeController) {
+function afficherDemandesUtilisateur(data) {
     console.log('Demandes utilisateur:', data);
-    myHomeController.afficherDemandes(data);
+    myHomeController.setDemandes(data);
+    updateDemandesForCurrentMonth();
 }
-    
 
 async function run(myHomeController) {
     const baseUrl = "localhost:8080"; 
@@ -48,6 +49,21 @@ async function run(myHomeController) {
         console.error("Échec de la connexion ou de l'abonnement SSE :", error);
     }
 }
+function updateDemandesForCurrentMonth() {
+    const currentMonthElement = document.getElementById('currentMonth');
+    const currentDate = new Date(currentMonthElement.dataset.date);
+    const filteredDemandes = myHomeController.filterDemandesByMonth(currentDate.getMonth(), currentDate.getFullYear());
+    myHomeController.afficherDemandes(filteredDemandes);
+}
+
+function changeMonth(offset) {
+    const currentMonthElement = document.getElementById('currentMonth');
+    const currentDate = new Date(currentMonthElement.dataset.date);
+    currentDate.setMonth(currentDate.getMonth() + offset);
+    currentMonthElement.dataset.date = currentDate.toISOString();
+    currentMonthElement.textContent = currentDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+    updateDemandesForCurrentMonth();
+}
 
 
 
@@ -58,7 +74,15 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log('Utilisateur non authentifié');
         window.location.href = 'connect.html';
     } else {
-        const myHomeController =new homeController();
+
+        const currentMonthElement = document.getElementById('currentMonth');
+        currentMonthElement.dataset.date = new Date().toISOString();
+        currentMonthElement.textContent = new Date().toLocaleString('default', { month: 'long', year: 'numeric' });
+
+        document.getElementById('prevMonth').addEventListener('click', () => changeMonth(-1));
+        document.getElementById('nextMonth').addEventListener('click', () => changeMonth(1));
+
+        
         run(myHomeController);
     }
 });
