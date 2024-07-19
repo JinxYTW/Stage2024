@@ -16,6 +16,7 @@ public record Demande(
     String marche,
     String justification,
     String descriptif,
+    String additional_details,
     int quantite,
     Urgence urgence,
     Etat etat,

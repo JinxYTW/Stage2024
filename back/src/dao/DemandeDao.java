@@ -101,6 +101,7 @@ public class DemandeDao {
                 rs.getString("marche"),
                 rs.getString("justification"),
                 rs.getString("descriptif"),
+                rs.getString("additional_details"),
                 rs.getInt("quantite"),
                 Demande.Urgence.valueOf(rs.getString("urgence")),
                 Demande.Etat.valueOf(rs.getString("etat")),
@@ -145,6 +146,7 @@ public class DemandeDao {
                     resultSet.getString("marche"),
                     resultSet.getString("justification"),
                     resultSet.getString("descriptif"),
+                    resultSet.getString("additional_details"),
                     resultSet.getInt("quantite"),
                     Demande.Urgence.valueOf(resultSet.getString("urgence")),
                     Demande.Etat.valueOf(resultSet.getString("etat")),
@@ -187,6 +189,7 @@ public class DemandeDao {
                     resultSet.getString("marche"),
                     resultSet.getString("justification"),
                     resultSet.getString("descriptif"),
+                    resultSet.getString("additional_details"),
                     resultSet.getInt("quantite"),
                     Demande.Urgence.valueOf(resultSet.getString("urgence")),
                     Demande.Etat.valueOf(resultSet.getString("etat")),
@@ -308,25 +311,64 @@ public class DemandeDao {
 
             
 
-            String query = "INSERT INTO Demande (utilisateur_id, projet_nom, referant, domaine, typeof, marque, reference, pour, ou, marche, justification, descriptif, quantite, urgence, etat, date_demande,pdfPath) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            String query = "INSERT INTO Demande (utilisateur_id, projet_nom, referant, domaine, typeof, marque, reference, pour, ou, marche, justification, descriptif,additional_details, quantite, urgence, etat, date_demande,pdfPath) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement statement = myDatabase.prepareStatement(query);
+
             statement.setInt(1, demande.utilisateur_id());
+            System.out.println("demande.utilisateur_id() : " + demande.utilisateur_id());
+
             statement.setString(2, demande.projet_nom());
+            System.out.println("demande.projet_nom() : " + demande.projet_nom());
+
             statement.setString(3, demande.referant());
+            System.out.println("demande.referant() : " + demande.referant());
+
             statement.setString(4, demande.domaine());
+            System.out.println("demande.domaine() : " + demande.domaine());
+
             statement.setString(5, demande.typeof());
+            System.out.println("demande.typeof() : " + demande.typeof());
+
             statement.setString(6, demande.marque());
+            System.out.println("demande.marque() : " + demande.marque());
+
             statement.setString(7, demande.reference());
+            System.out.println("demande.reference() : " + demande.reference());
+
             statement.setString(8, demande.pour());
+            System.out.println("demande.pour() : " + demande.pour());
+
             statement.setString(9, demande.ou());
+            System.out.println("demande.ou() : " + demande.ou());
+
             statement.setString(10, demande.marche());
+            System.out.println("demande.marche() : " + demande.marche());
+
             statement.setString(11, demande.justification());
+            System.out.println("demande.justification() : " + demande.justification());
+
             statement.setString(12, demande.descriptif());
-            statement.setInt(13, demande.quantite());
-            statement.setString(14, demande.urgence().name());
-            statement.setString(15, demande.etat().name());
-            statement.setTimestamp(16, demande.date_demande());
-            statement.setString(17, demande.pdfPath());
+            System.out.println("demande.descriptif() : " + demande.descriptif());
+
+            statement.setString(13, demande.additional_details());
+            System.out.println("demande.additional_details() : " + demande.additional_details());
+
+            statement.setInt(14, demande.quantite());
+            System.out.println("demande.quantite() : " + demande.quantite());
+
+            statement.setString(15, demande.urgence().name());
+            System.out.println("demande.urgence().name() : " + demande.urgence().name());
+
+            statement.setString(16, demande.etat().name());
+            System.out.println("demande.etat().name() : " + demande.etat().name());
+
+            statement.setTimestamp(17, demande.date_demande());
+            System.out.println("demande.date_demande() : " + demande.date_demande());
+
+            statement.setString(18, demande.pdfPath());
+            System.out.println("demande.pdfPath() : " + demande.pdfPath());
+            
+            
 
 
             int rowsInserted = statement.executeUpdate();

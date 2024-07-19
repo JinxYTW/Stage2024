@@ -177,12 +177,13 @@ public class DemandeController {
         // Désérialiser le JSON en objet Demande
         Gson gson = new Gson();
         JsonObject jsonObject = gson.fromJson(demandeJson, JsonObject.class);
+        
 
         // Mappage de la demande JSON à l'objet Demande
         Demande demande = new Demande(
             0, // id auto-incrémenté
             jsonObject.get("utilisateur_id").getAsInt(), // utilisateur_id
-            jsonObject.get("project_switch").getAsBoolean() ? jsonObject.get("project_nom").getAsString() : "", // projet_id
+            jsonObject.get("project_switch").getAsBoolean() ? jsonObject.get("project_name").getAsString() : "", // projet_id
             jsonObject.get("referent_select").getAsString(), // referant
             jsonObject.get("project_domain").isJsonNull() ? null : jsonObject.get("project_domain").getAsString(), // domaine
             jsonObject.get("aricle_select").getAsString(), // typeof
@@ -193,12 +194,15 @@ public class DemandeController {
             jsonObject.get("market_select").getAsString(), // marche
             jsonObject.get("justification").getAsString(), // justification
             jsonObject.get("details").getAsString(), // descriptif
+            jsonObject.get("additional_details").getAsString(), // additional_info
             jsonObject.get("quantity").getAsInt(), // quantite
             mapUrgenceLevel(jsonObject.get("urgency_level").getAsString()), // urgence
             Demande.Etat.envoyée, // etat par défaut
             new Timestamp(System.currentTimeMillis()), // date_demande
             ""// pdfPath""
         );
+
+        System.out.println("demande: " + demande);
 
         // Logique pour créer la demande
         DemandeDao demandeDao = new DemandeDao();

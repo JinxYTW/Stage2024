@@ -2,7 +2,7 @@
 Utilisateur (id, nom, prenom, email,username, mot_de_passe, role)
 Projet (id, nom, description)
 Fournisseur (id, nom, adresse, email, telephone)
-Demande (id, #utilisateur_id, #projet_id,referant,domaine,typeof,marque,reference,pour,ou,marche,justification, descriptif, quantite, urgence, etat, date_demande,pdfPath)
+Demande (id, #utilisateur_id, #projet_id,referant,domaine,typeof,marque,reference,pour,ou,marche,justification, descriptif,additional_details quantite, urgence, etat, date_demande,pdfPath)
 Devis (id, #demande_id, #fournisseur_id, montant, fichier_pdf, etat, date_devis)
 BonCommande (id, #devis_id, #utilisateur_id, etat, fichier_pdf, date_creation)
 Facture (id, #bon_commande_id, montant, fichier_pdf, etat, date_facture)
@@ -56,6 +56,7 @@ CREATE TABLE Demande (
     marche VARCHAR(255),
     justification TEXT,
     descriptif TEXT,
+    additional_details TEXT,
     quantite INT NOT NULL,
     urgence ENUM('basse', 'moyenne', 'haute') NOT NULL,
     etat ENUM('envoyée', 'en_cours_de_traitement', 'annulée', 'finalisée') DEFAULT 'envoyée',
@@ -162,8 +163,8 @@ VALUES ('Fournisseur XYZ', '123 Rue du Fournisseur', 'contact@fournisseur.xyz', 
 
 
 -- Insérer une demande pour l'utilisateur avec ID 1
-INSERT INTO Demande (utilisateur_id, projet_nom, referant, domaine, typeof, marque, reference, pour, ou, marche, justification, descriptif, quantite, urgence)
-VALUES (1, "", 'Jinx', 'Oskour', 'Test', 'Mayday', 'xoxo', 'unjour', 'site', 'Marché de référence', 'Justification détaillée', 'Description de la demande', 10, 'haute');
+INSERT INTO Demande (utilisateur_id, projet_nom, referant, domaine, typeof, marque, reference, pour, ou, marche, justification, descriptif,additional_details, quantite, urgence)
+VALUES (1, "", 'Jinx', 'Oskour', 'Test', 'Mayday', 'xoxo', 'unjour', 'site', 'Marché de référence', 'Justification détaillée', 'Description de la demande',"", 10, 'haute');
 
 -- Insérer une notification pour l'utilisateur avec ID 1
 INSERT INTO Notif (utilisateur_id, message, lu)

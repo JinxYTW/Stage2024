@@ -92,6 +92,7 @@ class askView{
                 justification,
                 additional_details
             };
+            console.log('Données du formulaire:', formData);
     
             
     
