@@ -18,6 +18,65 @@ import com.google.gson.JsonObject;
 
 public class DemandeController {
 
+    public void searchDemandes(WebServerContext context) {
+        System.out.println("searchDemandes");
+        WebServerResponse response = context.getResponse();
+
+        try {
+            // Récupérer les paramètres de la requête
+            String orderNumber = context.getRequest().getQueryParams().get("orderNumber");
+            System.out.println("orderNumber: " + orderNumber);
+            String orderDate = context.getRequest().getQueryParams().get("orderDate");
+            System.out.println("orderDate: " + orderDate);
+            String orderArticle = context.getRequest().getQueryParams().get("orderArticle");
+            System.out.println("orderArticle: " + orderArticle);
+            String orderDomain = context.getRequest().getQueryParams().get("orderDomain");
+            System.out.println("orderDomain: " + orderDomain);
+            String orderClient = context.getRequest().getQueryParams().get("orderClient");
+            System.out.println("orderClient: " + orderClient);
+
+            // Effectuer la recherche des demandes
+            List<Demande> demandes = DemandeDao.searchDemands(orderNumber, orderDate, orderArticle, orderDomain, orderClient);
+
+            // Convertir les demandes en JSON
+            JsonArray demandesJsonArray = new JsonArray();
+            UtilisateurDao utilisateurDao = new UtilisateurDao();
+            for (Demande demande : demandes) {
+                JsonObject json = new JsonObject();
+                json.addProperty("demandeId", demande.id());
+                //Besoin du nom et prénom du demandeur
+                json.addProperty("utilisateur_id", demande.utilisateur_id());
+                String demandeurNomPrenom = utilisateurDao.getNames(demande.utilisateur_id());
+                json.addProperty("demandeur_nom_prenom", demandeurNomPrenom);
+
+                json.addProperty("projet_nom", demande.projet_nom());
+                json.addProperty("referant", demande.referant());
+                json.addProperty("domaine", demande.domaine());
+                json.addProperty("typeof", demande.typeof());
+                json.addProperty("marque", demande.marque());
+                json.addProperty("reference", demande.reference());
+                json.addProperty("pour", demande.pour());
+                json.addProperty("ou", demande.ou());
+                json.addProperty("marche", demande.marche());
+                json.addProperty("justification", demande.justification());
+                json.addProperty("descriptif", demande.descriptif());
+                json.addProperty("quantite", demande.quantite());
+                json.addProperty("urgence", demande.urgence().toString());
+                json.addProperty("etat", demande.etat().toString());
+                json.addProperty("date_demande", demande.date_demande().toString());
+                json.addProperty("pdfPath", demande.pdfPath());
+
+                demandesJsonArray.add(json);
+            }
+
+            // Envoyer la réponse JSON
+            response.json(demandesJsonArray);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.serverError("Erreur lors de la recherche des demandes");
+        }
+    }
+
     public void emitDemandesUtilisateur(WebServerContext context) {
         try {
             String body = context.getRequest().getBodyAsString();

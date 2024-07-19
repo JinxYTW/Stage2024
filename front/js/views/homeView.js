@@ -5,6 +5,7 @@ class homeView{
         this.userName = document.getElementById('user_nomprenom');
         this.userRole = document.getElementById('user_role');
         this.askSomethingButton = document.getElementById('ask_something');
+        this.searchButton = document.getElementById('search_button');
         this.homeServices = new homeServices();
 
         
@@ -12,7 +13,35 @@ class homeView{
         this.updateUserNames();
         this.updateUserRole();
         this.bindAskSomething();
+        this.bindSearchDemandes();
         this.generatePdfDemande();
+    }
+
+    
+
+    bindSearchDemandes() {
+        console.log('Binding search button');
+        this.searchButton.addEventListener('click', async (event) => {
+            console.log('Search button clicked');
+            event.preventDefault(); // Empêche le rechargement de la page lors du clic sur le bouton de recherche
+    
+            const orderNumber = document.getElementById('order-number').value;
+            console.log('Order number:', orderNumber);
+            const orderDate = document.getElementById('order-date').value;
+            console.log('Order date:', orderDate);
+            const orderArticle = document.getElementById('order-article').value;
+            console.log('Order article:', orderArticle);
+            const orderDomain = document.getElementById('order-domain').value;
+            console.log('Order domain:', orderDomain);
+            const orderClient = document.getElementById('order-client').value;
+            console.log('Order client:', orderClient);
+    
+            // Change le texte de l'élément avec l'ID "currentMonth"
+            document.getElementById('currentMonth').textContent = 'Recherche Avancée';
+    
+            const demandes = await this.homeServices.searchDemandes(orderNumber, orderDate, orderArticle, orderDomain, orderClient);
+            this.afficherDemandes(demandes);
+        });
     }
 
     async afficherDemandes(demandes) {
@@ -53,6 +82,7 @@ class homeView{
         this.generatePdfDevis();
         this.generatePdfBonCommande();
         this.generatePdfFacture();
+        this.bindSearchDemandes();
 
     }
 
@@ -238,6 +268,7 @@ class homeView{
     
 
 }
+
 
 
 

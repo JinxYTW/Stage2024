@@ -5,10 +5,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -24,6 +28,94 @@ import models.Demande;
 import dao.ProjetDao;
 
 public class DemandeDao {
+    
+
+    public static List<Demande> searchDemands(String orderNumber, String orderDate, String orderArticle, String orderDomain, String orderClient) {
+    System.out.println("Dao searchDemands");    
+    List<Demande> demandes = new ArrayList<>();
+    String sql = "SELECT * FROM Demande WHERE 1=1";
+
+    if (orderNumber != null && !orderNumber.isEmpty()) {
+        sql += " AND id = ?";
+    }
+    if (orderDate != null && !orderDate.isEmpty()) {
+        sql += " AND date_demande >= ? AND date_demande < ?";
+    }
+    if (orderArticle != null && !orderArticle.isEmpty()) {
+        sql += " AND typeof LIKE ? OR marche LIKE ?";
+    }
+    if (orderDomain != null && !orderDomain.isEmpty()) {
+        sql += " AND domaine = ?";
+    }
+    if (orderClient != null && !orderClient.isEmpty()) {
+        orderClient = orderClient.trim(); // Nettoyer les espaces
+        sql += " AND utilisateur_id IN (SELECT id FROM Utilisateur WHERE nom LIKE ?)";
+    }
+
+    try {
+        SomethingDatabase myDatabase = new SomethingDatabase();
+        
+        PreparedStatement stmt = myDatabase.prepareStatement(sql);
+        
+        int index = 1;
+        if (orderNumber != null && !orderNumber.isEmpty()) {
+            stmt.setInt(index++, Integer.parseInt(orderNumber));
+        }
+        if (orderDate != null && !orderDate.isEmpty()) {
+            // Convertir la date du format dd/MM/yyyy au format yyyy-MM-dd
+            SimpleDateFormat inputFormat = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = inputFormat.parse(orderDate);
+            String formattedDate = outputFormat.format(date);
+            System.out.println("formattedDate: " + formattedDate);
+            // Utiliser une plage de dates pour inclure toutes les heures de ce jour
+            stmt.setString(index++, formattedDate + " 00:00:00");
+            stmt.setString(index++, formattedDate + " 23:59:59");
+        }
+        if (orderArticle != null && !orderArticle.isEmpty()) {
+            stmt.setString(index++, "%" + orderArticle + "%");
+            stmt.setString(index++, "%" + orderArticle + "%");
+        }
+        if (orderDomain != null && !orderDomain.isEmpty()) {
+            stmt.setString(index++, orderDomain);
+        }
+        if (orderClient != null && !orderClient.isEmpty()) {
+            stmt.setString(index++, "%" + orderClient + "%");
+        }
+
+        System.out.println("Dao searchDemands stmt: " + stmt);
+
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            Demande demande = new Demande(
+                rs.getInt("id"),
+                rs.getInt("utilisateur_id"),
+                rs.getString("projet_nom"),
+                rs.getString("referant"),
+                rs.getString("domaine"),
+                rs.getString("typeof"),
+                rs.getString("marque"),
+                rs.getString("reference"),
+                rs.getString("pour"),
+                rs.getString("ou"),
+                rs.getString("marche"),
+                rs.getString("justification"),
+                rs.getString("descriptif"),
+                rs.getInt("quantite"),
+                Demande.Urgence.valueOf(rs.getString("urgence")),
+                Demande.Etat.valueOf(rs.getString("etat")),
+                rs.getTimestamp("date_demande"),
+                rs.getString("pdfPath")
+            );
+            demandes.add(demande);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    System.out.println("Dao searchDemands demandes.size(): " + demandes.size());
+    System.out.println("Dao searchDemands demandes: " + demandes);
+    return demandes;
+}
 
     public List<Demande> findDemandesByUtilisateurId(String utilisateurId) {
         

@@ -1,5 +1,29 @@
 class homeServices {
     constructor() {}
+    
+    async searchDemandes(orderNumber, orderDate, orderArticle, orderDomain, orderClient) {
+        console.log('Searching demandes with the following parameters:', orderNumber, orderDate, orderArticle, orderDomain, orderClient);
+        try {
+            const response = await fetch(`http://localhost:8080/api/searchOrders?orderNumber=${encodeURIComponent(orderNumber)}&orderDate=${encodeURIComponent(orderDate)}&orderArticle=${encodeURIComponent(orderArticle)}&orderDomain=${encodeURIComponent(orderDomain)}&orderClient=${encodeURIComponent(orderClient)}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            console.log(`Response status: ${response.status}`);
+            if (!response.ok) {
+                throw new Error('La recherche des demandes a échoué');
+            }
+
+            const data = await response.json();
+            console.log('Data received:', data);
+            return data; // Assurez-vous que l'API renvoie un objet avec une propriété `demandes`
+        } catch (error) {
+            console.error('Erreur lors de la recherche des demandes:', error);
+            return [];
+        }
+    }
 
     async fetchDemandesUtilisateur(myHomeController,user_id) {
         const utilisateurId = user_id; 

@@ -59,6 +59,11 @@ public class App {
             mydemandeController.createDemande(context);
         });
 
+        webserver.getRouter().get("/api/searchOrders", (WebServerContext context) -> {
+            System.out.println("Search Orders");
+            mydemandeController.searchDemandes(context);
+        });
+
         webserver.getRouter().get("/pdf/Demande/:filename", (WebServerContext context) -> {
             String fileName = context.getRequest().getParam("filename");
             String filePath = "back/src/pdf/Demande/" + fileName;
