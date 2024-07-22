@@ -1,11 +1,96 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Details</title>
+    <title>Commande</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styledetail.css">
 </head>
 <body>
-    
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 sidebar bg-light">
+                <div class="user-section text-center p-3">
+                    <h5>Utilisateur</h5>
+                    <img src="../css/img/useravatar.png" alt="User Image" class="img-fluid">
+                    <p>Jinx<br>Responsable</p>
+                    <div class="notification">
+                        <p>Notifications (1)</p>
+                        <small>Votre commande n°SI255 a été livrée</small>
+                    </div>
+                </div>
+                <div class="search-section p-3">
+                    <h5>Recherche de commande</h5>
+                    <form>
+                        <div class="form-group">
+                            <label for="searchNo">par n°</label>
+                            <input type="text" id="searchNo" class="form-control" placeholder="SI..." disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="searchDate">par date</label>
+                            <input type="date" id="searchDate" class="form-control" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="searchArticle">par article ou entreprise</label>
+                            <input type="text" id="searchArticle" class="form-control" placeholder="..." disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="searchDomain">par domaine</label>
+                            <select id="searchDomain" class="form-control" disabled>
+                                <option>Sélectionner</option>
+                                <!-- Add options here -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="searchCommanditaire">par commanditaire</label>
+                            <input type="text" id="searchCommanditaire" class="form-control" placeholder="..." disabled>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block" disabled>Lancer la recherche</button>
+                    </form>
+                </div>
+                <div class="request-section p-3">
+                    <button class="btn btn-secondary btn-block" disabled>Faire une demande</button>
+                    <button class="btn btn-secondary btn-block" disabled>Questionner les stocks</button>
+                </div>
+            </div>
+            <!-- Main Content -->
+            <div class="col-md-9 main-content">
+                <h2 class="text-center">Commande SI974</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Niveau urgence</h5>
+                        <p class="badge badge-success" id="urgence_level">1</p>
+                        <h5>Etat de la demande</h5>
+                        <p id="etat_commande">Commande livrée</p>
+                        <h5>Fournisseur</h5>
+                        <p id="fournisseur_nom">ESI</p>
+                        <h5>Marché n°</h5>
+                        <p id="selected_market">HORS-MARCHE</p>
+                        <h5>Justification</h5>
+                        <p id="justification">Aucun marché établi</p>
+                        <h5>Devis</h5>
+                        <p id="etat_devis">Devis validé par Idriss RAVAT le 02/03/2023<br id="devis_id">Numéro de devis: SI9777774<br id="devis_commentary">Commentaires:<br><a id="pathToDevis" href="path/to/devis.pdf">devis_SI9777774.pdf</a></p>
+                        <h5>BC</h5>
+                        <p id="etat_bc">BC édité par F.Dondon le 07/03/2023<br id="bc_id">Numéro de commande: SI974<br id="bc_commentary">Commentaires:<br><a id="pathToBc" href="path/to/bc.pdf">BC_SI974.pdf</a></p>
+                        <h5>Livraison</h5>
+                        <p id="etat_livraison">Livraison le 20/05/2023 à Stock CHU Sud<br id="signataire">BL signé par JP.YONG SANG<br id="livrasion_info">Numéro ou Nom Transitaire: XXX<br id="livraison_commentary">Commentaires:<br><a id="pathToFacture" href="path/to/bl.pdf">BL_SI974.pdf</a></p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Articles commandés</h5>
+                        <p id="aricle_selected">100 Ordinateurs Portables ThinkPad i5<br>Ref: 8181846565</p>
+                        <h5>Commentaires laissés par le demandeur</h5>
+                        <p id="additional-details">...</p>
+                        <button class="btn btn-info btn-block">Consulter 2 autre(s) devis</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script type="module" src="../js/detail.js"></script>
 </body>
 </html>

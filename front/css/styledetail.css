@@ -1,0 +1,64 @@
+/* style.css */
+
+body {
+    background-color: #f0f5f5;
+}
+
+.sidebar {
+    background-color: #e9ecef;
+    height: 100vh;
+    padding: 0;
+    border-right: 1px solid #ddd;
+}
+
+.user-section {
+    border-bottom: 1px solid #ddd;
+}
+
+.user-section img {
+    width: 50%;
+    margin-bottom: 10px;
+}
+
+.notification {
+    background-color: #fff;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.search-section h5,
+.request-section button {
+    margin-bottom: 15px;
+}
+
+.request-section button {
+    margin-top: 10px;
+}
+
+.main-content {
+    padding: 20px;
+}
+
+.main-content h2 {
+    margin-bottom: 30px;
+}
+
+.main-content h5 {
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.main-content p {
+    margin-bottom: 10px;
+}
+
+.main-content .btn-block {
+    margin-top: 20px;
+}
+
+.main-content .badge {
+    font-size: 1.2em;
+    padding: 10px;
+}

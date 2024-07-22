@@ -134,6 +134,8 @@ class homeView{
     async generatePdfDemande(){
         document.querySelectorAll('.generate_pdf_demande').forEach(button => {
             button.addEventListener('click', async () => {
+
+                
                 const demandeId = button.getAttribute('data-demande-id');
                 console.log('Demande ID:', demandeId);
 
@@ -150,12 +152,28 @@ class homeView{
                 
                 const pdfPath = await this.homeServices.generatePdfDemande(demandeId);
                 console.log('Opening PDF at:', pdfPath);
+                
+
                 if (pdfPath) {
                     const adjustedPdfUrl = `http://127.0.0.1:8080/${pdfPath.replace('back/src/', '')}`;
                     console.log('Opening PDF at:', adjustedPdfUrl);
-
+                
                     // Ouvrir le PDF dans une nouvelle fenêtre
-                    window.open(adjustedPdfUrl, '_blank');
+                    const pdfTab = window.open(adjustedPdfUrl, '_blank');
+                
+                    if (pdfTab) {
+                        console.log('PDF tab opened successfully');
+                
+                        // Ouvrir la page de détails dans une nouvelle fenêtre
+                        const userId = new URLSearchParams(window.location.search).get('user');
+                        const detailsTab = window.open(`detail.html?user=${userId}`, '_blank');
+                
+                        if (!detailsTab) {
+                            alert("Le navigateur a bloqué l'ouverture de la nouvelle fenêtre pour les détails. Veuillez autoriser les pop-ups et réessayer.");
+                        }
+                    } else {
+                        alert("Le navigateur a bloqué l'ouverture de la nouvelle fenêtre pour le PDF. Veuillez autoriser les pop-ups et réessayer.");
+                    }
                 } else {
                     alert("Échec de la génération du PDF.");
                 }
