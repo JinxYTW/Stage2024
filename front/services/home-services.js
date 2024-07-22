@@ -1,6 +1,7 @@
 class homeServices {
     constructor() {}
     
+    
     async searchDemandes(orderNumber, orderDate, orderArticle, orderDomain, orderClient) {
         console.log('Searching demandes with the following parameters:', orderNumber, orderDate, orderArticle, orderDomain, orderClient);
         try {

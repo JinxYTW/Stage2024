@@ -18,6 +18,84 @@ import com.google.gson.JsonObject;
 
 public class DemandeController {
 
+    
+    public void demandeDetails(WebServerContext context) {
+        WebServerResponse response = context.getResponse();
+        String demandeId = context.getRequest().getQueryParams().get("id");
+
+        if (demandeId == null || demandeId.isEmpty()) {
+            response.status(400, "ID de la demande manquant");
+            return;
+        }
+
+        try {
+            int id = Integer.parseInt(demandeId);
+            UtilisateurDao utilisateurDao = new UtilisateurDao();
+            DemandeDao demandeDao = new DemandeDao();
+            Demande demande = demandeDao.getDetailsDemande(id);
+            if (demande != null) {
+                JsonObject demandeJson = new JsonObject();
+                demandeJson.addProperty("id", demande.id());
+                demandeJson.addProperty("utilisateur_id", demande.utilisateur_id());
+                demandeJson.addProperty("demandeur_nom_prenom", utilisateurDao.getNames(demande.utilisateur_id()));
+                demandeJson.addProperty("projet_nom", demande.projet_nom());
+                demandeJson.addProperty("referant", demande.referant());
+                demandeJson.addProperty("domaine", demande.domaine());
+                demandeJson.addProperty("typeof", demande.typeof());
+                demandeJson.addProperty("marque", demande.marque());
+                demandeJson.addProperty("reference", demande.reference());
+                demandeJson.addProperty("pour", demande.pour());
+                demandeJson.addProperty("ou", demande.ou());
+                demandeJson.addProperty("marche", demande.marche());
+                demandeJson.addProperty("justification", demande.justification());
+                demandeJson.addProperty("descriptif", demande.descriptif());
+                demandeJson.addProperty("additional_details", demande.additional_details());
+                demandeJson.addProperty("quantite", demande.quantite());
+                demandeJson.addProperty("urgence", demande.urgence().toString());
+                demandeJson.addProperty("etat", demande.etat().toString());
+                demandeJson.addProperty("date_demande", demande.date_demande().toString());
+                demandeJson.addProperty("pdfPath", demande.pdfPath());
+
+                // Ajout des informations supplémentaires requises par le front-end
+                demandeJson.addProperty("fournisseur", "Nom du fournisseur");
+                JsonObject devisJson = new JsonObject();
+                devisJson.addProperty("validePar", "Nom du valideur");
+                devisJson.addProperty("date", "Date du devis");
+                devisJson.addProperty("numero", "Numéro du devis");
+                devisJson.addProperty("path", "chemin/vers/le/devis.pdf");
+                demandeJson.add("devis", devisJson);
+
+                JsonObject bcJson = new JsonObject();
+                bcJson.addProperty("editePar", "Nom de l'éditeur du BC");
+                bcJson.addProperty("date", "Date du BC");
+                bcJson.addProperty("numero", "Numéro du BC");
+                bcJson.addProperty("path", "chemin/vers/le/bc.pdf");
+                demandeJson.add("bc", bcJson);
+
+                JsonObject livraisonJson = new JsonObject();
+                livraisonJson.addProperty("date", "Date de livraison");
+                livraisonJson.addProperty("lieu", "Lieu de livraison");
+                livraisonJson.addProperty("signePar", "Nom du signataire du BL");
+                livraisonJson.addProperty("transitaire", "Nom du transitaire");
+                livraisonJson.addProperty("numero", "Numéro du BL");
+                livraisonJson.addProperty("path", "chemin/vers/le/bl.pdf");
+                demandeJson.add("livraison", livraisonJson);
+
+                demandeJson.addProperty("articles", "Liste des articles");
+                demandeJson.addProperty("commentaires", "Commentaires supplémentaires");
+
+                response.json(demandeJson);
+            } else {
+                response.status(404, "Demande non trouvée");
+            }
+        } catch (NumberFormatException e) {
+            response.status(400, "ID de la demande invalide");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.serverError("Erreur lors de la récupération des détails de la demande");
+        }
+    }
+
     public void searchDemandes(WebServerContext context) {
         System.out.println("searchDemandes");
         WebServerResponse response = context.getResponse();

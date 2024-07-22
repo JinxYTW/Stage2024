@@ -28,6 +28,43 @@ import models.Demande;
 import dao.ProjetDao;
 
 public class DemandeDao {
+
+    public Demande getDetailsDemande(int id){
+        Demande demande = null;
+        try {
+            SomethingDatabase myDatabase = new SomethingDatabase();
+            String query = "SELECT * FROM Demande WHERE id = ?";
+            PreparedStatement statement = myDatabase.prepareStatement(query);
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                demande = new Demande(
+                    resultSet.getInt("id"),
+                    resultSet.getInt("utilisateur_id"),
+                    resultSet.getString("projet_nom"),
+                    resultSet.getString("referant"),
+                    resultSet.getString("domaine"),
+                    resultSet.getString("typeof"),
+                    resultSet.getString("marque"),
+                    resultSet.getString("reference"),
+                    resultSet.getString("pour"),
+                    resultSet.getString("ou"),
+                    resultSet.getString("marche"),
+                    resultSet.getString("justification"),
+                    resultSet.getString("descriptif"),
+                    resultSet.getString("additional_details"),
+                    resultSet.getInt("quantite"),
+                    Demande.Urgence.valueOf(resultSet.getString("urgence")),
+                    Demande.Etat.valueOf(resultSet.getString("etat")),
+                    resultSet.getTimestamp("date_demande"),
+                    resultSet.getString("pdfPath")
+                );
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return demande;
+    }
     
 
     public static List<Demande> searchDemands(String orderNumber, String orderDate, String orderArticle, String orderDomain, String orderClient) {

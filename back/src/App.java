@@ -49,6 +49,10 @@ public class App {
 
             //-------------- Demande ----------------------------
 
+        webserver.getRouter().get("/api/demande/details", (WebServerContext context) -> {
+            mydemandeController.demandeDetails(context);
+        });
+
         webserver.getRouter().get("/api/generatePdfDemande", (WebServerContext context) -> {
             
             mydemandeController.generatePdf(context);
@@ -179,7 +183,7 @@ public class App {
         webServer.getSSE().addEventListeners(WebServerSSEEventType.UNSUBSCRIBE, unsubscribeCallback);
 
         webserver.getRouter().post("/api/demandes/utilisateur", (WebServerContext context) -> {
-            System.out.println("Demandes utilisateur");
+            
             mydemandeController.emitDemandesUtilisateur(context);
         });
 

@@ -166,7 +166,7 @@ class homeView{
                 
                         // Ouvrir la page de détails dans une nouvelle fenêtre
                         const userId = new URLSearchParams(window.location.search).get('user');
-                        const detailsTab = window.open(`detail.html?user=${userId}`, '_blank');
+                        const detailsTab = window.open(`detail.html?user=${userId}&demandeId=${demandeId}`, '_blank');
                 
                         if (!detailsTab) {
                             alert("Le navigateur a bloqué l'ouverture de la nouvelle fenêtre pour les détails. Veuillez autoriser les pop-ups et réessayer.");
