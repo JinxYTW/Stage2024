@@ -76,26 +76,26 @@ public class DemandeController {
                 
 
                 JsonObject devisJson = new JsonObject();
-                devisJson.addProperty("validePar", "Nom du valideur");
+                devisJson.addProperty("validePar", devis.nom_valideur());
                 devisJson.addProperty("date_devis", devis.date_devis().toString());
-                devisJson.addProperty("numero", "Numéro du devis");
+                devisJson.addProperty("numero", devis.id());
                 devisJson.addProperty("fournisseur_id", devis.fournisseur_id());
                 devisJson.addProperty("fichier_pdf", devis.fichier_pdf());
                 demandeJson.add("devis", devisJson);
 
                 JsonObject bcJson = new JsonObject();
-                bcJson.addProperty("editePar", "Nom de l'éditeur du BC");
+                bcJson.addProperty("editePar", bonCommande.nom_editeur());
                 bcJson.addProperty("date", bonCommande.date_creation().toString());
-                bcJson.addProperty("numero", "Numéro du BC");
+                bcJson.addProperty("numero", bonCommande.id());
                 bcJson.addProperty("path", bonCommande.fichier_pdf());
                 demandeJson.add("bc", bcJson);
 
                 JsonObject factureJson = new JsonObject();
-                factureJson.addProperty("date", "Date de livraison");
-                factureJson.addProperty("lieu", "Lieu de livraison");
-                factureJson.addProperty("signePar", "Nom du signataire du BL");
-                factureJson.addProperty("transitaire", "Nom du transitaire");
-                factureJson.addProperty("numero", "Numéro du BL");
+                factureJson.addProperty("date", facture.date_livraison().toString());
+                factureJson.addProperty("lieu", facture.lieu_livraison());
+                factureJson.addProperty("signePar", facture.nom_signataire());
+                factureJson.addProperty("transitaire", facture.nom_transitaire());
+                factureJson.addProperty("numero", facture.id());
                 factureJson.addProperty("path", facture.fichier_pdf());
                 demandeJson.add("livraison", factureJson);
 

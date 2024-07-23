@@ -36,7 +36,11 @@ public class FactureDao {
                     resultSet.getDouble("montant"),
                     resultSet.getString("fichier_pdf"),
                     Facture.Etat.valueOf(resultSet.getString("etat")),
-                    resultSet.getTimestamp("date_facture")
+                    resultSet.getTimestamp("date_facture"),
+                    resultSet.getTimestamp("date_livraison"),
+                    resultSet.getString("lieu_livraison"),
+                    resultSet.getString("nom_signataire"),
+                    resultSet.getString("nom_transitaire")
                 );
             }
 
@@ -97,6 +101,15 @@ public class FactureDao {
             table.addCell(createCell(facture.etat().name()));
             table.addCell(createCell("Date de Facture:"));
             table.addCell(createCell(facture.date_facture().toString()));
+            table.addCell(createCell("Date de Livraison:"));
+            table.addCell(createCell(facture.date_livraison().toString()));
+            table.addCell(createCell("Lieu de Livraison:"));
+            table.addCell(createCell(facture.lieu_livraison()));
+            table.addCell(createCell("Nom du Signataire:"));
+            table.addCell(createCell(facture.nom_signataire()));
+            table.addCell(createCell("Nom du Transitaire:"));
+            table.addCell(createCell(facture.nom_transitaire()));
+            
 
             document.add(table);
 

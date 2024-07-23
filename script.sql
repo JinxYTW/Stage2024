@@ -3,9 +3,9 @@ Utilisateur (id, nom, prenom, email,username, mot_de_passe, role)
 Projet (id, nom, description)
 Fournisseur (id, nom, adresse, email, telephone)
 Demande (id, #utilisateur_id, #projet_id,referant,domaine,typeof,marque,reference,pour,ou,marche,justification, descriptif,additional_details quantite, urgence, etat, date_demande,pdfPath)
-Devis (id, #demande_id, #fournisseur_id, montant, fichier_pdf, etat, date_devis)
-BonCommande (id, #devis_id, #utilisateur_id, etat, fichier_pdf, date_creation)
-Facture (id, #bon_commande_id, montant, fichier_pdf, etat, date_facture)
+Devis (id, #demande_id, #fournisseur_id, montant, fichier_pdf, etat, date_devis,nom_valideur)
+BonCommande (id, #devis_id, #utilisateur_id, etat, fichier_pdf, date_creation,nom_editeur)
+Facture (id, #bon_commande_id, montant, fichier_pdf, etat, date_facture,date_livraison,lieu_livraison,nom_signataire,nom_transitaire)
 Relance (id, #bon_commande_id, date_relance, message, reponse)
 Stock (id, #bon_commande_id, description,quantite)
 Notif (id, #utilisateur_id, message, lu, date_notification)
@@ -72,7 +72,8 @@ CREATE TABLE Devis (
     montant DECIMAL(10, 2) NOT NULL,
     fichier_pdf VARCHAR(255),
     etat ENUM('à_valider', 'validé', 'refusé') DEFAULT 'à_valider',
-    date_devis TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    date_devis TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    nom_valideur VARCHAR(255)
 );
 
 -- Table BonCommande
@@ -82,7 +83,8 @@ CREATE TABLE BonCommande (
     utilisateur_id INT,
     etat ENUM('en_édition', 'à_valider', 'validé', 'envoyé', 'annulé', 'livré') DEFAULT 'en_édition',
     fichier_pdf VARCHAR(255),
-    date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    nom_editeur VARCHAR(255)
 );
 
 -- Table Facture
@@ -92,7 +94,11 @@ CREATE TABLE Facture (
     montant DECIMAL(10, 2) NOT NULL,
     fichier_pdf VARCHAR(255),
     etat ENUM('à_valider', 'validée', 'refusée') DEFAULT 'à_valider',
-    date_facture TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    date_facture TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    date_livraison TIMESTAMP,
+    lieu_livraison VARCHAR(255),
+    nom_signataire VARCHAR(255),
+    nom_transitaire VARCHAR(255)
 );
 
 -- Table Relance
@@ -171,16 +177,16 @@ INSERT INTO Notif (utilisateur_id, message, lu)
 VALUES (1, 'Tu me vois', FALSE);
 
 -- Insérer un devis pour la demande avec ID 1
-INSERT INTO Devis (demande_id, fournisseur_id, montant, fichier_pdf, etat)
-VALUES (1, 1, 1500.00, 'back/src/pdf/Devis/devis_demandeur_date_domaine.pdf', 'à_valider');
+INSERT INTO Devis (demande_id, fournisseur_id, montant, fichier_pdf, etat, nom_valideur)
+VALUES (1, 1, 1500.00, 'back/src/pdf/Devis/devis_demandeur_date_domaine.pdf', 'à_valider',"responsabledevis");
 
 -- Insérer un bon de commande pour le devis avec ID 1 et l'utilisateur avec ID 1
-INSERT INTO BonCommande (devis_id, utilisateur_id, etat, fichier_pdf)
-VALUES (1, 1, 'en_édition', 'back/src/pdf/BonCommande/bon_commande_demandeur_date.pdf');
+INSERT INTO BonCommande (devis_id, utilisateur_id, etat, fichier_pdf,nom_editeur)
+VALUES (1, 1, 'en_édition', 'back/src/pdf/BonCommande/bon_commande_demandeur_date.pdf',"geredestrucs");
 
 -- Insérer une facture pour le bon de commande avec ID 1
-INSERT INTO Facture (bon_commande_id, montant, fichier_pdf, etat)
-VALUES (1, 1500.00, 'back/src/pdf/Facture/facture_demandeur_date.pdf', 'à_valider');
+INSERT INTO Facture (bon_commande_id, montant, fichier_pdf, etat, date_livraison, lieu_livraison, nom_signataire, nom_transitaire)
+VALUES (1, 1500.00, 'back/src/pdf/Facture/facture_demandeur_date.pdf', 'à_valider', '2021-06-01 00:00:00', 'Lieu de livraison', 'Signataire', 'Transitaire');
 
 
 

@@ -36,7 +36,8 @@ public class BonCommandeDao {
                     resultSet.getInt("utilisateur_id"),
                     BonCommande.Etat.valueOf(resultSet.getString("etat")),
                     resultSet.getString("fichier_pdf"),
-                    resultSet.getTimestamp("date_creation")
+                    resultSet.getTimestamp("date_creation"),
+                    resultSet.getString("nom_editeur")
                 );
             }
 

@@ -78,6 +78,8 @@ public class DevisDao {
             table.addCell(createCell(devis.etat().name()));
             table.addCell(createCell("Date de devis:"));
             table.addCell(createCell(devis.date_devis().toString()));
+            table.addCell(createCell("Nom valideur:"));
+            table.addCell(createCell(devis.nom_valideur()));
     
             document.add(table);
     
@@ -116,7 +118,8 @@ public class DevisDao {
                     resultSet.getDouble("montant"),
                     resultSet.getString("fichier_pdf"),
                     Devis.Etat.valueOf(resultSet.getString("etat")),
-                    resultSet.getTimestamp("date_devis")
+                    resultSet.getTimestamp("date_devis"),
+                    resultSet.getString("nom_valideur")
                 );
             }
 
