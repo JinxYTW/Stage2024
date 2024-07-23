@@ -58,14 +58,14 @@ class detailView {
         if (demandeDetails) {
             this.urgenceLevel.textContent = demandeDetails.urgence;
             this.etatCommande.textContent = demandeDetails.etat;
-            this.fournisseurNom.textContent = demandeDetails.fournisseur;
+            this.fournisseurNom.textContent = demandeDetails.fournisseur_id; //A modifier en créant méthode Dao + implémentation de ce nouveau Dao dans la méthode de DemandeController
             this.selectedMarket.textContent = demandeDetails.marche;
             this.justification.textContent = demandeDetails.justification;
-            this.etatDevis.innerHTML = `Devis validé par ${demandeDetails.devis.validePar} le ${demandeDetails.devis.date}<br>Numéro de devis: ${demandeDetails.devis.numero}<br>Commentaires:<br><a id="pathToDevis" href="${demandeDetails.devis.path}">devis_${demandeDetails.devis.numero}.pdf</a>`;
-            this.etatBc.innerHTML = `BC édité par ${demandeDetails.bc.editePar} le ${demandeDetails.bc.date}<br>Numéro de commande: ${demandeDetails.bc.numero}<br>Commentaires:<br><a id="pathToBc" href="${demandeDetails.bc.path}">BC_${demandeDetails.bc.numero}.pdf</a>`;
-            this.etatLivraison.innerHTML = `Livraison le ${demandeDetails.livraison.date} à ${demandeDetails.livraison.lieu}<br>BL signé par ${demandeDetails.livraison.signePar}<br>Numéro ou Nom Transitaire: ${demandeDetails.livraison.transitaire}<br>Commentaires:<br><a id="pathToFacture" href="${demandeDetails.livraison.path}">BL_${demandeDetails.livraison.numero}.pdf</a>`;
-            this.articleSelected.textContent = demandeDetails.articles;
-            this.additionalDetails.textContent = demandeDetails.commentaires;
+            this.etatDevis.innerHTML = `Devis validé par ${demandeDetails.devis.validePar} le ${demandeDetails.devis.date_devis}<br>Numéro de devis: ${demandeDetails.devis.numero}<br>Commentaires:<br><a id="pathToDevis" href="${demandeDetails.devis.fichier_pdf}">devis_${demandeDetails.devis.numero}.pdf</a>`; //A modifier en créant Dao + implémentation de ce nouveau Dao dans la méthode de DemandeController
+            this.etatBc.innerHTML = `BC édité par ${demandeDetails.bc.editePar} le ${demandeDetails.bc.date}<br>Numéro de commande: ${demandeDetails.bc.numero}<br>Commentaires:<br><a id="pathToBc" href="${demandeDetails.bc.path}">BC_${demandeDetails.bc.numero}.pdf</a>`;//A modifier en créant Dao + implémentation de ce nouveau Dao dans la méthode de DemandeController
+            this.etatLivraison.innerHTML = `Livraison le ${demandeDetails.livraison.date} à ${demandeDetails.livraison.lieu}<br>BL signé par ${demandeDetails.livraison.signePar}<br>Numéro ou Nom Transitaire: ${demandeDetails.livraison.transitaire}<br>Commentaires:<br><a id="pathToFacture" href="${demandeDetails.livraison.path}">BL_${demandeDetails.livraison.numero}.pdf</a>`;//A modifier en créant Dao + implémentation de ce nouveau Dao dans la méthode de DemandeController
+            this.articleSelected.textContent = `${demandeDetails.quantite}x${demandeDetails.typeof}${demandeDetails.marque}${demandeDetails.reference}`;
+            this.additionalDetails.textContent = demandeDetails.commentaires;//A modifier en créant Dao + implémentation de ce nouveau Dao dans la méthode de DemandeController
         } else {
             alert("Erreur lors de la récupération des détails de la demande.");
         }

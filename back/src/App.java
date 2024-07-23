@@ -1,10 +1,8 @@
 import java.io.File;
 
 import controller.*; // Import all controllers
-import models.Devis;
 import webserver.WebServer;
 import webserver.WebServerContext;
-import webserver.WebServerResponse;
 import webserver.WebServerSSEEventType;
 
 
@@ -15,14 +13,19 @@ public class App {
         UtilisateurController myutilisateurController = new UtilisateurController();
         DemandeController mydemandeController = new DemandeController();
         BonCommandeController mybonCommandeController = new BonCommandeController();
-        NotifController mynotifController = new NotifController();
         DevisController mydevisController = new DevisController();
-        StockController mystockController = new StockController();
-        FournisseurController myfournisseurController = new FournisseurController();
         FactureController myfactureController = new FactureController();
+
+        //-------------- Controllers non utilisé ----------------------------
+        /* 
+
+        NotifController mynotifController = new NotifController();
         RelanceController myrelanceController = new RelanceController();
         ProjetController myprojetController = new ProjetController();
-
+        StockController mystockController = new StockController();
+        FournisseurController myfournisseurController = new FournisseurController();
+        
+        */
         //-------------- Routes ----------------------------
 
 

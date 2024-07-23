@@ -1,7 +1,7 @@
 package dao;
 
 import java.io.FileOutputStream;
-import java.sql.Connection;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,7 +11,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.itextpdf.kernel.colors.ColorConstants;
@@ -25,7 +24,6 @@ import com.itextpdf.layout.borders.SolidBorder;
 import database.SomethingDatabase;
 import models.Demande;
 
-import dao.ProjetDao;
 
 public class DemandeDao {
 
@@ -120,7 +118,7 @@ public class DemandeDao {
             stmt.setString(index++, "%" + orderClient + "%");
         }
 
-        System.out.println("Dao searchDemands stmt: " + stmt);
+        
 
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
@@ -150,8 +148,7 @@ public class DemandeDao {
     } catch (Exception e) {
         e.printStackTrace();
     }
-    System.out.println("Dao searchDemands demandes.size(): " + demandes.size());
-    System.out.println("Dao searchDemands demandes: " + demandes);
+    
     return demandes;
 }
 

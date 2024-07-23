@@ -1,14 +1,13 @@
 package dao;
 
 import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.sql.Connection;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
+
 
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.pdf.PdfDocument;

@@ -1,11 +1,15 @@
 package controller;
 
+import dao.BonCommandeDao;
 import dao.DemandeDao;
+import dao.DevisDao;
+import dao.FactureDao;
 import dao.UtilisateurDao;
-
+import models.BonCommande;
 import models.Demande;
 import models.Demande.Urgence;
-
+import models.Devis;
+import models.Facture;
 import webserver.WebServerContext;
 import webserver.WebServerResponse;
 
@@ -32,7 +36,19 @@ public class DemandeController {
             int id = Integer.parseInt(demandeId);
             UtilisateurDao utilisateurDao = new UtilisateurDao();
             DemandeDao demandeDao = new DemandeDao();
+            DevisDao devisDao = new DevisDao();
+            BonCommandeDao bonCommandeDao = new BonCommandeDao();
+            FactureDao factureDao = new FactureDao();
+
+
+            //A completer avec autre DAO pour obtenir info vis à vis validation etc etc
+
             Demande demande = demandeDao.getDetailsDemande(id);
+            Devis devis = devisDao.findById(id);
+            BonCommande bonCommande = bonCommandeDao.findById(id);
+            Facture facture = factureDao.findById(id);
+
+
             if (demande != null) {
                 JsonObject demandeJson = new JsonObject();
                 demandeJson.addProperty("id", demande.id());
@@ -57,31 +73,33 @@ public class DemandeController {
                 demandeJson.addProperty("pdfPath", demande.pdfPath());
 
                 // Ajout des informations supplémentaires requises par le front-end
-                demandeJson.addProperty("fournisseur", "Nom du fournisseur");
+                
+
                 JsonObject devisJson = new JsonObject();
                 devisJson.addProperty("validePar", "Nom du valideur");
-                devisJson.addProperty("date", "Date du devis");
+                devisJson.addProperty("date_devis", devis.date_devis().toString());
                 devisJson.addProperty("numero", "Numéro du devis");
-                devisJson.addProperty("path", "chemin/vers/le/devis.pdf");
+                devisJson.addProperty("fournisseur_id", devis.fournisseur_id());
+                devisJson.addProperty("fichier_pdf", devis.fichier_pdf());
                 demandeJson.add("devis", devisJson);
 
                 JsonObject bcJson = new JsonObject();
                 bcJson.addProperty("editePar", "Nom de l'éditeur du BC");
-                bcJson.addProperty("date", "Date du BC");
+                bcJson.addProperty("date", bonCommande.date_creation().toString());
                 bcJson.addProperty("numero", "Numéro du BC");
-                bcJson.addProperty("path", "chemin/vers/le/bc.pdf");
+                bcJson.addProperty("path", bonCommande.fichier_pdf());
                 demandeJson.add("bc", bcJson);
 
-                JsonObject livraisonJson = new JsonObject();
-                livraisonJson.addProperty("date", "Date de livraison");
-                livraisonJson.addProperty("lieu", "Lieu de livraison");
-                livraisonJson.addProperty("signePar", "Nom du signataire du BL");
-                livraisonJson.addProperty("transitaire", "Nom du transitaire");
-                livraisonJson.addProperty("numero", "Numéro du BL");
-                livraisonJson.addProperty("path", "chemin/vers/le/bl.pdf");
-                demandeJson.add("livraison", livraisonJson);
+                JsonObject factureJson = new JsonObject();
+                factureJson.addProperty("date", "Date de livraison");
+                factureJson.addProperty("lieu", "Lieu de livraison");
+                factureJson.addProperty("signePar", "Nom du signataire du BL");
+                factureJson.addProperty("transitaire", "Nom du transitaire");
+                factureJson.addProperty("numero", "Numéro du BL");
+                factureJson.addProperty("path", facture.fichier_pdf());
+                demandeJson.add("livraison", factureJson);
 
-                demandeJson.addProperty("articles", "Liste des articles");
+                
                 demandeJson.addProperty("commentaires", "Commentaires supplémentaires");
 
                 response.json(demandeJson);
@@ -103,15 +121,15 @@ public class DemandeController {
         try {
             // Récupérer les paramètres de la requête
             String orderNumber = context.getRequest().getQueryParams().get("orderNumber");
-            System.out.println("orderNumber: " + orderNumber);
+            
             String orderDate = context.getRequest().getQueryParams().get("orderDate");
-            System.out.println("orderDate: " + orderDate);
+            
             String orderArticle = context.getRequest().getQueryParams().get("orderArticle");
-            System.out.println("orderArticle: " + orderArticle);
+            
             String orderDomain = context.getRequest().getQueryParams().get("orderDomain");
-            System.out.println("orderDomain: " + orderDomain);
+            
             String orderClient = context.getRequest().getQueryParams().get("orderClient");
-            System.out.println("orderClient: " + orderClient);
+            
 
             // Effectuer la recherche des demandes
             List<Demande> demandes = DemandeDao.searchDemands(orderNumber, orderDate, orderArticle, orderDomain, orderClient);
@@ -215,13 +233,12 @@ public class DemandeController {
         }
 
         response.json(demandesJsonArray);
-        System.out.println("Demandes récupérées avec succès");
-        System.out.println("demandesJsonArray: " + demandesJsonArray);
+        
 
         // Émettre les demandes via SSE
-        System.out.println("Emitting demandesUtilisateur event: " + demandesJsonArray.toString());
+        
         context.getSSE().emit("demandesUtilisateur", demandesJsonArray);
-        System.out.println("Émission des demandes via SSE");
+        
 
     } catch (Exception e) {
         e.printStackTrace();
@@ -294,7 +311,7 @@ public class DemandeController {
         response.json(responseJson);
 
         emitNewDemandeEvent(context, demandeId, demande);
-        System.out.println("Demande créée avec succès");
+        
 
     } catch (Exception e) {
         e.printStackTrace();
@@ -303,7 +320,7 @@ public class DemandeController {
 }
 
 private void emitNewDemandeEvent(WebServerContext context, int demandeId, Demande demande) {
-    System.out.println("Emitting newDemande event");
+    
     try {
         JsonObject json = new JsonObject();
         json.addProperty("utilisateur_id", demande.utilisateur_id());
@@ -311,7 +328,7 @@ private void emitNewDemandeEvent(WebServerContext context, int demandeId, Demand
         json.addProperty("projet_nom", demande.projet_nom());
         json.addProperty("etat", demande.etat().toString());
 
-        System.out.println("json: " + json);
+        
 
         context.getSSE().emit("newDemande", json);
     } catch (Exception e) {
