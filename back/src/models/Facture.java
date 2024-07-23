@@ -1,6 +1,5 @@
 package models;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 
 public record Facture(

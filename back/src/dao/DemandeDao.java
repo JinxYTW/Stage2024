@@ -27,6 +27,12 @@ import models.Demande;
 
 public class DemandeDao {
 
+    /**
+     * Retrieves the details of a specific demand from the database.
+     *
+     * @param id The ID of the demand to retrieve.
+     * @return The Demande object containing the details of the demand, or null if the demand is not found.
+     */
     public Demande getDetailsDemande(int id){
         Demande demande = null;
         try {
@@ -65,6 +71,16 @@ public class DemandeDao {
     }
     
 
+    /**
+     * Searches for demands based on the provided search criteria.
+     *
+     * @param orderNumber The order number to search for. Can be null or empty.
+     * @param orderDate The order date to search for. Can be null or empty.
+     * @param orderArticle The order article to search for. Can be null or empty.
+     * @param orderDomain The order domain to search for. Can be null or empty.
+     * @param orderClient The order client to search for. Can be null or empty.
+     * @return A list of Demande objects that match the search criteria.
+     */
     public static List<Demande> searchDemands(String orderNumber, String orderDate, String orderArticle, String orderDomain, String orderClient) {
     System.out.println("Dao searchDemands");    
     List<Demande> demandes = new ArrayList<>();
@@ -152,6 +168,12 @@ public class DemandeDao {
     return demandes;
 }
 
+    /**
+     * Retrieves a list of Demande objects based on the provided utilisateurId.
+     *
+     * @param utilisateurId The utilisateurId to search for.
+     * @return A list of Demande objects matching the utilisateurId.
+     */
     public List<Demande> findDemandesByUtilisateurId(String utilisateurId) {
         
         List<Demande> demandes = new ArrayList<>();
@@ -198,6 +220,12 @@ public class DemandeDao {
         return demandes;
     }
 
+    /**
+     * Retrieves a Demande object from the database based on the specified ID.
+     *
+     * @param id The ID of the Demande to retrieve.
+     * @return The Demande object with the specified ID, or null if not found.
+     */
     public Demande findById(int id) {
         try {
             SomethingDatabase myDatabase = new SomethingDatabase();
@@ -239,6 +267,12 @@ public class DemandeDao {
         return null;
     }
 
+    /**
+     * Saves the PDF path for a specific demand.
+     *
+     * @param id The ID of the demand.
+     * @param pdfPath The path of the PDF file to be saved.
+     */
     public void savePdfPath(int id, String pdfPath) {
         try {
             SomethingDatabase myDatabase = new SomethingDatabase();
@@ -254,6 +288,13 @@ public class DemandeDao {
         }
     }
 
+    /**
+     * Generates a PDF file for a given demande object and demandeur name.
+     *
+     * @param demande The demande object for which the PDF is generated.
+     * @param demandeurName The name of the demandeur.
+     * @return The file path of the generated PDF file, or null if an error occurs.
+     */
     public String generatePdf(Demande demande, String demandeurName) {
         // Récupérer la date de la demande et la formater
         LocalDate demandeDate = demande.date_demande().toLocalDateTime().toLocalDate();
@@ -335,6 +376,13 @@ public class DemandeDao {
         return cell;
     }
 
+    /**
+     * Creates a new demand in the database.
+     *
+     * @param demande The demand object to be created.
+     * @return The ID of the newly created demand.
+     * @throws Exception If an error occurs while creating the demand.
+     */
     public int createDemande(Demande demande) throws Exception {
         int demandeId = -1;
 

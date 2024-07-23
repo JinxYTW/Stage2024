@@ -20,9 +20,18 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+/**
+ * The controller class responsible for handling requests related to demandes.
+ */
 public class DemandeController {
 
     
+    /**
+     * Retrieves the details of a demande and sends the response as a JSON object.
+     * The details include information about the demande, associated devis, bon de commande, and facture.
+     *
+     * @param context The WebServerContext object containing the request and response objects.
+     */
     public void demandeDetails(WebServerContext context) {
         WebServerResponse response = context.getResponse();
         String demandeId = context.getRequest().getQueryParams().get("id");
@@ -114,6 +123,11 @@ public class DemandeController {
         }
     }
 
+    /**
+     * Searches for demandes based on the provided query parameters and returns the results as a JSON array.
+     *
+     * @param context The WebServerContext object containing the request and response objects.
+     */
     public void searchDemandes(WebServerContext context) {
         System.out.println("searchDemandes");
         WebServerResponse response = context.getResponse();
@@ -173,6 +187,16 @@ public class DemandeController {
         }
     }
 
+    /**
+     * Emits the demandes utilisateur as a Server-Sent Event (SSE) to the client.
+     * Retrieves the demandes for a specific utilisateur and sends them as a JSON array.
+     * Each demande is represented as a JSON object with properties such as demandeId, projet_nom, etat, date_demande, and demandeur_nom_prenom.
+     * The emitted SSE event is named "demandesUtilisateur".
+     * If successful, the response status is set to OK (200) with a success message.
+     * If an error occurs, the response status is set to Server Error (500) with an error message.
+     *
+     * @param context The WebServerContext object containing the request and response objects.
+     */
     public void emitDemandesUtilisateur(WebServerContext context) {
         try {
             String body = context.getRequest().getBodyAsString();
@@ -206,6 +230,11 @@ public class DemandeController {
         }
     }
 
+    /**
+     * Retrieves the demandes (requests) associated with a specific utilisateur (user).
+     * 
+     * @param context The WebServerContext object containing the request and response objects.
+     */
     public void getDemandesByUtilisateur(WebServerContext context) {
     WebServerResponse response = context.getResponse();
     String utilisateurId = "1";
@@ -256,6 +285,11 @@ public class DemandeController {
     };
 }
 
+    /**
+     * Creates a new demande based on the provided JSON data in the request body.
+     * 
+     * @param context The WebServerContext object containing the request and response objects.
+     */
     public void createDemande(WebServerContext context) {
     WebServerResponse response = context.getResponse();
     
@@ -319,6 +353,13 @@ public class DemandeController {
     }
 }
 
+/**
+ * Emits a new demande event to the web server context.
+ *
+ * @param context The web server context.
+ * @param demandeId The ID of the demande.
+ * @param demande The demande object.
+ */
 private void emitNewDemandeEvent(WebServerContext context, int demandeId, Demande demande) {
     
     try {
@@ -337,6 +378,11 @@ private void emitNewDemandeEvent(WebServerContext context, int demandeId, Demand
 }
 
 
+    /**
+     * Generates a PDF for a specific demand and saves the PDF path in the database.
+     * 
+     * @param context The WebServerContext object containing the request and response objects.
+     */
     public void generatePdf(WebServerContext context) {
         WebServerResponse response = context.getResponse();
         

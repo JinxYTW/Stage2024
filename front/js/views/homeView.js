@@ -19,6 +19,9 @@ class homeView{
 
     
 
+    /**
+     * Binds the search button click event and performs a search based on the input values.
+     */
     bindSearchDemandes() {
         console.log('Binding search button');
         this.searchButton.addEventListener('click', async (event) => {
@@ -44,6 +47,11 @@ class homeView{
         });
     }
 
+    /**
+     * Affiche les demandes dans la vue home.
+     * @param {Array} demandes - Les demandes à afficher.
+     * @returns {Promise<void>} - Une promesse qui se résout lorsque l'affichage est terminé.
+     */
     async afficherDemandes(demandes) {
         console.log('Demandes:', demandes);
     

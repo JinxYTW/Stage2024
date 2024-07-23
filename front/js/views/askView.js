@@ -20,6 +20,9 @@ class askView{
         return urlParams.get('user');
     }
 
+    /**
+     * Initializes the form and sets up event listeners for form elements.
+     */
     initializeForm() {
         const askButton = document.getElementById('ask_button');
         const projectSwitch = document.getElementById('project-switch');

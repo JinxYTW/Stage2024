@@ -1,6 +1,12 @@
 class askServices {
     constructor() {}
 
+    /**
+     * Creates a demande by sending a POST request to the specified API endpoint.
+     * @param {Object} data - The data to be sent in the request body.
+     * @returns {Promise<Object>} - A promise that resolves to the response JSON.
+     * @throws {Error} - If there is a network error or an error occurs during the creation of the demande.
+     */
     async createDemande(data) {
         try {
             const response = await fetch('http://127.0.0.1:8080/api/ask', {

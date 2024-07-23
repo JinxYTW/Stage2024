@@ -8,6 +8,16 @@ import webserver.WebServerSSEEventType;
 
 
 public class App {
+    
+    /**
+     * The main method is the entry point of the application.
+     * It initializes the controllers and sets up the routes for handling HTTP requests.
+     * It also starts the web server and listens on port 8080.
+     *
+     * @param args The command line arguments passed to the application.
+     * @throws Exception If an error occurs during the execution of the main method.
+     */
+
     public static void main(String[] args) throws Exception {
         //-------------- Controllers ----------------------------
         UtilisateurController myutilisateurController = new UtilisateurController();

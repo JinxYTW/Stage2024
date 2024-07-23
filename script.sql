@@ -160,33 +160,63 @@ INSERT INTO Utilisateur (nom, prenom, email, username, mot_de_passe, role) VALUE
 -- Insérer un projet pour l'utilisateur avec ID 1
 INSERT INTO Projet (nom, description) VALUES
 ('', ''),
- ('Stage', 'Faut que ça fonctionne');
+('ProjetA', 'Projet de développement logiciel'),
+('ProjetB', 'Projet de recherche en biotechnologie'),
+('ProjetC', 'Projet de centralisation des données');
 
  -- Insérer un fournisseur
 INSERT INTO Fournisseur (nom, adresse, email, telephone)
-VALUES ('Fournisseur XYZ', '123 Rue du Fournisseur', 'contact@fournisseur.xyz', '+33 123456789');
+VALUES ('FournisseurA', '123 Rue du Fournisseur', 'contact@fournisseura.com', '+33 123456789'),
+('FournisseurB', '456 Rue du Fournisseur', 'contact@fournisseurb.com', '+33 987654321'),
+('FournisseurC', '789 Rue du Fournisseur', 'contact@fournisseurc.com', '+33 112233445');
 
 
 
 -- Insérer une demande pour l'utilisateur avec ID 1
 INSERT INTO Demande (utilisateur_id, projet_nom, referant, domaine, typeof, marque, reference, pour, ou, marche, justification, descriptif,additional_details, quantite, urgence)
-VALUES (1, "", 'Jinx', 'Oskour', 'Test', 'Mayday', 'xoxo', 'unjour', 'site', 'Marché de référence', 'Justification détaillée', 'Description de la demande',"", 10, 'haute');
+VALUES (1, 'ProjetA', 'Responsable A', 'Informatique', 'Matériel', 'MarqueA', 'RefA', 'Département A', 'Lieu A', 'Marché A', 'Justification A', 'Descriptif A', 'Détails A', 10, 'haute'),
+(2, 'ProjetB', 'Jinx', 'Biotechnologie', 'Consommables', 'MarqueB', 'RefB', 'Département B', 'Lieu B', 'Marché B', 'Justification B', 'Descriptif B', 'Détails B', 20, 'moyenne'),
+(3, 'ProjetC', 'Responsable C', 'Donnée', 'Équipement', 'MarqueC', 'RefC', 'Département C', 'Lieu C', 'Marché C', 'Justification C', 'Descriptif C', 'Détails C', 30, 'basse');
 
 -- Insérer une notification pour l'utilisateur avec ID 1
 INSERT INTO Notif (utilisateur_id, message, lu)
-VALUES (1, 'Tu me vois', FALSE);
+VALUES (1, 'Notification 1 pour Utilisateur 1', FALSE),
+(2, 'Notification 2 pour Utilisateur 2', TRUE),
+(3, 'Notification 3 pour Utilisateur 3', FALSE);
+
 
 -- Insérer un devis pour la demande avec ID 1
 INSERT INTO Devis (demande_id, fournisseur_id, montant, fichier_pdf, etat, nom_valideur)
-VALUES (1, 1, 1500.00, 'back/src/pdf/Devis/devis_demandeur_date_domaine.pdf', 'à_valider',"responsabledevis");
+VALUES 
+(1, 1, 1500.00, 'back/src/pdf/Devis/devis_demandeur_date_domaine.pdf', 'à_valider', 'Validateur A'),
+(2, 2, 2500.00, 'back/src/pdf/Devis/devis_demandeur_date_domaine.pdf', 'validé', 'Validateur B'),
+(3, 3, 3500.00, 'back/src/pdf/Devis/devis_demandeur_date_domaine.pdf', 'refusé', 'Validateur C');
 
 -- Insérer un bon de commande pour le devis avec ID 1 et l'utilisateur avec ID 1
 INSERT INTO BonCommande (devis_id, utilisateur_id, etat, fichier_pdf,nom_editeur)
-VALUES (1, 1, 'en_édition', 'back/src/pdf/BonCommande/bon_commande_demandeur_date.pdf',"geredestrucs");
+VALUES 
+(1, 1, 'en_édition', 'back/src/pdf/BonCommande/bon_commande_demandeur_date.pdf', 'Editeur A'),
+(2, 2, 'à_valider', 'back/src/pdf/BonCommande/bon_commande_demandeur_date.pdf', 'Editeur B'),
+(3, 3, 'validé', 'back/src/pdf/BonCommande/bon_commande_demandeur_date.pdf', 'Editeur C');
 
 -- Insérer une facture pour le bon de commande avec ID 1
 INSERT INTO Facture (bon_commande_id, montant, fichier_pdf, etat, date_livraison, lieu_livraison, nom_signataire, nom_transitaire)
-VALUES (1, 1500.00, 'back/src/pdf/Facture/facture_demandeur_date.pdf', 'à_valider', '2021-06-01 00:00:00', 'Lieu de livraison', 'Signataire', 'Transitaire');
+VALUES 
+(1, 1500.00, 'back/src/pdf/Facture/facture_demandeur_date.pdf', 'à_valider', '2023-07-01 00:00:00', 'Lieu A', 'Signataire A', 'Transitaire A'),
+(2, 2500.00, 'back/src/pdf/Facture/facture_demandeur_date.pdf', 'validée', '2023-08-01 00:00:00', 'Lieu B', 'Signataire B', 'Transitaire B'),
+(3, 3500.00, 'back/src/pdf/Facture/facture_demandeur_date.pdf', 'refusée', '2023-09-01 00:00:00', 'Lieu C', 'Signataire C', 'Transitaire C');
+
+-- Insérer des relances
+INSERT INTO Relance (bon_commande_id, date_relance, message, reponse) VALUES
+(1, '2023-07-10 00:00:00', 'Message de relance 1', FALSE),
+(2, '2023-08-10 00:00:00', 'Message de relance 2', TRUE),
+(3, '2023-09-10 00:00:00', 'Message de relance 3', FALSE);
+
+-- Insérer des stocks
+INSERT INTO Stock (bon_commande_id, description, quantite) VALUES
+(1, 'Description du stock 1', 100),
+(2, 'Description du stock 2', 200),
+(3, 'Description du stock 3', 300);
 
 
 

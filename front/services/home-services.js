@@ -1,7 +1,19 @@
+/**
+ * Represents a class that provides various services related to home.
+ */
 class homeServices {
     constructor() {}
     
     
+    /**
+     * Searches demandes based on the provided parameters.
+     * @param {string} orderNumber - The order number to search for.
+     * @param {string} orderDate - The order date to search for.
+     * @param {string} orderArticle - The order article to search for.
+     * @param {string} orderDomain - The order domain to search for.
+     * @param {string} orderClient - The order client to search for.
+     * @returns {Promise<Array>} - A promise that resolves to an array of demandes matching the search criteria.
+     */
     async searchDemandes(orderNumber, orderDate, orderArticle, orderDomain, orderClient) {
         console.log('Searching demandes with the following parameters:', orderNumber, orderDate, orderArticle, orderDomain, orderClient);
         try {
@@ -26,6 +38,12 @@ class homeServices {
         }
     }
 
+    /**
+     * Fetches demandes utilisateur from the server.
+     * @param {Object} myHomeController - The instance of the home controller.
+     * @param {string} user_id - The ID of the user.
+     * @returns {Promise<void>} - A promise that resolves when the demandes utilisateur are fetched successfully.
+     */
     async fetchDemandesUtilisateur(myHomeController,user_id) {
         const utilisateurId = user_id; 
         try {
@@ -47,6 +65,11 @@ class homeServices {
         }
     }
 
+    /**
+     * Fetches names for a given user ID.
+     * @param {number} userId - The ID of the user.
+     * @returns {Promise<Array>} - A promise that resolves to an array of names.
+     */
     async getNames(userId){
         try {
             console.log(`Fetching names for user ID: ${userId}`);
@@ -74,6 +97,12 @@ class homeServices {
         }
     }
 
+    /**
+     * Retrieves the role for a given user ID.
+     * @param {number} userId - The ID of the user.
+     * @returns {Promise<string>} A promise that resolves to the role of the user.
+     * @throws {Error} If the retrieval of the role fails.
+     */
     async getRole(userId) {
         try {
             const response = await fetch(`http://127.0.0.1:8080/api/getRole/${userId}`, {
@@ -93,6 +122,11 @@ class homeServices {
         }
     }
 
+    /**
+     * Generates a PDF for a given demande ID.
+     * @param {number} demandeId - The ID of the demande.
+     * @returns {Promise<string|null>} - A promise that resolves to the path of the generated PDF, or null if an error occurs.
+     */
     async generatePdfDemande(demandeId) {
         console.log(`Generating PDF for demande ID: ${demandeId}`);
         try {
