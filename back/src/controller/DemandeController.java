@@ -82,36 +82,33 @@ public class DemandeController {
                 demandeJson.addProperty("pdfPath", demande.pdfPath());
 
                 // Ajout des informations supplémentaires requises par le front-end
-                
+            JsonObject devisJson = new JsonObject();
+            devisJson.addProperty("validePar", devis != null ? devis.nom_valideur() : "non défini");
+            devisJson.addProperty("date_devis", devis != null ? devis.date_devis().toString() : "non défini");
+            devisJson.addProperty("numero", devis != null ? devis.id() : -1);
+            devisJson.addProperty("fournisseur_id", devis != null ? devis.fournisseur_id() :-1);
+            devisJson.addProperty("fichier_pdf", devis != null ? devis.fichier_pdf() : "non défini");
+            demandeJson.add("devis", devisJson);
 
-                JsonObject devisJson = new JsonObject();
-                devisJson.addProperty("validePar", devis.nom_valideur());
-                devisJson.addProperty("date_devis", devis.date_devis().toString());
-                devisJson.addProperty("numero", devis.id());
-                devisJson.addProperty("fournisseur_id", devis.fournisseur_id());
-                devisJson.addProperty("fichier_pdf", devis.fichier_pdf());
-                demandeJson.add("devis", devisJson);
+            JsonObject bcJson = new JsonObject();
+            bcJson.addProperty("editePar", bonCommande != null ? bonCommande.nom_editeur() : "non défini");
+            bcJson.addProperty("date", bonCommande != null ? bonCommande.date_creation().toString() : "non défini");
+            bcJson.addProperty("numero", bonCommande != null ? bonCommande.id() : -1);
+            bcJson.addProperty("path", bonCommande != null ? bonCommande.fichier_pdf() : "non défini");
+            demandeJson.add("bc", bcJson);
 
-                JsonObject bcJson = new JsonObject();
-                bcJson.addProperty("editePar", bonCommande.nom_editeur());
-                bcJson.addProperty("date", bonCommande.date_creation().toString());
-                bcJson.addProperty("numero", bonCommande.id());
-                bcJson.addProperty("path", bonCommande.fichier_pdf());
-                demandeJson.add("bc", bcJson);
+            JsonObject factureJson = new JsonObject();
+            factureJson.addProperty("date", facture != null ? facture.date_livraison().toString() : "non défini");
+            factureJson.addProperty("lieu", facture != null ? facture.lieu_livraison() : "non défini");
+            factureJson.addProperty("signePar", facture != null ? facture.nom_signataire() : "non défini");
+            factureJson.addProperty("transitaire", facture != null ? facture.nom_transitaire() : "non défini");
+            factureJson.addProperty("numero", facture != null ? facture.id() : -1);
+            factureJson.addProperty("path", facture != null ? facture.fichier_pdf() : "non défini");
+            demandeJson.add("livraison", factureJson);
 
-                JsonObject factureJson = new JsonObject();
-                factureJson.addProperty("date", facture.date_livraison().toString());
-                factureJson.addProperty("lieu", facture.lieu_livraison());
-                factureJson.addProperty("signePar", facture.nom_signataire());
-                factureJson.addProperty("transitaire", facture.nom_transitaire());
-                factureJson.addProperty("numero", facture.id());
-                factureJson.addProperty("path", facture.fichier_pdf());
-                demandeJson.add("livraison", factureJson);
+            demandeJson.addProperty("commentaires", "Commentaires supplémentaires");
 
-                
-                demandeJson.addProperty("commentaires", "Commentaires supplémentaires");
-
-                response.json(demandeJson);
+            response.json(demandeJson);
             } else {
                 response.status(404, "Demande non trouvée");
             }
