@@ -2,9 +2,11 @@ import { homeController } from "./controllers/homeController.js";
 import { utilisateurAuthentifie } from "../services/auth.js"; // Importer la fonction utilisateurAuthentifie()
 import { SSEClient } from '../libs/sse-client.js';
 import { homeServices } from "../services/home-services.js";
+import { ConnectServices } from "../services/connect-services.js";
 
 const services = new homeServices();
 const myHomeController =new homeController();
+const connectServices = new ConnectServices();
 
 function test(data,myHomeController){
     console.log('Demande ID:', data);
@@ -67,14 +69,16 @@ function changeMonth(offset) {
 
 
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     console.log('DOM entièrement chargé et analysé');
+    
     // Vérifier si l'utilisateur est authentifié avant de charger la page protégée
-    if (!utilisateurAuthentifie()) {
+    const isAuthenticated = await connectServices.verifyToken();
+
+    if (!isAuthenticated) {
         console.log('Utilisateur non authentifié');
         window.location.href = 'connect.html';
     } else {
-
         const currentMonthElement = document.getElementById('currentMonth');
         currentMonthElement.dataset.date = new Date().toISOString();
         currentMonthElement.textContent = new Date().toLocaleString('default', { month: 'long', year: 'numeric' });
@@ -82,7 +86,6 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById('prevMonth').addEventListener('click', () => changeMonth(-1));
         document.getElementById('nextMonth').addEventListener('click', () => changeMonth(1));
 
-        
         run(myHomeController);
     }
 });

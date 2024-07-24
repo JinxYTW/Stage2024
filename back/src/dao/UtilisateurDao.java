@@ -43,6 +43,29 @@ public class UtilisateurDao {
         return null;
     }
 
+    public String findRoleById(int id) {
+        String res="";
+        try {
+            SomethingDatabase my_Database = new SomethingDatabase();
+
+            String request = "SELECT role FROM Utilisateur WHERE id = ?";
+            PreparedStatement statement = my_Database.prepareStatement(request);
+            statement.setInt(1, id);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                res = resultSet.getString("role");
+                return res;
+            }
+            
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
     public String getNames (int id) {
         String res="";
         try {

@@ -60,6 +60,12 @@ public class App {
             myutilisateurController.getRole(context);
         });
 
+        webserver.getRouter().get("/api/validateToken", (WebServerContext context) -> {
+            System.out.println("Validate Token");
+            myutilisateurController.validateToken(context);
+                
+        });
+
             //-------------- Demande ----------------------------
 
         webserver.getRouter().get("/api/demande/details", (WebServerContext context) -> {

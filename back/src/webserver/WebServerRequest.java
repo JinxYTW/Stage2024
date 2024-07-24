@@ -112,4 +112,8 @@ public class WebServerRequest {
 
         return "";
     }
+    // Nouvelle méthode pour obtenir les en-têtes de la requête
+    public Headers getHeaders() {
+        return this.exchange.getRequestHeaders();
+    }
 }

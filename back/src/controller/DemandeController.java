@@ -200,9 +200,22 @@ public class DemandeController {
             JsonObject requestBody = new Gson().fromJson(body, JsonObject.class);
             String utilisateurId = context.getRequest().getQueryParams().get("id");
     
-            DemandeDao demandeDao = new DemandeDao();
+            if (utilisateurId == null) {
+                context.getResponse().status(400, "ID utilisateur manquant");
+                return;
+            }
+    
             UtilisateurDao utilisateurDao = new UtilisateurDao();
-            List<Demande> demandes = demandeDao.findDemandesByUtilisateurId(utilisateurId);
+            String role = utilisateurDao.getRole(Integer.parseInt(utilisateurId));
+            
+            DemandeDao demandeDao = new DemandeDao();
+            List<Demande> demandes;
+    
+            if ("membre".equalsIgnoreCase(role)) {
+                demandes = demandeDao.findDemandesByUtilisateurId(utilisateurId);
+            } else {
+                demandes = demandeDao.findAllDemandes();
+            }
     
             JsonArray demandesJsonArray = new JsonArray();
             for (Demande demande : demandes) {

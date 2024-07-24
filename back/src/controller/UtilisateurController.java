@@ -1,6 +1,9 @@
 package controller;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.sun.net.httpserver.Headers;
+
 import dao.UtilisateurDao;
 import models.Utilisateur;
 import utils.HashUtil;
@@ -134,6 +137,45 @@ public class UtilisateurController {
         Claims claims = decodeJWT(jwt);
         return claims != null && !claims.isEmpty();
     }
+
+    public void validateToken(WebServerContext context) {
+    System.out.println("Validating token");
+    WebServerResponse response = context.getResponse();
+    Headers headers = context.getRequest().getHeaders();
+    
+    String authorizationHeader = headers.getFirst("Authorization");
+    
+    if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+        JsonObject jsonResponse = new JsonObject();
+        jsonResponse.addProperty("status", "fail");
+        jsonResponse.addProperty("message", "Missing or invalid Authorization header");
+        response.status(401, jsonResponse.toString());
+        return;
+    }
+
+    String token = authorizationHeader.substring(7);
+    
+    try {
+        Claims claims = decodeJWT(token);
+        System.out.println("Claims: " + claims);
+        JsonObject jsonResponse = new JsonObject();
+        
+        if (claims != null) {
+            jsonResponse.addProperty("status", "valid");
+            response.json(jsonResponse);
+        } else {
+            jsonResponse.addProperty("status", "invalid");
+            response.status(401, jsonResponse.toString());
+        }
+    } catch (Exception e) {
+        JsonObject jsonResponse = new JsonObject();
+        jsonResponse.addProperty("status", "invalid");
+        jsonResponse.addProperty("message", e.getMessage());
+        response.status(401, jsonResponse.toString());
+    }
+}
+
+
 
     // Classe interne pour représenter la requête de connexion
     private static class LoginRequest {

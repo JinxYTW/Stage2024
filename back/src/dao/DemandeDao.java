@@ -220,6 +220,47 @@ public class DemandeDao {
         return demandes;
     }
 
+    public List<Demande> findAllDemandes() {
+        List<Demande> demandes = new ArrayList<>();
+        try {
+            SomethingDatabase my_Database = new SomethingDatabase();
+
+            String request = "SELECT * FROM Demande";
+            PreparedStatement statement = my_Database.prepareStatement(request);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                demandes.add(new Demande(
+                    resultSet.getInt("id"),
+                    resultSet.getInt("utilisateur_id"),
+                    resultSet.getString("projet_nom"),
+                    resultSet.getString("referant"),
+                    resultSet.getString("domaine"),
+                    resultSet.getString("typeof"),
+                    resultSet.getString("marque"),
+                    resultSet.getString("reference"),
+                    resultSet.getString("pour"),
+                    resultSet.getString("ou"),
+                    resultSet.getString("marche"),
+                    resultSet.getString("justification"),
+                    resultSet.getString("descriptif"),
+                    resultSet.getString("additional_details"),
+                    resultSet.getInt("quantite"),
+                    Demande.Urgence.valueOf(resultSet.getString("urgence")),
+                    Demande.Etat.valueOf(resultSet.getString("etat")),
+                    resultSet.getTimestamp("date_demande"),
+                    resultSet.getString("pdfPath")
+                ));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return demandes;
+    }
+
+
     /**
      * Retrieves a Demande object from the database based on the specified ID.
      *
@@ -266,6 +307,8 @@ public class DemandeDao {
         }
         return null;
     }
+
+    
 
     /**
      * Saves the PDF path for a specific demand.
