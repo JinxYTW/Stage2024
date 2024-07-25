@@ -1,5 +1,7 @@
 /* 
 Utilisateur (id, nom, prenom, email,username, mot_de_passe, role)
+Groupe(id,nom)
+UtlisateurGroupe(#utilisateur_id,#groupe_id)
 Projet (id, nom, description)
 Fournisseur (id, nom, adresse, email, telephone)
 Demande (id, #utilisateur_id, #projet_id,referant,domaine,typeof,marque,reference,pour,ou,marche,justification, descriptif,additional_details quantite, urgence, etat, date_demande,pdfPath)
@@ -10,6 +12,7 @@ Relance (id, #bon_commande_id, date_relance, message, reponse)
 Stock (id, #bon_commande_id, description,quantite)
 Notif (id, #utilisateur_id, message, lu, date_notification)
 */
+
 DROP DATABASE IF EXISTS GestionMateriel;
 CREATE DATABASE IF NOT EXISTS GestionMateriel;
 USE GestionMateriel;
@@ -59,7 +62,7 @@ CREATE TABLE Demande (
     additional_details TEXT,
     quantite INT NOT NULL,
     urgence ENUM('basse', 'moyenne', 'haute') NOT NULL,
-    etat ENUM('envoyée', 'en_cours_de_traitement', 'annulée', 'finalisée') DEFAULT 'envoyée',
+    etat ENUM('envoyée', 'en_cours_de_traitement', 'devis_a_valider', 'devis_en_cours_de_validation', 'bc_a_editer', 'bc_en_cours_dedition', 'bc_a_valider', 'bc_en_cours_de_validation', 'bc_valide_envoi_fournisseur', 'bc_envoye_attente_livraison', 'commande_annulee', 'commande_livree_finalisee') DEFAULT 'envoyée',
     date_demande TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     pdfPath VARCHAR(255)
 );
@@ -118,14 +121,39 @@ CREATE TABLE Stock (
     quantite INT NOT NULL
 );
 
-
 -- Table Notif
 CREATE TABLE Notif (
     id INT AUTO_INCREMENT PRIMARY KEY,
     utilisateur_id INT,
     message TEXT,
+    type ENUM('demande_envoyee', 'demande_en_cours_de_traitement', 'devis_a_valider', 'devis_en_cours_de_validation', 'bc_a_editer', 'bc_en_cours_dedition', 'bc_a_valider', 'bc_en_cours_de_validation', 'bc_valide_envoi_fournisseur', 'bc_envoye_attente_livraison', 'commande_annulee', 'commande_livrée_finalisee') NOT NULL,
     lu BOOLEAN DEFAULT FALSE,
     date_notification TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Table Groupe
+CREATE TABLE Groupe (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(255) NOT NULL
+);
+
+-- Insérer les groupes prédéfinis
+INSERT INTO Groupe (nom) VALUES
+('createDemande'),
+('treatDevis'),
+('validateDevis'),
+('treatBc'),
+('validateBc'),
+('notifBcSend'),
+('inventory');
+
+-- Table intermédiaire pour la relation many-to-many entre Utilisateur et Groupe
+CREATE TABLE UtilisateurGroupe (
+    utilisateur_id INT,
+    groupe_id INT,
+    PRIMARY KEY (utilisateur_id, groupe_id),
+    FOREIGN KEY (utilisateur_id) REFERENCES Utilisateur(id),
+    FOREIGN KEY (groupe_id) REFERENCES Groupe(id)
 );
 
 -- Ajout des clés étrangères
@@ -170,8 +198,6 @@ VALUES ('FournisseurA', '123 Rue du Fournisseur', 'contact@fournisseura.com', '+
 ('FournisseurB', '456 Rue du Fournisseur', 'contact@fournisseurb.com', '+33 987654321'),
 ('FournisseurC', '789 Rue du Fournisseur', 'contact@fournisseurc.com', '+33 112233445');
 
-
-
 -- Insérer une demande pour l'utilisateur avec ID 1
 INSERT INTO Demande (utilisateur_id, projet_nom, referant, domaine, typeof, marque, reference, pour, ou, marche, justification, descriptif,additional_details, quantite, urgence)
 VALUES (1, 'ProjetA', 'Responsable A', 'Informatique', 'Matériel', 'MarqueA', 'RefA', 'Département A', 'Lieu A', 'Marché A', 'Justification A', 'Descriptif A', 'Détails A', 10, 'haute'),
@@ -183,7 +209,6 @@ INSERT INTO Notif (utilisateur_id, message, lu)
 VALUES (1, 'Notification 1 pour Utilisateur 1', FALSE),
 (2, 'Notification 2 pour Utilisateur 2', TRUE),
 (3, 'Notification 3 pour Utilisateur 3', FALSE);
-
 
 -- Insérer un devis pour la demande avec ID 1
 INSERT INTO Devis (demande_id, fournisseur_id, montant, fichier_pdf, etat, nom_valideur)
@@ -217,6 +242,17 @@ INSERT INTO Stock (bon_commande_id, description, quantite) VALUES
 (1, 'Description du stock 1', 100),
 (2, 'Description du stock 2', 200),
 (3, 'Description du stock 3', 300);
+
+-- Assigner des utilisateurs à des groupes
+INSERT INTO UtilisateurGroupe (utilisateur_id, groupe_id) VALUES
+(1, 1),
+(1, 2),
+(2, 3),
+(3, 4),
+(4, 5),
+(5, 6),
+(6, 7);
+
 
 
 

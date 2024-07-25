@@ -4,8 +4,24 @@ import java.sql.Timestamp;
 
 public record Notif(
     int id,
-    int utilisateur_id,
+    int utilisateurId,
     String message,
+    Type type,
     boolean lu,
-    Timestamp date_notification
-) {}
+    Timestamp dateNotification
+) {
+    public enum Type {
+        demande_envoyee,
+        demande_en_cours_de_traitement,
+        devis_a_valider,
+        devis_en_cours_de_validation,
+        bc_a_editer,
+        bc_en_cours_dedition,
+        bc_a_valider,
+        bc_en_cours_de_validation,
+        bc_valide_envoi_fournisseur,
+        bc_envoye_attente_livraison,
+        commande_annulee,
+        commande_livree_finalisee
+    }
+}
