@@ -26,11 +26,12 @@ public class App {
         DevisController mydevisController = new DevisController();
         FactureController myfactureController = new FactureController();
         UtilisateurGroupeController myutilisateurGroupeController = new UtilisateurGroupeController();
+        NotifController mynotifController = new NotifController();
 
         //-------------- Controllers non utilisé ----------------------------
         /* 
 
-        NotifController mynotifController = new NotifController();
+        
         RelanceController myrelanceController = new RelanceController();
         ProjetController myprojetController = new ProjetController();
         StockController mystockController = new StockController();
@@ -196,6 +197,24 @@ public class App {
                 context.getResponse().serverError("Erreur serveur lors de la récupération du fichier PDF");
             }
         });
+
+            
+
+            //-------------- Notification --------------------------------
+        webserver.getRouter().get("/api/countNotifForUser", (WebServerContext context) -> {
+                
+                mynotifController.countNotifForUser(context);
+            });
+
+        webserver.getRouter().get("/api/getOldestUrgentNotification", (WebServerContext context) -> {
+                
+                mynotifController.getOldestUrgentNotification(context);
+            });
+
+        webserver.getRouter().get("/api/getNotificationsForUser", (WebServerContext context) -> {
+                
+                mynotifController.getNotificationsForUser(context);
+            });
 
             //-------------- Relance --------------------------------
 

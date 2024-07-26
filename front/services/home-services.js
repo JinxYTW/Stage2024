@@ -3,6 +3,66 @@
  */
 class homeServices {
     constructor() {}
+
+    async countNotifForUser(userId) {
+        try {
+            const response = await fetch(`http://localhost:8080/api/countNotifForUser?userId=${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (!response.ok) {
+                throw new Error('La récupération des notifications a échoué');
+            }
+            const data = await response.json();
+            return data;
+        }
+        catch (error) {
+            console.error("Erreur dans la récupération des notifications", error);
+            return [];
+        }
+    }
+
+    async getOldestUrgentNotification(userId) {
+        try {
+            const response = await fetch(`http://localhost:8080/api/getOldestUrgentNotification?userId=${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (!response.ok) {
+                throw new Error('La récupération des notifications a échoué');
+            }
+            const data = await response.json();
+            return data;
+        }
+        catch (error) {
+            console.error("Erreur dans la récupération des notifications", error);
+            return [];
+        }
+    }
+
+    async getNotificationsForUser(userId) {
+        try {
+            const response = await fetch(`http://localhost:8080/api/getNotificationsForUser?userId=${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (!response.ok) {
+                throw new Error('La récupération des notifications a échoué');
+            }
+            const data = await response.json();
+            return data;
+        }
+        catch (error) {
+            console.error("Erreur dans la récupération des notifications", error);
+            return [];
+        }
+    }
     
     
     /**
