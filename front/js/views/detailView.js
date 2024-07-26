@@ -25,6 +25,22 @@ class detailView {
         this.updateUserRole();
         this.updateDemandeDetails();
         this.updateActionButtons();
+        this.addClickableZoneListener();
+    }
+
+    // Méthode pour ajouter un événement de clic à la zone cliquable
+    addClickableZoneListener() {
+        const clickableZone = document.querySelector('.clickable-zone');
+        clickableZone.addEventListener('click', () => {
+            this.handleClickableZoneClick();
+        });
+    }
+
+    handleClickableZoneClick() {
+        // Ajoutez ici la logique que vous souhaitez exécuter lorsque la zone est cliquée
+        alert('Zone cliquée!');
+        // Par exemple, vous pouvez rediriger vers une autre page ou afficher un modal
+        // window.location.href = 
     }
 
     async updateUserNames() {

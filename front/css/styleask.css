@@ -76,3 +76,14 @@ body {
 textarea {
     resize: none;
 }
+.clickable-zone {
+    cursor: pointer; /* Change le curseur pour indiquer que la zone est cliquable */
+    padding: 10px; /* Ajoute un peu de padding pour l'esthétique */
+    border: 1px solid #ddd; /* Ajoute une bordure légère */
+    border-radius: 4px; /* Ajoute un arrondi aux coins */
+    background-color: #f9f9f9; /* Change la couleur de fond */
+}
+
+.clickable-zone:hover {
+    background-color: #e9e9e9; /* Change la couleur de fond au survol */
+}

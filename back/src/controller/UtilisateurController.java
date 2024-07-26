@@ -71,11 +71,11 @@ public class UtilisateurController {
 
             if (utilisateur != null) {
                 String jwt = createJWT(utilisateur.id());
-                System.out.println("JWT: " + jwt);
+                
                 String jsonResponse = "{ \"status\": \"success\", \"message\": \"Login successful\", \"token\": \"" + jwt + "\", \"userId\": " + utilisateur.id() + " }";
                 //String jsonResponse = "{ \"status\": \"success\", \"message\": \"Login successful\" }";
                 response.json(jsonResponse);
-                System.out.println("Login successful");
+                
             } 
             else {
                 String jsonResponse = "{ \"status\": \"fail\", \"message\": \"Invalid username or password\" }";
@@ -91,7 +91,7 @@ public class UtilisateurController {
     }
 
     private String createJWT(int userId) {
-        System.out.println("Creating JWT for user ID: " + userId);
+        
     
         long currentTimeMillis = System.currentTimeMillis();
         Date now = new Date(currentTimeMillis);
@@ -114,7 +114,7 @@ public class UtilisateurController {
                     .signWith(SignatureAlgorithm.HS256, secretKeyBytes)
                     .compact();
     
-            System.out.println("JWT created: " + jwt);
+            
         } catch (Exception e) {
             System.err.println("Error creating JWT: " + e.getMessage());
             e.printStackTrace();
