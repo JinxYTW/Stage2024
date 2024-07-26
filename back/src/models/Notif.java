@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 
 public record Notif(
     int id,
-    int utilisateurId,
+    int demandeId,
     String message,
     Type type,
     boolean lu,
@@ -21,6 +21,7 @@ public record Notif(
         bc_en_cours_de_validation,
         bc_valide_envoi_fournisseur,
         bc_envoye_attente_livraison,
+        facture_a_valider,
         commande_annulee,
         commande_livree_finalisee
     }

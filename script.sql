@@ -124,9 +124,9 @@ CREATE TABLE Stock (
 -- Table Notif
 CREATE TABLE Notif (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    utilisateur_id INT,
+    demande_id INT,
     message TEXT,
-    type ENUM('demande_envoyee', 'demande_en_cours_de_traitement', 'devis_a_valider', 'devis_en_cours_de_validation', 'bc_a_editer', 'bc_en_cours_dedition', 'bc_a_valider', 'bc_en_cours_de_validation', 'bc_valide_envoi_fournisseur', 'bc_envoye_attente_livraison', 'commande_annulee', 'commande_livrée_finalisee') NOT NULL,
+    type ENUM('demande_envoyee', 'demande_en_cours_de_traitement', 'devis_a_valider', 'devis_en_cours_de_validation', 'bc_a_editer', 'bc_en_cours_dedition', 'bc_a_valider', 'bc_en_cours_de_validation', 'bc_valide_envoi_fournisseur', 'bc_envoye_attente_livraison','facture_a_valider', 'commande_annulee', 'commande_livrée_finalisee') NOT NULL,
     lu BOOLEAN DEFAULT FALSE,
     date_notification TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -172,7 +172,7 @@ ALTER TABLE Relance ADD CONSTRAINT fk_relance_boncommande FOREIGN KEY (bon_comma
 
 ALTER TABLE Stock ADD CONSTRAINT fk_stock_boncommande FOREIGN KEY (bon_commande_id) REFERENCES BonCommande(id);
 
-ALTER TABLE Notif ADD CONSTRAINT fk_notification_utilisateur FOREIGN KEY (utilisateur_id) REFERENCES Utilisateur(id);
+ALTER TABLE Notif ADD CONSTRAINT fk_notification_demande FOREIGN KEY (demande_id) REFERENCES Demande(id);
 
 -- Remplissage Table
 
@@ -205,7 +205,7 @@ VALUES (1, 'ProjetA', 'Responsable A', 'Informatique', 'Matériel', 'MarqueA', '
 (3, 'ProjetC', 'Responsable C', 'Donnée', 'Équipement', 'MarqueC', 'RefC', 'Département C', 'Lieu C', 'Marché C', 'Justification C', 'Descriptif C', 'Détails C', 30, 'basse');
 
 -- Insérer une notification pour l'utilisateur avec ID 1
-INSERT INTO Notif (utilisateur_id, message, lu)
+INSERT INTO Notif (demande_id, message, lu)
 VALUES (1, 'Notification 1 pour Utilisateur 1', FALSE),
 (2, 'Notification 2 pour Utilisateur 2', TRUE),
 (3, 'Notification 3 pour Utilisateur 3', FALSE);
