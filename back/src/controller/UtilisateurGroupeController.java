@@ -21,15 +21,15 @@ public class UtilisateurGroupeController {
         try {
             UtilisateurGroupeDao utilisateurGroupeDao = new UtilisateurGroupeDao();
             int utilisateurId = Integer.parseInt(context.getRequest().getQueryParams().get("utilisateurId"));
-            System.out.println("utilisateurId: " + utilisateurId);
+            
 
             List<String> groupeNames = utilisateurGroupeDao.getGroupesNamesByUtilisateurId(utilisateurId);
-            System.out.println("groupeNames: " + groupeNames);
+            
 
             JsonObject jsonResponse = new JsonObject();
             jsonResponse.addProperty("status", "success");
             jsonResponse.add("groupes", new Gson().toJsonTree(groupeNames));
-            System.out.println("jsonResponse: " + jsonResponse);
+            
 
             response.json(jsonResponse);
         } catch (Exception e) {

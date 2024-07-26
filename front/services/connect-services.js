@@ -2,9 +2,9 @@ class ConnectServices {
     constructor() {}
 
     async verifyToken() {
-        console.log("Verifying token");
+        
         const jwtToken = localStorage.getItem('jwtToken');
-        console.log("Token:", jwtToken);
+        
         if (!jwtToken) {
             return false;
         }
@@ -17,14 +17,12 @@ class ConnectServices {
                 }
             });
 
-            console.log("Token verification response status:", response.status);
+            
     
             if (response.status === 200) {
                 const data = await response.json();
                 
-                console.log("Token verification response:", data);
-                console.log("Token verification response (type):", typeof data);
-                console.log("Token verification status:", data.status);
+                
                 return data.status === 'valid';
             } else {
                 return false;
@@ -50,8 +48,7 @@ class ConnectServices {
                 throw new Error('Network response was not ok ' + response.statusText);
             }
             const jsonResponse = await response.json(); // Lire le corps de la réponse une seule fois
-            console.log("Login successful");
-            console.log("Login response JSON:", jsonResponse);
+            
             return jsonResponse;
         } catch (error) {
             console.error('There was a problem with the fetch operation:', error);

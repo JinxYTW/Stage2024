@@ -139,7 +139,7 @@ public class UtilisateurController {
     }
 
     public void validateToken(WebServerContext context) {
-    System.out.println("Validating token");
+    
     WebServerResponse response = context.getResponse();
     Headers headers = context.getRequest().getHeaders();
     
@@ -157,7 +157,7 @@ public class UtilisateurController {
     
     try {
         Claims claims = decodeJWT(token);
-        System.out.println("Claims: " + claims);
+        
         JsonObject jsonResponse = new JsonObject();
         
         if (claims != null) {

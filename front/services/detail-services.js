@@ -13,11 +13,15 @@ class detailServices{
                 throw new Error('La récupération des noms de groupes a échoué');
             }
             const data = await response.json();
-            return data;
+            if (data.status === 'success') {
+                return data.groupes; // Liste des groupes
+            } else {
+                throw new Error('Erreur dans la réponse de l\'API');
+            }
         }
         catch (error) {
             console.error("Erreur dans la récupération des noms de groupes", error);
-            return null;
+            return [];
         }
     }
 

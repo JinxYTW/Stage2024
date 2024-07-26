@@ -44,9 +44,9 @@ public class App {
         webserver.listen(8080);
         System.out.println("Server started on port 8080");
 
-        //-------------- UtilisateurGroupe ----------------------------
+            //-------------- UtilisateurGroupe ----------------------------
         webserver.getRouter().post("/api/getGroupesNamesByUtilisateurId", (WebServerContext context) -> {
-            System.out.println("Get Groupes Names By Utilisateur Id");
+            
             myutilisateurGroupeController.getGroupesNamesByUtilisateurId(context);
         });
 
@@ -68,7 +68,7 @@ public class App {
         });
 
         webserver.getRouter().get("/api/validateToken", (WebServerContext context) -> {
-            System.out.println("Validate Token");
+            
             myutilisateurController.validateToken(context);
                 
         });

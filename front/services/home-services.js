@@ -24,13 +24,13 @@ class homeServices {
                 }
             });
 
-            console.log(`Response status: ${response.status}`);
+            
             if (!response.ok) {
                 throw new Error('La recherche des demandes a échoué');
             }
 
             const data = await response.json();
-            console.log('Data received:', data);
+            
             return data; // Assurez-vous que l'API renvoie un objet avec une propriété `demandes`
         } catch (error) {
             console.error('Erreur lors de la recherche des demandes:', error);
@@ -54,7 +54,7 @@ class homeServices {
                 },
                 body: JSON.stringify({ utilisateurId })
             });
-            console.log(`Response status: ${response.status}`);
+            
             if (response.ok) {
                 console.log('Initial demandesUtilisateur emitted');
             } else {
@@ -72,7 +72,7 @@ class homeServices {
      */
     async getNames(userId){
         try {
-            console.log(`Fetching names for user ID: ${userId}`);
+            
 
             const response = await fetch(`http://127.0.0.1:8080/api/getNames/${userId}`,{
                 method : 'GET',
@@ -81,12 +81,12 @@ class homeServices {
                 }
     
             });
-            console.log(`Response status: ${response.status}`);
+            
             if(!response.ok){
                 throw new Error('La récupération des noms a échoué');
             }
             const data = await response.json();
-            console.log('Data received:', data);
+            
             return data;
     
             
@@ -136,7 +136,7 @@ class homeServices {
                     'Content-Type': 'application/json'
                 }
             });
-            console.log(`Response status: ${response.status}`); // Ajoutez ce log
+            
             
             if (!response.ok) {
                 throw new Error('La génération du PDF a échoué');
@@ -159,7 +159,7 @@ class homeServices {
                     'Content-Type': 'application/json'
                 }
             });
-            console.log(`Response status: ${response.status}`); // Ajoutez ce log
+            
             
             if (!response.ok) {
                 throw new Error('La génération du PDF a échoué');
@@ -182,7 +182,7 @@ class homeServices {
                     'Content-Type': 'application/json'
                 }
             });
-            console.log(`Response status: ${response.status}`); // Ajoutez ce log
+            
 
             if (!response.ok) {
                 throw new Error('La génération du PDF a échoué');

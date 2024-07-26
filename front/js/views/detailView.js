@@ -24,6 +24,7 @@ class detailView {
         this.updateUserNames();
         this.updateUserRole();
         this.updateDemandeDetails();
+        this.updateActionButtons();
     }
 
     async updateUserNames() {
@@ -36,7 +37,7 @@ class detailView {
         const userId = new URLSearchParams(window.location.search).get('user');
         if (userId) {
             const role = await this.homeServices.getRole(userId);
-            console.log('Role:', role);
+            
             if (role) {
                 this.userRole.textContent = role;
             } else {
@@ -112,6 +113,97 @@ class detailView {
             alert("Erreur lors de la récupération des détails de la demande.");
         }
     }
+    
+    async updateActionButtons() {
+        const userId = new URLSearchParams(window.location.search).get('user');
+        
+        if (!userId) {
+            console.error('ID utilisateur manquant dans l\'URL');
+            return;
+        }
+    
+        try {
+            // Récupérer les groupes auxquels l'utilisateur appartient
+            const groupes = await this.detailServices.getGroupesNames(userId);
+    
+            // La div où les boutons seront ajoutés
+            const actionsButtonDiv = document.getElementById('actions_button');
+    
+            // Supprimer les boutons existants (si besoin)
+            actionsButtonDiv.querySelectorAll('.dynamic-button').forEach(button => button.remove());
+    
+            // Mapping des groupes aux textes des boutons
+            const buttonLabels = {
+                
+                'treatDevis': 'Traiter les devis',
+                'validateDevis': 'Valider les devis',
+                'treatBc': 'Traiter les BC',
+                'validateBc': 'Valider les BC',
+                'notifBcSend': 'Notifier l\'envoi des BC',
+                'inventory': 'Gérer l\'inventaire'
+            };
+    
+            // Mapping des groupes aux fonctions d'action
+            const buttonActions = {
+                
+                'treatDevis': () => {
+                    console.log('Action pour traiter les devis');
+                    // Ajoutez ici la logique pour traiter les devis
+                    
+                },
+                'validateDevis': () => {
+                    console.log('Action pour valider les devis');
+                    // Ajoutez ici la logique pour valider les devis
+                    
+                },
+                'treatBc': () => {
+                    console.log('Action pour traiter les BC');
+                    // Ajoutez ici la logique pour traiter les BC
+                },
+                'validateBc': () => {
+                    console.log('Action pour valider les BC');
+                    // Ajoutez ici la logique pour valider les BC
+                },
+                'notifBcSend': () => {
+                    console.log('Action pour notifier l\'envoi des BC');
+                    // Ajoutez ici la logique pour notifier l'envoi des BC
+                },
+                'inventory': () => {
+                    console.log('Action pour gérer l\'inventaire');
+                    // Ajoutez ici la logique pour gérer l'inventaire
+                }
+            };
+    
+            // Filtrer les groupes pour ne conserver que ceux qui sont dans le mapping
+        const validGroupes = groupes.filter(group => buttonLabels.hasOwnProperty(group));
+        console.log('Groupes valides:', validGroupes);
+
+        // Créer des boutons pour chaque groupe valide
+        validGroupes.forEach(groupName => {
+            // Créer un nouveau bouton
+            const button = document.createElement('button');
+            button.className = 'btn btn-info btn-block dynamic-button';
+            button.textContent = buttonLabels[groupName] || `Action pour ${groupName}`; // Texte par défaut si le groupe n'est pas dans le mapping
+
+            // Ajouter un gestionnaire d'événements avec l'action spécifique
+            button.addEventListener('click', () => {
+                if (buttonActions[groupName]) {
+                    buttonActions[groupName](); // Appel de la fonction d'action
+                } else {
+                    console.log(`Aucune action définie pour le groupe : ${groupName}`);
+                }
+            });
+
+            // Ajouter le bouton à la div
+            actionsButtonDiv.appendChild(button);
+        });
+
+    
+        } catch (error) {
+            console.error('Erreur lors de la récupération des groupes:', error);
+        }
+    }
+    
 }
 
 export { detailView };

@@ -76,3 +76,12 @@ body {
 .badge-urgency-high {
     background-color: red;
 }
+
+/* Exemple de styles pour la nouvelle div et les boutons */
+#actions_buttons {
+    margin-top: 20px; /* Espacement au-dessus de la nouvelle div */
+}
+
+.dynamic-button {
+    margin-bottom: 10px; /* Espacement entre les boutons */
+}
