@@ -25,6 +25,7 @@ public class App {
         BonCommandeController mybonCommandeController = new BonCommandeController();
         DevisController mydevisController = new DevisController();
         FactureController myfactureController = new FactureController();
+        UtilisateurGroupeController myutilisateurGroupeController = new UtilisateurGroupeController();
 
         //-------------- Controllers non utilisé ----------------------------
         /* 
@@ -42,6 +43,12 @@ public class App {
         WebServer webserver = new WebServer();
         webserver.listen(8080);
         System.out.println("Server started on port 8080");
+
+        //-------------- UtilisateurGroupe ----------------------------
+        webserver.getRouter().post("/api/getGroupesNamesByUtilisateurId", (WebServerContext context) -> {
+            System.out.println("Get Groupes Names By Utilisateur Id");
+            myutilisateurGroupeController.getGroupesNamesByUtilisateurId(context);
+        });
 
             //-------------- Utilisateur ----------------------------
 

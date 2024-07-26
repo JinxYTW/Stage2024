@@ -87,7 +87,7 @@ public class WebServerRequest {
     public String getBodyAsString() {
         return readStreamAsString();
     }
-
+    
     private String readStreamAsString()
     {
         try {
