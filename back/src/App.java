@@ -220,6 +220,11 @@ public class App {
                 
                 mynotifController.markAsRead(context);
             });
+        
+        webserver.getRouter().post("/api/updateNotificationTypeRead", (WebServerContext context) -> {
+                
+                mynotifController.updateNotificationTypeRead(context);
+            });
 
             //-------------- Relance --------------------------------
 

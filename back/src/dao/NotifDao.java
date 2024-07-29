@@ -16,6 +16,46 @@ public class NotifDao {
     public NotifDao() {
     }
 
+    public static boolean updateNotificationTypeRead(int notifId, boolean newLuStatus, String newType) {
+        try {
+            SomethingDatabase database = new SomethingDatabase();
+            String query = "UPDATE Notif SET lu = ?, type = ? WHERE id = ?";
+            PreparedStatement statement = database.prepareStatement(query);
+            statement.setBoolean(1, newLuStatus);
+            statement.setString(2, newType);
+            statement.setInt(3, notifId);
+            statement.executeUpdate();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static Notif getNotificationById(int notifId) {
+        Notif notif = null;
+        try {
+            SomethingDatabase database = new SomethingDatabase();
+            String query = "SELECT * FROM Notif WHERE id = ?";
+            PreparedStatement statement = database.prepareStatement(query);
+            statement.setInt(1, notifId);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                notif = new Notif(
+                    resultSet.getInt("id"),
+                    resultSet.getInt("demande_id"),
+                    resultSet.getString("message"),
+                    Notif.Type.valueOf(resultSet.getString("type")),
+                    resultSet.getBoolean("lu"),
+                    resultSet.getTimestamp("date_notification")
+                );
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return notif;
+    }
+
     public static void markAsRead(int notifId) {
         try {
             SomethingDatabase database = new SomethingDatabase();
@@ -250,6 +290,8 @@ public class NotifDao {
         }
         return notifications;
     }
+
+    
     
     
     

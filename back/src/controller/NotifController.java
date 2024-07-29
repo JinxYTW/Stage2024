@@ -15,6 +15,62 @@ public class NotifController {
     public NotifController() {
     }
 
+    public void updateNotificationTypeRead(WebServerContext context) {
+        WebServerResponse response = context.getResponse();
+        try {
+            int notifId = Integer.parseInt(context.getRequest().getQueryParams().get("notifId"));
+            Notif notif = NotifDao.getNotificationById(notifId);
+    
+            if (notif == null) {
+                response.status(404, "Notification non trouvée");
+                return;
+            }
+    
+            
+            boolean newLuStatus = notif.lu(); 
+            String newType = notif.type().toString();
+    
+            if (notif.lu()) { 
+                newLuStatus = false; 
+                
+                newType = determineNewTypeRead(notif.type().toString()); 
+                
+            }
+    
+            
+            boolean updateSuccess = NotifDao.updateNotificationTypeRead(notifId, newLuStatus, newType);
+            System.out.println("updateSuccess: " + updateSuccess);
+    
+            if (updateSuccess) {
+                response.json(updateSuccess);
+            } else {
+                response.status(500, "Échec de la mise à jour de la notification");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.status(500, "Internal Server Error");
+        }
+    }
+    
+    
+    private String determineNewTypeRead(String currentType) {
+        switch (currentType) {
+            case "demande_envoyee":
+                return "demande_en_cours_de_traitement";
+            case "devis à valider":
+                return "devis_en_cours_de_validation";
+            case "bc_a_editer":
+                return "bc_en_cours_dedition";
+            case "bc_a_valider":
+                return "bc_en_cours_de_validation";
+            case "bc_valide_envoi_fournisseur":
+                return "envoi_fournisseur_en_cours";
+            default:
+                return currentType; // Retourne le type actuel si aucune correspondance n'est trouvée
+        }
+    }
+    
+
     public void markAsRead(WebServerContext context) {
         WebServerResponse response = context.getResponse();
         try {

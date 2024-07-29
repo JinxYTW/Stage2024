@@ -64,15 +64,25 @@ class homeView{
             const success = await this.homeServices.markNotifAsRead(notifId);
             if (success) {
                 console.log('Notification marquée comme lue');
-                // Après avoir marqué la notification comme lue, vous pouvez recharger les notifications
-                this.loadNotifications();
+                
+                const updateSuccess = await this.homeServices.updateNotificationTypeRead(notifId);
+                console.log('updateSuccess:', updateSuccess);   
+
+                if (updateSuccess) {
+                    console.log('Notification mise à jour avec succès');
+                    // Recharger les notifications
+                    this.loadNotifications();
+                } else {
+                    console.error('Erreur lors de la mise à jour de la notification');
+                }
             } else {
-                console.error('Échec de la mise à jour de la notification');
+                console.error('Erreur lors du marquage de la notification comme lue');
             }
         } else {
-            alert('Aucune notification à mettre à jour.');
+            console.error('ID de notification manquant');
         }
     }
+    
 
     //----------------- Gère l'affichage des demandes -----------------//
 
