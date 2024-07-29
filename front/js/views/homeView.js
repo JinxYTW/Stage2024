@@ -25,27 +25,30 @@ class homeView{
     async loadNotifications() {
         const userId = this.getDemandeIdFromUrl();
         if (userId) {
-            const notificationCount = await this.homeServices.countNotifForUser(userId);
-            const lastUrgentNotification = await this.homeServices.getOldestUrgentNotification(userId);
-
-            // Mettre à jour l'élément HTML avec le nombre de notifications
-            const notifZone = document.getElementById('notif_zone');
-            notifZone.textContent = `Notifications (${notificationCount})`;
-
-            // Mettre à jour l'élément HTML avec la dernière notification urgente
-            const lastNotif = document.getElementById('last_notif');
-            if (lastUrgentNotification) {
-                lastNotif.textContent = lastUrgentNotification.message;
-                lastNotif.dataset.id = lastUrgentNotification.id; // Ajouter un ID pour le traitement ultérieur
-            } else {
-                lastNotif.textContent = 'Aucune notification urgente';
-                lastNotif.removeAttribute('data-id'); // Assurez-vous de supprimer l'ID s'il n'y a pas de notification
+            try {
+                const notificationCount = await this.homeServices.countNotifForUser(userId);
+                const lastUrgentNotification = await this.homeServices.getOldestUrgentNotification(userId);
+    
+                // Mettre à jour l'élément HTML avec le nombre de notifications
+                const notifZone = document.getElementById('notif_zone');
+                notifZone.textContent = `Notifications (${notificationCount})`;
+    
+                // Mettre à jour l'élément HTML avec la dernière notification urgente
+                const lastNotif = document.getElementById('last_notif');
+                if (lastUrgentNotification && lastUrgentNotification.message) {
+                    lastNotif.textContent = `${lastUrgentNotification.message} ${lastUrgentNotification.demandeId} est à l'état ${lastUrgentNotification.type}`;
+                    lastNotif.dataset.id = lastUrgentNotification.id; // Ajouter un ID pour le traitement ultérieur
+                } else {
+                    lastNotif.textContent = 'Aucune notification urgente';
+                    lastNotif.removeAttribute('data-id'); // Assurez-vous de supprimer l'ID s'il n'y a pas de notification
+                }
+            } catch (error) {
+                console.error("Erreur dans la récupération des notifications", error);
             }
         } else {
             console.error('User ID not found in the URL.');
         }
     }
-
     // Méthode pour ajouter un événement de clic à la zone cliquable
     addClickableZoneListener() {
         const clickableZone = document.querySelector('.clickable-zone');

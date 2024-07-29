@@ -206,7 +206,7 @@ VALUES (1, 'ProjetA', 'Responsable A', 'Informatique', 'Matériel', 'MarqueA', '
 
 -- Insérer une notification pour l'utilisateur avec ID 1
 INSERT INTO Notif (demande_id, message, lu)
-VALUES (1, 'Notification 1 pour Utilisateur 1', FALSE),
+VALUES (1, 'La demande', FALSE),
 (2, 'Notification 2 pour Utilisateur 2', TRUE),
 (3, 'Notification 3 pour Utilisateur 3', FALSE);
 

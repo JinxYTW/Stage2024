@@ -34,7 +34,7 @@ public class NotifController {
             int count = NotifDao.countNotifForUser(userId);
             JsonObject jsonResponse = new JsonObject();
             jsonResponse.addProperty("count", count);
-            response.json(jsonResponse.toString());
+            response.json(jsonResponse);
         } catch (Exception e) {
             e.printStackTrace();
             response.status(500, "Internal Server Error");
@@ -46,10 +46,22 @@ public class NotifController {
         try {
             int userId = Integer.parseInt(context.getRequest().getQueryParams().get("userId"));
             Notif notif = NotifDao.getOldestUrgentNotification(userId);
+            
+            if (notif == null) {
+                // Aucune notification trouvée
+                response.status(204, "No Content"); // Vous pouvez aussi choisir d'envoyer une réponse vide JSON ici
+                return;
+            }
+            
+            // Préparation de la réponse JSON
             JsonObject jsonResponse = new JsonObject();
-            jsonResponse.addProperty("notif", notif.message());
+            jsonResponse.addProperty("id", notif.id());
+            jsonResponse.addProperty("demandeId", notif.demandeId());
+            jsonResponse.addProperty("message", notif.message());
+            jsonResponse.addProperty("type", notif.type().toString());
             jsonResponse.addProperty("dateNotification", notif.dateNotification().toString());
-            response.json(jsonResponse.toString());
+            
+            response.json(jsonResponse);
         } catch (Exception e) {
             e.printStackTrace();
             response.status(500, "Internal Server Error");

@@ -35,7 +35,10 @@ class homeServices {
             if (!response.ok) {
                 throw new Error('La récupération des notifications a échoué');
             }
-            const data = await response.json();
+            let data = await response.json();
+            
+            data = data.count;
+            
             return data;
         }
         catch (error) {
@@ -56,6 +59,7 @@ class homeServices {
                 throw new Error('La récupération des notifications a échoué');
             }
             const data = await response.json();
+            console.log('Data received:', data); // Ajoutez ce log
             return data;
         }
         catch (error) {
