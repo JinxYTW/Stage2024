@@ -36,64 +36,67 @@ public class NotifDao {
             // Construire la requête de comptage des notifications
             // Inclure tous les états spécifiés
             String query = "SELECT COUNT(*) FROM Notif n " +
-                           "JOIN Demande d ON n.demande_id = d.id " +
-                           "WHERE d.utilisateur_id = ? " + // Notification pour le créateur de la demande
-                           
-                           // Notifications pour différents états de demande et groupes associés
-                           "OR (d.etat = 'demande_envoyee' AND EXISTS (SELECT 1 FROM UtilisateurGroupe ug " +
-                           "JOIN Groupe g ON ug.groupe_id = g.id WHERE ug.utilisateur_id = ? " +
-                           "AND g.nom = 'treatDevis')) " +
-                           
-                           "OR (d.etat = 'demande_en_cours_de_traitement' AND EXISTS (SELECT 1 FROM UtilisateurGroupe ug " +
-                           "JOIN Groupe g ON ug.groupe_id = g.id WHERE ug.utilisateur_id = ? " +
-                           "AND g.nom = 'treatDevis')) " +
-                           
-                           "OR (d.etat = 'devis_a_valider' AND EXISTS (SELECT 1 FROM UtilisateurGroupe ug " +
-                           "JOIN Groupe g ON ug.groupe_id = g.id WHERE ug.utilisateur_id = ? " +
-                           "AND g.nom = 'validateDevis')) " +
-                           
-                           "OR (d.etat = 'devis_en_cours_de_validation' AND EXISTS (SELECT 1 FROM UtilisateurGroupe ug " +
-                           "JOIN Groupe g ON ug.groupe_id = g.id WHERE ug.utilisateur_id = ? " +
-                           "AND g.nom = 'validateDevis')) " +
-                           
-                           "OR (d.etat = 'bc_a_editer' AND EXISTS (SELECT 1 FROM UtilisateurGroupe ug " +
-                           "JOIN Groupe g ON ug.groupe_id = g.id WHERE ug.utilisateur_id = ? " +
-                           "AND g.nom = 'treatBc')) " +
-                           
-                           "OR (d.etat = 'bc_en_cours_dedition' AND EXISTS (SELECT 1 FROM UtilisateurGroupe ug " +
-                           "JOIN Groupe g ON ug.groupe_id = g.id WHERE ug.utilisateur_id = ? " +
-                           "AND g.nom = 'treatBc')) " +
-                           
-                           "OR (d.etat = 'bc_a_valider' AND EXISTS (SELECT 1 FROM UtilisateurGroupe ug " +
-                           "JOIN Groupe g ON ug.groupe_id = g.id WHERE ug.utilisateur_id = ? " +
-                           "AND g.nom = 'validateBc')) " +
-                           
-                           "OR (d.etat = 'bc_en_cours_de_validation' AND EXISTS (SELECT 1 FROM UtilisateurGroupe ug " +
-                           "JOIN Groupe g ON ug.groupe_id = g.id WHERE ug.utilisateur_id = ? " +
-                           "AND g.nom = 'validateBc')) " +
-                           
-                           "OR (d.etat = 'bc_valide_envoi_fournisseur' AND EXISTS (SELECT 1 FROM UtilisateurGroupe ug " +
-                           "JOIN Groupe g ON ug.groupe_id = g.id WHERE ug.utilisateur_id = ? " +
-                           "AND g.nom = 'notifBcSend')) " +
-                           
-                           "OR (d.etat = 'bc_envoye_attente_livraison' AND EXISTS (SELECT 1 FROM UtilisateurGroupe ug " +
-                           "JOIN Groupe g ON ug.groupe_id = g.id WHERE ug.utilisateur_id = ? " +
-                           "AND g.nom = 'notifBcSend')) " +
-
-                            "OR (d.etat = 'facture_a_valider' AND EXISTS (SELECT 1 FROM UtilisateurGroupe ug " +
-                            "JOIN Groupe g ON ug.groupe_id = g.id WHERE ug.utilisateur_id = ? " +
-                            "AND g.nom = 'validateFacture')) " +
-                           
-                           "OR (d.etat = 'commande_annulee' AND EXISTS (SELECT 1 FROM UtilisateurGroupe ug " +
-                           "JOIN Groupe g ON ug.groupe_id = g.id WHERE ug.utilisateur_id = ? " +
-                           "AND g.nom = 'notifBcSend')) " +
-                           
-                           "OR (d.etat = 'commande_livree_finalisee' AND EXISTS (SELECT 1 FROM UtilisateurGroupe ug " +
-                           "JOIN Groupe g ON ug.groupe_id = g.id WHERE ug.utilisateur_id = ? " +
-                           "AND g.nom = 'inventory'))";
+            "JOIN Demande d ON n.demande_id = d.id " +
+            "WHERE n.lu = FALSE " + // Condition pour le champ 'lu'
+            
+            // Notifications pour le créateur de la demande
+            "AND (d.utilisateur_id = ? " +
+            
+            // Notifications pour différents états de demande et groupes associés
+            "OR (d.etat = 'demande_envoyee' AND EXISTS (SELECT 1 FROM UtilisateurGroupe ug " +
+            "JOIN Groupe g ON ug.groupe_id = g.id WHERE ug.utilisateur_id = ? " +
+            "AND g.nom = 'treatDevis')) " +
+            
+            "OR (d.etat = 'demande_en_cours_de_traitement' AND EXISTS (SELECT 1 FROM UtilisateurGroupe ug " +
+            "JOIN Groupe g ON ug.groupe_id = g.id WHERE ug.utilisateur_id = ? " +
+            "AND g.nom = 'treatDevis')) " +
+            
+            "OR (d.etat = 'devis_a_valider' AND EXISTS (SELECT 1 FROM UtilisateurGroupe ug " +
+            "JOIN Groupe g ON ug.groupe_id = g.id WHERE ug.utilisateur_id = ? " +
+            "AND g.nom = 'validateDevis')) " +
+            
+            "OR (d.etat = 'devis_en_cours_de_validation' AND EXISTS (SELECT 1 FROM UtilisateurGroupe ug " +
+            "JOIN Groupe g ON ug.groupe_id = g.id WHERE ug.utilisateur_id = ? " +
+            "AND g.nom = 'validateDevis')) " +
+            
+            "OR (d.etat = 'bc_a_editer' AND EXISTS (SELECT 1 FROM UtilisateurGroupe ug " +
+            "JOIN Groupe g ON ug.groupe_id = g.id WHERE ug.utilisateur_id = ? " +
+            "AND g.nom = 'treatBc')) " +
+            
+            "OR (d.etat = 'bc_en_cours_dedition' AND EXISTS (SELECT 1 FROM UtilisateurGroupe ug " +
+            "JOIN Groupe g ON ug.groupe_id = g.id WHERE ug.utilisateur_id = ? " +
+            "AND g.nom = 'treatBc')) " +
+            
+            "OR (d.etat = 'bc_a_valider' AND EXISTS (SELECT 1 FROM UtilisateurGroupe ug " +
+            "JOIN Groupe g ON ug.groupe_id = g.id WHERE ug.utilisateur_id = ? " +
+            "AND g.nom = 'validateBc')) " +
+            
+            "OR (d.etat = 'bc_en_cours_de_validation' AND EXISTS (SELECT 1 FROM UtilisateurGroupe ug " +
+            "JOIN Groupe g ON ug.groupe_id = g.id WHERE ug.utilisateur_id = ? " +
+            "AND g.nom = 'validateBc')) " +
+            
+            "OR (d.etat = 'bc_valide_envoi_fournisseur' AND EXISTS (SELECT 1 FROM UtilisateurGroupe ug " +
+            "JOIN Groupe g ON ug.groupe_id = g.id WHERE ug.utilisateur_id = ? " +
+            "AND g.nom = 'notifBcSend')) " +
+            
+            "OR (d.etat = 'bc_envoye_attente_livraison' AND EXISTS (SELECT 1 FROM UtilisateurGroupe ug " +
+            "JOIN Groupe g ON ug.groupe_id = g.id WHERE ug.utilisateur_id = ? " +
+            "AND g.nom = 'notifBcSend')) " +
+            
+            "OR (d.etat = 'facture_a_valider' AND EXISTS (SELECT 1 FROM UtilisateurGroupe ug " +
+            "JOIN Groupe g ON ug.groupe_id = g.id WHERE ug.utilisateur_id = ? " +
+            "AND g.nom = 'validateFacture')) " +
+            
+            "OR (d.etat = 'commande_annulee' AND EXISTS (SELECT 1 FROM UtilisateurGroupe ug " +
+            "JOIN Groupe g ON ug.groupe_id = g.id WHERE ug.utilisateur_id = ? " +
+            "AND g.nom = 'notifBcSend')) " +
+            
+            "OR (d.etat = 'commande_livree_finalisee' AND EXISTS (SELECT 1 FROM UtilisateurGroupe ug " +
+            "JOIN Groupe g ON ug.groupe_id = g.id WHERE ug.utilisateur_id = ? " +
+            "AND g.nom = 'inventory')))";
                            
             PreparedStatement statement = database.prepareStatement(query);
-            for (int i = 1; i <= 13; i++) {
+            for (int i = 1; i <= 14; i++) {
                 statement.setInt(i, userId); 
             }
             
@@ -136,21 +139,22 @@ public class NotifDao {
     
             // Construire la requête SQL avec les conditions pour les notifications
             String query = "SELECT n.*, d.urgence " +
-                           "FROM Notif n " +
-                           "JOIN Demande d ON n.demande_id = d.id " +
-                           "JOIN UtilisateurGroupe ug ON d.utilisateur_id = ug.utilisateur_id " +
-                           "JOIN Groupe g ON ug.groupe_id = g.id " +
-                           "WHERE d.utilisateur_id = ? " + // Notifications pour le créateur de la demande
-                           "OR (d.etat IN ('demande_envoyee', 'demande_en_cours_de_traitement', 'devis_a_valider', 'devis_en_cours_de_validation', 'bc_a_editer', 'bc_en_cours_dedition', 'bc_a_valider', 'bc_en_cours_de_validation', 'bc_valide_envoi_fournisseur', 'bc_envoye_attente_livraison', 'commande_annulee', 'commande_livree_finalisee') AND (" +
-                           groupConditions.toString() + ")) " + // Notifications pour les groupes autorisés
-                           "ORDER BY " +
-                           "    CASE d.urgence " +
-                           "        WHEN 'haute' THEN 1 " +
-                           "        WHEN 'moyenne' THEN 2 " +
-                           "        WHEN 'basse' THEN 3 " +
-                           "    END, " +
-                           "    n.date_notification ASC " +
-                           "LIMIT 1";
+                       "FROM Notif n " +
+                       "JOIN Demande d ON n.demande_id = d.id " +
+                       "JOIN UtilisateurGroupe ug ON d.utilisateur_id = ug.utilisateur_id " +
+                       "JOIN Groupe g ON ug.groupe_id = g.id " +
+                       "WHERE n.lu = FALSE " + // Ajouter condition pour les notifications non lues
+                       "AND (d.utilisateur_id = ? " + // Notifications pour le créateur de la demande
+                       "OR (d.etat IN ('demande_envoyee', 'demande_en_cours_de_traitement', 'devis_a_valider', 'devis_en_cours_de_validation', 'bc_a_editer', 'bc_en_cours_dedition', 'bc_a_valider', 'bc_en_cours_de_validation', 'bc_valide_envoi_fournisseur', 'bc_envoye_attente_livraison', 'commande_annulee', 'commande_livree_finalisee') AND (" +
+                       groupConditions.toString() + "))) " + // Notifications pour les groupes autorisés
+                       "ORDER BY " +
+                       "    CASE d.urgence " +
+                       "        WHEN 'haute' THEN 1 " +
+                       "        WHEN 'moyenne' THEN 2 " +
+                       "        WHEN 'basse' THEN 3 " +
+                       "    END, " +
+                       "    n.date_notification ASC " +
+                       "LIMIT 1";
             PreparedStatement statement = database.prepareStatement(query);
             statement.setInt(1, userId);
             ResultSet resultSet = statement.executeQuery();
@@ -171,7 +175,7 @@ public class NotifDao {
         return notif;
     }
     
-
+    //A optimiser
     public static List<Notif> getNotificationsForUser(int userId) {
         List<Notif> notifications = new ArrayList<>();
         try {
@@ -200,14 +204,14 @@ public class NotifDao {
             
             // Construire la requête SQL avec les conditions pour les notifications
             String query = "SELECT n.*, d.urgence " +
-                           "FROM Notif n " +
-                           "JOIN Demande d ON n.demande_id = d.id " +
-
-                           "JOIN UtilisateurGroupe ug ON d.utilisateur_id = ug.utilisateur_id " +
-                           "JOIN Groupe g ON ug.groupe_id = g.id " +
-                           "WHERE d.utilisateur_id = ? " + // Notifications pour le créateur de la demande
-                           "OR (d.etat IN ('demande_envoyee', 'demande_en_cours_de_traitement', 'devis_a_valider', 'devis_en_cours_de_validation', 'bc_a_editer', 'bc_en_cours_dedition', 'bc_a_valider', 'bc_en_cours_de_validation', 'bc_valide_envoi_fournisseur', 'bc_envoye_attente_livraison','facture_a_valider', 'commande_annulee', 'commande_livree_finalisee') AND (" + 
-                           groupConditions.toString() + "))"; // Notifications pour les groupes autorisés
+                       "FROM Notif n " +
+                       "JOIN Demande d ON n.demande_id = d.id " +
+                       "JOIN UtilisateurGroupe ug ON d.utilisateur_id = ug.utilisateur_id " +
+                       "JOIN Groupe g ON ug.groupe_id = g.id " +
+                       "WHERE n.lu = FALSE " + // Ajouter condition pour les notifications non lues
+                       "AND (d.utilisateur_id = ? " + // Notifications pour le créateur de la demande
+                       "OR (d.etat IN ('demande_envoyee', 'demande_en_cours_de_traitement', 'devis_a_valider', 'devis_en_cours_de_validation', 'bc_a_editer', 'bc_en_cours_dedition', 'bc_a_valider', 'bc_en_cours_de_validation', 'bc_valide_envoi_fournisseur', 'bc_envoye_attente_livraison', 'facture_a_valider', 'commande_annulee', 'commande_livree_finalisee') AND (" + 
+                       groupConditions.toString() + ")))"; // Notifications pour les groupes autorisés
             
             PreparedStatement statement = database.prepareStatement(query);
             statement.setInt(1, userId);
