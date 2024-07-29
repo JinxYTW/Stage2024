@@ -116,6 +116,7 @@ public class NotifController {
             jsonResponse.addProperty("message", notif.message());
             jsonResponse.addProperty("type", notif.type().toString());
             jsonResponse.addProperty("dateNotification", notif.dateNotification().toString());
+
             
             response.json(jsonResponse);
         } catch (Exception e) {

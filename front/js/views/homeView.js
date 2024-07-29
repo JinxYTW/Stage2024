@@ -63,13 +63,10 @@ class homeView{
             // Marquer la notification comme lue en utilisant la méthode dans homeServices
             const success = await this.homeServices.markNotifAsRead(notifId);
             if (success) {
-                console.log('Notification marquée comme lue');
-                
+
                 const updateSuccess = await this.homeServices.updateNotificationTypeRead(notifId);
-                console.log('updateSuccess:', updateSuccess);   
 
                 if (updateSuccess) {
-                    console.log('Notification mise à jour avec succès');
                     // Recharger les notifications
                     this.loadNotifications();
                 } else {
@@ -90,21 +87,14 @@ class homeView{
      * Binds the search button click event and performs a search based on the input values.
      */
     bindSearchDemandes() {
-        console.log('Binding search button');
         this.searchButton.addEventListener('click', async (event) => {
-            console.log('Search button clicked');
             event.preventDefault(); // Empêche le rechargement de la page lors du clic sur le bouton de recherche
     
             const orderNumber = document.getElementById('order-number').value;
-            console.log('Order number:', orderNumber);
             const orderDate = document.getElementById('order-date').value;
-            console.log('Order date:', orderDate);
             const orderArticle = document.getElementById('order-article').value;
-            console.log('Order article:', orderArticle);
             const orderDomain = document.getElementById('order-domain').value;
-            console.log('Order domain:', orderDomain);
             const orderClient = document.getElementById('order-client').value;
-            console.log('Order client:', orderClient);
     
             // Change le texte de l'élément avec l'ID "currentMonth"
             document.getElementById('currentMonth').textContent = 'Recherche Avancée';
@@ -120,7 +110,6 @@ class homeView{
      * @returns {Promise<void>} - Une promesse qui se résout lorsque l'affichage est terminé.
      */
     async afficherDemandes(demandes) {
-        console.log('Demandes:', demandes);
     
         // Trier les demandes par date décroissante
         demandes.sort((a, b) => new Date(b.date_demande) - new Date(a.date_demande));
@@ -197,7 +186,6 @@ class homeView{
         const userId = new URLSearchParams(window.location.search).get('user');
         if (userId) {
             const role = await this.homeServices.getRole(userId);
-            console.log('Role:', role);
             if (role) {
                 this.userRole.textContent = role;
             } else {

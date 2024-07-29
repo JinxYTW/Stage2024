@@ -13,6 +13,7 @@ def jinx_hash(password):
 
     return sha256_hash
 
+print(jinx_hash("admin")) 
 
 
 

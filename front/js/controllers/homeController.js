@@ -23,7 +23,7 @@ class homeController{
     }
 
     afficherDemandes(demandes) {
-        console.log("Le putain d'SSE fonctionne");
+        console.log("Le SSE fonctionne");
         this.homeView.afficherDemandes(demandes);
     }
 }

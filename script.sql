@@ -183,8 +183,8 @@ INSERT INTO Utilisateur (nom, prenom, email, username, mot_de_passe, role) VALUE
 ('responsable','devistel','responsabledevistel@chu.re','geredestrucsdevistel','ce2667b45246fdfebf9ce4718d6e916ae22815f6540c29e7236c5bad73334b9c','respDevisTel'),
 ('stock','un','stock@chu.re','gerelesstoks','d928bc3b82d8eb7df1130a822e15e1065fe80fb4898eb7b36a9ebe43034d7cfb','stock'),
 ('directeur','un','directeur@chu.re','dirigedestrucs','aa07deca25865fcc95fd7a610533507cf3c36d6e012a58b9053cc406868864b6','directeur'),
-('admin','team','adiminteam@chu.re','faitdestrucs','0c2e9e5290b94e9e913f1a64cfcabed420d4c28cbc85601130d14224cec7b3f4','adminteam');
-
+('administration','team','adiminteam@chu.re','faitdestrucs','0c2e9e5290b94e9e913f1a64cfcabed420d4c28cbc85601130d14224cec7b3f4','adminteam'),
+('Bruce', 'Tout Puissant', 'admin@chu.re', 'admin', '1e8b523b8f96fbf5e1a3408a97538c29d660be96ca51b5559e04fd637a8318b1', 'directeur');
 -- Insérer un projet pour l'utilisateur avec ID 1
 INSERT INTO Projet (nom, description) VALUES
 ('', ''),
@@ -251,8 +251,14 @@ INSERT INTO UtilisateurGroupe (utilisateur_id, groupe_id) VALUES
 (3, 4),
 (4, 5),
 (5, 6),
-(6, 7);
-
+(6, 7),
+(8, 1),
+(8, 2),
+(8, 3),
+(8, 4),
+(8, 5),
+(8, 6),
+(8, 7);
 
 
 

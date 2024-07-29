@@ -12,14 +12,12 @@ class homeServices {
                     'Content-Type': 'application/json'
                 }
             });
-            console.log(`Response status: ${response.status}`); // Ajoutez ce log
 
             if (response.status !== 200) {
                 throw new Error('Échec de la mise à jour de la notification');
             }
 
             const data = await response.json();
-            console.log('Data received:', data); // Ajoutez ce log
             return data;
         } catch (error) {
             console.error("Erreur dans la mise à jour de la notification", error);
@@ -82,7 +80,6 @@ class homeServices {
                 throw new Error('La récupération des notifications a échoué');
             }
             const data = await response.json();
-            console.log('Data received:', data); // Ajoutez ce log
             return data;
         }
         catch (error) {
@@ -249,7 +246,6 @@ class homeServices {
                 throw new Error('La génération du PDF a échoué');
             }
             const data = await response.json();
-            console.log('Data received:', data); // Ajoutez ce log
             return data.pdfPath;
         } catch (error) {
             console.log("Erreur dans la génération du PDF", error);
@@ -272,7 +268,6 @@ class homeServices {
                 throw new Error('La génération du PDF a échoué');
             }
             const data = await response.json();
-            console.log('Data received:', data); // Ajoutez ce log
             return data.pdfPath;
         } catch (error) {
             console.log("Erreur dans la génération du PDF", error);
@@ -295,7 +290,6 @@ class homeServices {
                 throw new Error('La génération du PDF a échoué');
             }
             const data = await response.json();
-            console.log('Data received:', data); // Ajoutez ce log
             return data.pdfPath;
         }catch (error) {
             console.log("Erreur dans la génération du PDF", error);
@@ -318,7 +312,6 @@ class homeServices {
                 throw new Error('La génération du PDF a échoué');
             }
             const data = await response.json();
-            console.log('Data received:', data); // Ajoutez ce log
             return data.pdfPath;
         }catch (error) {
             console.log("Erreur dans la génération du PDF", error);

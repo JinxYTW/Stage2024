@@ -13,9 +13,44 @@ class askView{
     this.updateUserNames();
     this.updateUserRole();
     this.initializeForm();
+    
     this.addClickableZoneListener();
+    this.loadNotifications();
     }
 
+    //----------------- Gère l'affichage des Notifications -----------------//
+    getDemandeIdFromUrl() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('user');
+    }
+
+    async loadNotifications() {
+        const userId = this.getDemandeIdFromUrl();
+        if (userId) {
+            try {
+                const notificationCount = await this.homeServices.countNotifForUser(userId);
+                const lastUrgentNotification = await this.homeServices.getOldestUrgentNotification(userId);
+    
+                // Mettre à jour l'élément HTML avec le nombre de notifications
+                const notifZone = document.getElementById('notif_zone');
+                notifZone.textContent = `Notifications (${notificationCount})`;
+    
+                // Mettre à jour l'élément HTML avec la dernière notification urgente
+                const lastNotif = document.getElementById('last_notif');
+                if (lastUrgentNotification && lastUrgentNotification.message) {
+                    lastNotif.textContent = `${lastUrgentNotification.message} ${lastUrgentNotification.demandeId} est à l'état ${lastUrgentNotification.type}`;
+                    lastNotif.dataset.id = lastUrgentNotification.id; // Ajouter un ID pour le traitement ultérieur
+                } else {
+                    lastNotif.textContent = 'Aucune notification urgente';
+                    lastNotif.removeAttribute('data-id'); // Assurez-vous de supprimer l'ID s'il n'y a pas de notification
+                }
+            } catch (error) {
+                console.error("Erreur dans la récupération des notifications", error);
+            }
+        } else {
+            console.error('User ID not found in the URL.');
+        }
+    }
     // Méthode pour ajouter un événement de clic à la zone cliquable
     addClickableZoneListener() {
         const clickableZone = document.querySelector('.clickable-zone');
@@ -24,11 +59,27 @@ class askView{
         });
     }
 
-    handleClickableZoneClick() {
-        // Ajoutez ici la logique que vous souhaitez exécuter lorsque la zone est cliquée
-        alert('Zone cliquée!');
-        // Par exemple, vous pouvez rediriger vers une autre page ou afficher un modal
-        // window.location.href = 
+    async handleClickableZoneClick() {
+        const notifId = document.getElementById('last_notif').dataset.id;
+        if (notifId) {
+            // Marquer la notification comme lue en utilisant la méthode dans homeServices
+            const success = await this.homeServices.markNotifAsRead(notifId);
+            if (success) {
+                
+                const updateSuccess = await this.homeServices.updateNotificationTypeRead(notifId);
+
+                if (updateSuccess) {
+                    // Recharger les notifications
+                    this.loadNotifications();
+                } else {
+                    console.error('Erreur lors de la mise à jour de la notification');
+                }
+            } else {
+                console.error('Erreur lors du marquage de la notification comme lue');
+            }
+        } else {
+            console.error('ID de notification manquant');
+        }
     }
 
     getUserIdFromUrl() {
@@ -111,14 +162,12 @@ class askView{
                 justification,
                 additional_details
             };
-            console.log('Données du formulaire:', formData);
     
             
     
             try {
                 // Appeler le service pour créer la demande
                 const response = await this.askServices.createDemande(formData);
-                console.log('Demande créée avec succès:', response);
     
                 // Afficher un message de succès ou rediriger l'utilisateur
                 alert('Demande créée avec succès. ID: ' + response.demandeId);
