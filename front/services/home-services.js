@@ -4,6 +4,26 @@
 class homeServices {
     constructor() {}
 
+    // Nouvelle méthode pour marquer une notification comme lue
+    async markNotifAsRead(notifId) {
+        try {
+            const response = await fetch(`http://localhost:8080/api/markNotifAsRead?notifId=${notifId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (!response.ok) {
+                throw new Error('La mise à jour de la notification a échoué');
+            }
+            return true;
+        }
+        catch (error) {
+            console.error("Erreur dans la mise à jour de la notification", error);
+            return false;
+        }
+    }
+
     async countNotifForUser(userId) {
         try {
             const response = await fetch(`http://localhost:8080/api/countNotifForUser?userId=${userId}`, {

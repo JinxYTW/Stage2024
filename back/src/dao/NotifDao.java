@@ -16,6 +16,18 @@ public class NotifDao {
     public NotifDao() {
     }
 
+    public static void markAsRead(int notifId) {
+        try {
+            SomethingDatabase database = new SomethingDatabase();
+            String query = "UPDATE Notif SET lu = TRUE WHERE id = ?";
+            PreparedStatement statement = database.prepareStatement(query);
+            statement.setInt(1, notifId);
+            statement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static int countNotifForUser(int userId) {
         int nbNotif = 0;
         try {

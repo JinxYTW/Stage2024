@@ -15,6 +15,18 @@ public class NotifController {
     public NotifController() {
     }
 
+    public void markAsRead(WebServerContext context) {
+        WebServerResponse response = context.getResponse();
+        try {
+            int notifId = Integer.parseInt(context.getRequest().getQueryParams().get("notifId"));
+            NotifDao.markAsRead(notifId);
+            response.json("{\"success\": true}");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.status(500, "Internal Server Error");
+        }
+    }
+
     public void countNotifForUser(WebServerContext context) {
         WebServerResponse response = context.getResponse();
         try {

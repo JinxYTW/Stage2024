@@ -17,6 +17,33 @@ class homeView{
         this.generatePdfDemande();
 
         this.addClickableZoneListener();
+        this.loadNotifications();
+    }
+
+    //----------------- Gère l'affichage des Notifications -----------------//
+
+    async loadNotifications() {
+        const userId = this.getDemandeIdFromUrl();
+        if (userId) {
+            const notificationCount = await this.homeServices.countNotifForUser(userId);
+            const lastUrgentNotification = await this.homeServices.getOldestUrgentNotification(userId);
+
+            // Mettre à jour l'élément HTML avec le nombre de notifications
+            const notifZone = document.getElementById('notif_zone');
+            notifZone.textContent = `Notifications (${notificationCount})`;
+
+            // Mettre à jour l'élément HTML avec la dernière notification urgente
+            const lastNotif = document.getElementById('last_notif');
+            if (lastUrgentNotification) {
+                lastNotif.textContent = lastUrgentNotification.message;
+                lastNotif.dataset.id = lastUrgentNotification.id; // Ajouter un ID pour le traitement ultérieur
+            } else {
+                lastNotif.textContent = 'Aucune notification urgente';
+                lastNotif.removeAttribute('data-id'); // Assurez-vous de supprimer l'ID s'il n'y a pas de notification
+            }
+        } else {
+            console.error('User ID not found in the URL.');
+        }
     }
 
     // Méthode pour ajouter un événement de clic à la zone cliquable
@@ -27,14 +54,24 @@ class homeView{
         });
     }
 
-    handleClickableZoneClick() {
-        // Ajoutez ici la logique que vous souhaitez exécuter lorsque la zone est cliquée
-        alert('Zone cliquée!');
-        // Par exemple, vous pouvez rediriger vers une autre page ou afficher un modal
-        // window.location.href = 
+    async handleClickableZoneClick() {
+        const notifId = document.getElementById('last_notif').dataset.id;
+        if (notifId) {
+            // Marquer la notification comme lue en utilisant la méthode dans homeServices
+            const success = await this.homeServices.markNotifAsRead(notifId);
+            if (success) {
+                console.log('Notification marquée comme lue');
+                // Après avoir marqué la notification comme lue, vous pouvez recharger les notifications
+                this.loadNotifications();
+            } else {
+                console.error('Échec de la mise à jour de la notification');
+            }
+        } else {
+            alert('Aucune notification à mettre à jour.');
+        }
     }
 
-    
+    //----------------- Gère l'affichage des demandes -----------------//
 
     /**
      * Binds the search button click event and performs a search based on the input values.
@@ -134,6 +171,7 @@ class homeView{
         }
     }
 
+    //----------------- Gère l'affichage des informations comme nom et rôles -----------------//
 
     async updateUserNames(){
         const userId = window.location.search.split('=')[1];
@@ -156,6 +194,8 @@ class homeView{
             console.error('ID utilisateur manquant dans l\'URL');
         }
     }
+
+    //----------------- Génère les PDF -----------------//
 
     async generatePdfDemande(){
         document.querySelectorAll('.generate_pdf_demande').forEach(button => {

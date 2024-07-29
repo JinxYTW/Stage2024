@@ -216,6 +216,11 @@ public class App {
                 mynotifController.getNotificationsForUser(context);
             });
 
+        webserver.getRouter().post("/api/markNotifAsRead", (WebServerContext context) -> {
+                
+                mynotifController.markAsRead(context);
+            });
+
             //-------------- Relance --------------------------------
 
         //-------------- SSE ----------------------------
