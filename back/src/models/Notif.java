@@ -23,6 +23,7 @@ public record Notif(
         bc_a_valider,
         bc_en_cours_de_validation,
         bc_valide_envoi_fournisseur,
+        envoi_fournisseur_en_cours,
         bc_envoye_attente_livraison,
         facture_a_valider,
         commande_annulee,

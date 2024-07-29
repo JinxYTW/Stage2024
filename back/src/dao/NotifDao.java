@@ -90,6 +90,10 @@ public class NotifDao {
             "OR (d.etat = 'bc_valide_envoi_fournisseur' AND EXISTS (SELECT 1 FROM UtilisateurGroupe ug " +
             "JOIN Groupe g ON ug.groupe_id = g.id WHERE ug.utilisateur_id = ? " +
             "AND g.nom = 'notifBcSend')) " +
+
+            "OR (d.etat = 'envoi_fournisseur_en_cours' AND EXISTS (SELECT 1 FROM UtilisateurGroupe ug " +
+            "JOIN Groupe g ON ug.groupe_id = g.id WHERE ug.utilisateur_id = ? " +
+            "AND g.nom = 'notifBcSend')) " +
             
             "OR (d.etat = 'bc_envoye_attente_livraison' AND EXISTS (SELECT 1 FROM UtilisateurGroupe ug " +
             "JOIN Groupe g ON ug.groupe_id = g.id WHERE ug.utilisateur_id = ? " +
@@ -108,7 +112,7 @@ public class NotifDao {
             "AND g.nom = 'inventory')))";
                            
             PreparedStatement statement = database.prepareStatement(query);
-            for (int i = 1; i <= 14; i++) {
+            for (int i = 1; i <= 15; i++) {
                 statement.setInt(i, userId); 
             }
             
@@ -157,7 +161,7 @@ public class NotifDao {
                        "JOIN Groupe g ON ug.groupe_id = g.id " +
                        "WHERE n.lu = FALSE " + // Ajouter condition pour les notifications non lues
                        "AND (d.utilisateur_id = ? " + // Notifications pour le créateur de la demande
-                       "OR (d.etat IN ('demande_envoyee', 'demande_en_cours_de_traitement', 'devis_a_valider', 'devis_en_cours_de_validation', 'bc_a_editer', 'bc_en_cours_dedition', 'bc_a_valider', 'bc_en_cours_de_validation', 'bc_valide_envoi_fournisseur', 'bc_envoye_attente_livraison', 'commande_annulee', 'commande_livree_finalisee') AND (" +
+                       "OR (d.etat IN ('demande_envoyee', 'demande_en_cours_de_traitement', 'devis_a_valider', 'devis_en_cours_de_validation', 'bc_a_editer', 'bc_en_cours_dedition', 'bc_a_valider', 'bc_en_cours_de_validation', 'bc_valide_envoi_fournisseur','envoi_fournisseur_en_cours', 'bc_envoye_attente_livraison', 'commande_annulee', 'commande_livree_finalisee') AND (" +
                        groupConditions.toString() + "))) " + // Notifications pour les groupes autorisés
                        "ORDER BY " +
                        "    CASE d.urgence " +
@@ -222,7 +226,7 @@ public class NotifDao {
                        "JOIN Groupe g ON ug.groupe_id = g.id " +
                        "WHERE n.lu = FALSE " + // Ajouter condition pour les notifications non lues
                        "AND (d.utilisateur_id = ? " + // Notifications pour le créateur de la demande
-                       "OR (d.etat IN ('demande_envoyee', 'demande_en_cours_de_traitement', 'devis_a_valider', 'devis_en_cours_de_validation', 'bc_a_editer', 'bc_en_cours_dedition', 'bc_a_valider', 'bc_en_cours_de_validation', 'bc_valide_envoi_fournisseur', 'bc_envoye_attente_livraison', 'facture_a_valider', 'commande_annulee', 'commande_livree_finalisee') AND (" + 
+                       "OR (d.etat IN ('demande_envoyee', 'demande_en_cours_de_traitement', 'devis_a_valider', 'devis_en_cours_de_validation', 'bc_a_editer', 'bc_en_cours_dedition', 'bc_a_valider', 'bc_en_cours_de_validation', 'bc_valide_envoi_fournisseur','envoi_fournisseur_en_cours', 'bc_envoye_attente_livraison', 'facture_a_valider', 'commande_annulee', 'commande_livree_finalisee') AND (" + 
                        groupConditions.toString() + ")))"; // Notifications pour les groupes autorisés
             
             PreparedStatement statement = database.prepareStatement(query);
