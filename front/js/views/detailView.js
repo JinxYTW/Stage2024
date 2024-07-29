@@ -252,6 +252,9 @@ async handleClickableZoneClick() {
             button.className = 'btn btn-info btn-block dynamic-button';
             button.textContent = buttonLabels[groupName] || `Action pour ${groupName}`; // Texte par défaut si le groupe n'est pas dans le mapping
 
+            // Ajouter un attribut data-id pour identifier le groupe
+            button.setAttribute('data-id', groupName);
+
             // Ajouter un gestionnaire d'événements avec l'action spécifique
             button.addEventListener('click', () => {
                 if (buttonActions[groupName]) {
