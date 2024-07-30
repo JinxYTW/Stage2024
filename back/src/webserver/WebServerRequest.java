@@ -1,6 +1,7 @@
 package webserver;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.HashMap;
@@ -115,5 +116,21 @@ public class WebServerRequest {
     // Nouvelle méthode pour obtenir les en-têtes de la requête
     public Headers getHeaders() {
         return this.exchange.getRequestHeaders();
+    }
+
+     // Nouvelle méthode pour obtenir le flux d'entrée
+     public InputStream getInputStream() {
+        return exchange.getRequestBody();
+    }
+
+    // Nouvelle méthode pour obtenir un en-tête spécifique
+    public String getHeader(String headerName) {
+        Headers headers = this.exchange.getRequestHeaders();
+        return headers.getFirst(headerName);
+    }
+
+    // Nouvelle méthode pour obtenir l'objet HttpExchange
+    public HttpExchange getExchange() {
+        return this.exchange;
     }
 }

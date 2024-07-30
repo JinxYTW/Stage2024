@@ -118,6 +118,11 @@ public class App {
 
             //-------------- Devis ----------------------------
 
+            webserver.getRouter().post("/uploadDevis", (WebServerContext context) -> {
+                System.out.println("Upload Devis");
+                mydevisController.uploadDevis(context);
+            });
+
         webserver.getRouter().get("/api/generatePdfDevis", (WebServerContext context) -> {
             
             mydevisController.generatePdf(context);
@@ -225,6 +230,15 @@ public class App {
                 
                 mynotifController.updateNotificationTypeRead(context);
             });
+
+            
+
+        webserver.getRouter().post("/api/updateNotificationType", (WebServerContext context) -> {
+                
+                mynotifController.updateNotificationType(context);
+            });
+
+            
 
             //-------------- Relance --------------------------------
 

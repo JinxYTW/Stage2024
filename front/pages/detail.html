@@ -94,6 +94,18 @@
             </div>
         </div>
     </div>
+     <!-- Modale de Téléversement -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Téléversement des fichiers PDF</h2>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <input type="file" name="files[]" accept="application/pdf" multiple required>
+            <br><br>
+            <button type="submit" class="btn btn-primary">Valider</button>
+        </form>
+        </div>
+    </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

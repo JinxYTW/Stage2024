@@ -16,6 +16,19 @@ public class NotifDao {
     public NotifDao() {
     }
 
+    public static void updateNotificationType(int demandeId, String newType) {
+        try {
+            SomethingDatabase database = new SomethingDatabase();
+            String query = "UPDATE Notif SET type = ? WHERE demande_id = ?";
+            PreparedStatement statement = database.prepareStatement(query);
+            statement.setString(1, newType);
+            statement.setInt(2, demandeId);
+            statement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static boolean updateNotificationTypeRead(int notifId, boolean newLuStatus, String newType) {
         try {
             SomethingDatabase database = new SomethingDatabase();

@@ -1,6 +1,7 @@
 package controller;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -14,6 +15,31 @@ import models.Notif;
 public class NotifController {
     public NotifController() {
     }
+
+    public void updateNotificationType(WebServerContext context) {
+    try {
+        // Extraire les données du corps de la requête
+        Map<String, String> requestBody = context.extractBody(Map.class);
+        String demandeId = requestBody.get("demandeId");
+        int demandeIdInt = Integer.parseInt(demandeId);
+        String newType = requestBody.get("newType");
+
+        NotifDao.updateNotificationType(demandeIdInt, newType);
+
+
+
+        // Logique pour mettre à jour le type de notification
+        // Par exemple, mettre à jour dans la base de données
+        // notificationService.updateNotificationType(demandeId, newType);
+
+        // Répondre au client avec succès
+        context.getResponse().ok("Notification mise à jour avec succès");
+    } catch (Exception e) {
+        e.printStackTrace();
+        context.getResponse().serverError("Erreur lors de la mise à jour de la notification");
+    }
+}
+
 
     public void updateNotificationTypeRead(WebServerContext context) {
         WebServerResponse response = context.getResponse();

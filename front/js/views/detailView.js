@@ -215,6 +215,7 @@ async handleClickableZoneClick() {
                 
                 'treatDevis': () => {
                     console.log('Action pour traiter les devis');
+                    this.openUploadModal();
                     // Ajoutez ici la logique pour traiter les devis
                     
                 },
@@ -273,7 +274,50 @@ async handleClickableZoneClick() {
             console.error('Erreur lors de la récupération des groupes:', error);
         }
     }
+
+        // Fonction pour ouvrir la modale
+        openUploadModal() {
+            const demandeId = new URLSearchParams(window.location.search).get('demandeId');
+            const newType = 'devis_a_valider';
+
+            const modal = document.getElementById('uploadModal');
+            const span = modal.querySelector('.close');
+            
+            modal.style.display = "block";
     
-}
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+            
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+    
+            document.getElementById('uploadForm').onsubmit = async function(e) {
+    e.preventDefault();
+
+    const formElement = document.getElementById('uploadForm');
+    if (!formElement) {
+        console.error('Le formulaire avec l\'ID "uploadForm" n\'a pas été trouvé.');
+        return;
+    }
+
+    const formData = new FormData(formElement);
+    const uploadSuccess = await this.detailServices.uploadFiles(formData);
+
+    if (uploadSuccess) {
+        modal.style.display = "none";
+
+        const demandeId = new URLSearchParams(window.location.search).get('demandeId');
+        const newType = "devis_a_valider"
+        await this.detailServices.updateNotificationType(demandeId, newType);
+    }
+}.bind(this);
+
+        }
+    
+    }
 
 export { detailView };

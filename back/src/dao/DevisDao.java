@@ -22,6 +22,8 @@ import models.Devis;
 
 public class DevisDao {
 
+    
+
     // Méthode pour sauvegarder le chemin du fichier PDF
     public void savePdfPath(int id, String pdfPath) {
         try {
