@@ -23,6 +23,26 @@ import models.Devis;
 
 public class DevisDao {
 
+    public boolean isOneDevisValidate (int demandeId){
+        try {
+            SomethingDatabase myDatabase = new SomethingDatabase();
+
+            String query = "SELECT COUNT(*) FROM Devis WHERE demande_id = ? AND etat = 'validé'";
+            PreparedStatement statement = myDatabase.prepareStatement(query);
+            statement.setInt(1, demandeId);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getInt(1) > 0;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public String validateDevis(String pdfPath){
         try {
             SomethingDatabase myDatabase = new SomethingDatabase();

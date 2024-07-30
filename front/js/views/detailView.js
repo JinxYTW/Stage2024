@@ -281,6 +281,18 @@ async handleClickableZoneClick() {
                     button.textContent = "Traiter les devis";
                 }
             }
+
+            if (groupName === 'validateDevis') {
+                const demandeId = new URLSearchParams(window.location.search).get('demandeId');
+                const devis = await this.detailServices.isOneDevisValidate(demandeId);
+                if (devis) {
+                    button.disabled = true;
+                    button.textContent = "Devis deja validé";
+                } else {
+                    button.disabled = false;
+                    button.textContent = "Valider les devis";
+                }
+            }
         });
 
     
@@ -373,11 +385,15 @@ async openValidateModal() {
             const validateButton = document.createElement('button');
             validateButton.textContent = 'Valider';
             validateButton.className = 'btn btn-success';
+            validateButton.type = 'submit';
             validateButton.onclick = async () => {
                 // Utiliser l'ID du devis si nécessaire pour la validation
                 const success = await this.detailServices.validateDevis(pdfPath);
                 if (success) {
                     alert('Devis validé avec succès');
+                    
+                    const newType = "devis_a_valider"
+                    await this.detailServices.updateNotificationType(demandeId, newType);
                     // Vous pouvez ajouter ici du code pour rafraîchir la liste des devis si nécessaire
                 } else {
                     alert('Erreur lors de la validation du devis');

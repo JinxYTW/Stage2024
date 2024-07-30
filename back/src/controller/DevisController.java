@@ -26,6 +26,29 @@ public class DevisController {
     public DevisController() {
     }
 
+    public void isOneDevisValidate(WebServerContext context){
+        WebServerResponse response = context.getResponse();
+        try {
+            String demandeId = context.getRequest().getQueryParams().get("demandeId");
+            int demandeIdInt = Integer.parseInt(demandeId);
+    
+            DevisDao devisDao = new DevisDao();
+            boolean isOneDevisValidate = devisDao.isOneDevisValidate(demandeIdInt);
+    
+            JsonObject json = new JsonObject();
+            json.addProperty("isOneDevisValidate", isOneDevisValidate);
+            
+            response.json(json);
+            
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            response.serverError("Format incorrect pour le paramètre 'demandeId'");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.serverError("Erreur serveur");
+        }
+    }
+
     public void validateDevis(WebServerContext context) {
         WebServerResponse response = context.getResponse();
         try {

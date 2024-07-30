@@ -118,6 +118,11 @@ public class App {
 
             //-------------- Devis ----------------------------
 
+            webserver.getRouter().get("/api/isOneDevisValidate", (WebServerContext context) -> {
+                
+                mydevisController.isOneDevisValidate(context);
+            });
+
             webserver.getRouter().post("/api/validateDevis", (WebServerContext context) -> {
                 
                 mydevisController.validateDevis(context);
