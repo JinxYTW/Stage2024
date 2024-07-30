@@ -106,9 +106,26 @@
         </form>
         </div>
     </div>
+
+            <!-- Modal pour valider les devis -->
+    <div id="validateModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Validation des Devis</h2>
+            <div id="devisList">
+                <!-- Les boutons pour chaque devis seront ajoutés ici dynamiquement -->
+            </div>
+            <button id="closeValidateModal" class="btn btn-secondary">Fermer</button>
+        </div>
+    </div>
+
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script type="module" src="../js/detail.js"></script>
+
+
+
 </body>
 </html>

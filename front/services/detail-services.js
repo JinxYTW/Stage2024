@@ -1,6 +1,52 @@
 class detailServices{
     constructor() {}
 
+    async validateDevis(pdfPath) {
+        try {
+            const response = await fetch(`http://127.0.0.1:8080/api/validateDevis`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ pdfPath: pdfPath }) // Envoyer le chemin du PDF dans le corps de la requête
+            });
+    
+            if (response.ok) {
+                const result = await response.json();
+                console.log(result);
+                return result.success; // On suppose que la réponse contient une propriété "success"
+            } else {
+                console.error('Erreur lors de la validation du devis');
+                return false;
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            return false;
+        }
+    }
+    
+
+    async getDevisPdfPath(demandeId) {
+        try {
+            const response = await fetch(`http://127.0.0.1:8080/api/getDevisPdfPath?demandeId=${demandeId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                return data; 
+            } else {
+                console.error('Erreur lors de la récupération du nombre de devis');
+                return 0;
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            return 0;
+        }
+    }
+
     async getDevisCount(demandeId) {
         try {
             const response = await fetch(`http://127.0.0.1:8080/api/getDevisCount?demandeId=${demandeId}`, {

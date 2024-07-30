@@ -216,12 +216,12 @@ async handleClickableZoneClick() {
                 'treatDevis': () => {
                     console.log('Action pour traiter les devis');
                     this.openUploadModal();
-                    // Ajoutez ici la logique pour traiter les devis
+                    
                     
                 },
                 'validateDevis': () => {
                     console.log('Action pour valider les devis');
-                    // Ajoutez ici la logique pour valider les devis
+                    this.openValidateModal();
                     
                 },
                 'treatBc': () => {
@@ -289,7 +289,7 @@ async handleClickableZoneClick() {
         }
     }
 
-        // Fonction pour ouvrir la modale
+        // Fonction pour ouvrir la modale afin de déposer les devis
         async openUploadModal() {
             const demandeId = new URLSearchParams(window.location.search).get('demandeId');
             // Vérifiez le nombre actuel de devis
@@ -334,6 +334,85 @@ async handleClickableZoneClick() {
 }.bind(this);
 
         }
+
+        // Fonction pour ouvrir la modale de validation des devis
+async openValidateModal() {
+    const demandeId = new URLSearchParams(window.location.search).get('demandeId');
+
+    if (!demandeId) {
+        console.error('ID de demande manquant dans l\'URL');
+        return;
+    }
+
+    try {
+        // Récupérer les devis pour la demande donnée
+        const devis = await this.detailServices.getDevisPdfPath(demandeId);
+
+        console.log('Devis récupérés:', devis);
+
+        const modal = document.getElementById('validateModal');
+        const span = modal.querySelector('.close');
+        const closeButton = document.getElementById('closeValidateModal');
+        const devisListDiv = document.getElementById('devisList');
+
+        // Réinitialiser la liste des devis
+        devisListDiv.innerHTML = '';
+
+        // Créer un bouton pour chaque devis
+        devis.forEach(pdfPath => {
+            const devisDiv = document.createElement('div');
+            devisDiv.className = 'devis-item';
+
+            // Créer un bouton pour ouvrir le PDF
+            const viewButton = document.createElement('button');
+            viewButton.textContent = 'Voir le PDF';
+            viewButton.className = 'btn btn-info';
+            viewButton.onclick = () => window.open(pdfPath, '_blank'); // Ouvrir le PDF dans un nouvel onglet
+
+            // Créer un bouton pour valider le devis
+            const validateButton = document.createElement('button');
+            validateButton.textContent = 'Valider';
+            validateButton.className = 'btn btn-success';
+            validateButton.onclick = async () => {
+                // Utiliser l'ID du devis si nécessaire pour la validation
+                const success = await this.detailServices.validateDevis(pdfPath);
+                if (success) {
+                    alert('Devis validé avec succès');
+                    // Vous pouvez ajouter ici du code pour rafraîchir la liste des devis si nécessaire
+                } else {
+                    alert('Erreur lors de la validation du devis');
+                }
+            };
+
+            // Ajouter les boutons au div du devis
+            devisDiv.appendChild(viewButton);
+            devisDiv.appendChild(validateButton);
+
+            // Ajouter le div au conteneur
+            devisListDiv.appendChild(devisDiv);
+        });
+
+        modal.style.display = 'block';
+
+        span.onclick = function() {
+            modal.style.display = 'none';
+        };
+
+        closeButton.onclick = function() {
+            modal.style.display = 'none';
+        };
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        };
+    } catch (error) {
+        console.error('Erreur lors de l\'ouverture du modal de validation:', error);
+    }
+}
+
+        
     
     }
 

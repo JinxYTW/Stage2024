@@ -1,15 +1,20 @@
 package controller;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.regex.Pattern;
 import java.nio.file.Path;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import webserver.WebServerContext;
 import webserver.WebServerResponse;
@@ -19,6 +24,58 @@ import models.Devis;
 
 public class DevisController {
     public DevisController() {
+    }
+
+    public void validateDevis(WebServerContext context) {
+        WebServerResponse response = context.getResponse();
+        try {
+            // Lire le corps de la requête en tant que chaîne JSON
+            String bodyAsString = context.getRequest().getBodyAsString();
+            JsonObject requestBody = JsonParser.parseString(bodyAsString).getAsJsonObject();
+            String pdfPath = requestBody.get("pdfPath").getAsString();
+
+            // Valider le devis
+            DevisDao devisDao = new DevisDao();
+            String success = devisDao.validateDevis(pdfPath);
+
+            // Envoyer la réponse
+            JsonObject jsonResponse = new JsonObject();
+            jsonResponse.addProperty("success", success);
+            response.json(jsonResponse);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.serverError("Erreur lors de la validation du devis");
+        }
+    }
+
+    public void getDevisPdfPath(WebServerContext context) {
+        WebServerResponse response = context.getResponse();
+        Gson gson = new Gson();
+        try {
+            String demandeId = context.getRequest().getQueryParams().get("demandeId");
+            int demandeIdInt = Integer.parseInt(demandeId);
+
+            DevisDao devisDao = new DevisDao();
+            List<String> pdfPaths = devisDao.getDevisPdfPath(demandeIdInt);
+
+            // Convertir la liste des chemins en JSON
+            JsonArray jsonArray = new JsonArray();
+            for (String path : pdfPaths) {
+                jsonArray.add(path);
+            }
+
+            // Envoyer le tableau JSON directement
+            response.json(jsonArray);
+            
+            
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            response.serverError("Format incorrect pour le paramètre 'demandeId'");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.serverError("Erreur serveur");
+        }
     }
 
     public void getDevisCount(WebServerContext context){
@@ -35,7 +92,7 @@ public class DevisController {
             
             
             response.json(json);
-            System.out.println("Devis count: " + json);
+            
         } catch (NumberFormatException e) {
             e.printStackTrace();
             response.serverError("Format incorrect pour le paramètre 'demandeId'");
