@@ -1,6 +1,28 @@
 class detailServices{
     constructor() {}
 
+    async getDevisCount(demandeId) {
+        try {
+            const response = await fetch(`http://127.0.0.1:8080/api/getDevisCount?demandeId=${demandeId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                return data.devisCount; // Supposons que la réponse contient { count: nombreDeDevis }
+            } else {
+                console.error('Erreur lors de la récupération du nombre de devis');
+                return 0;
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            return 0;
+        }
+    }
+    
+
     async uploadFiles(demandeId,formData) {
         try {
 

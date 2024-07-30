@@ -118,6 +118,11 @@ public class App {
 
             //-------------- Devis ----------------------------
 
+            webserver.getRouter().get("/api/getDevisCount", (WebServerContext context) -> {
+                System.out.println("Get Devis For Demande");
+                mydevisController.getDevisCount(context);
+            });
+
             webserver.getRouter().post("/uploadDevis", (WebServerContext context) -> {
                 System.out.println("Upload Devis");
                 mydevisController.uploadDevis(context);

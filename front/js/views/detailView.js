@@ -247,7 +247,7 @@ async handleClickableZoneClick() {
         console.log('Groupes valides:', validGroupes);
 
         // Créer des boutons pour chaque groupe valide
-        validGroupes.forEach(groupName => {
+        validGroupes.forEach(async groupName => {
             // Créer un nouveau bouton
             const button = document.createElement('button');
             button.className = 'btn btn-info btn-block dynamic-button';
@@ -267,6 +267,20 @@ async handleClickableZoneClick() {
 
             // Ajouter le bouton à la div
             actionsButtonDiv.appendChild(button);
+
+            // Désactiver le bouton 'treatDevis' si le nombre de devis est 3 ou plus
+            if (groupName === 'treatDevis') {
+                const demandeId = new URLSearchParams(window.location.search).get('demandeId');
+                const count = await this.detailServices.getDevisCount(demandeId);
+
+                if (count >= 3) {
+                    button.disabled = true;
+                    button.textContent = "Limite de 3 devis atteinte";
+                } else {
+                    button.disabled = false;
+                    button.textContent = "Traiter les devis";
+                }
+            }
         });
 
     
@@ -276,9 +290,12 @@ async handleClickableZoneClick() {
     }
 
         // Fonction pour ouvrir la modale
-        openUploadModal() {
+        async openUploadModal() {
             const demandeId = new URLSearchParams(window.location.search).get('demandeId');
-            const newType = 'devis_a_valider';
+            // Vérifiez le nombre actuel de devis
+            const count = await this.detailServices.getDevisCount(demandeId);
+
+            console.log('Nombre de devis actuel:', count);
 
             const modal = document.getElementById('uploadModal');
             const span = modal.querySelector('.close');

@@ -22,6 +22,26 @@ import models.Devis;
 
 public class DevisDao {
 
+    public int getDevisCount(int demandeId){
+        try {
+            SomethingDatabase myDatabase = new SomethingDatabase();
+
+            String query = "SELECT COUNT(*) FROM Devis WHERE demande_id = ?";
+            PreparedStatement statement = myDatabase.prepareStatement(query);
+            statement.setInt(1, demandeId);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     public static void saveDevisToDatabase(int demandeId, String fileName) {
         try {
             SomethingDatabase myDatabase = new SomethingDatabase();

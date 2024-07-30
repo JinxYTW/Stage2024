@@ -21,6 +21,30 @@ public class DevisController {
     public DevisController() {
     }
 
+    public void getDevisCount(WebServerContext context){
+        WebServerResponse response = context.getResponse();
+        try {
+            String demandeId = context.getRequest().getQueryParams().get("demandeId");
+            int demandeIdInt = Integer.parseInt(demandeId);
+    
+            DevisDao devisDao = new DevisDao();
+            int devisCount = devisDao.getDevisCount(demandeIdInt);
+    
+            JsonObject json = new JsonObject();
+            json.addProperty("devisCount", devisCount);
+            
+            
+            response.json(json);
+            System.out.println("Devis count: " + json);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            response.serverError("Format incorrect pour le paramètre 'demandeId'");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.serverError("Erreur serveur");
+        }
+    }
+
     public void uploadDevis(WebServerContext context) {
         try {
             // Récupérer le fichier envoyé dans la requête
