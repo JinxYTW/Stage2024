@@ -22,7 +22,20 @@ import models.Devis;
 
 public class DevisDao {
 
-    
+    public static void saveDevisToDatabase(int demandeId, String fileName) {
+        try {
+            SomethingDatabase myDatabase = new SomethingDatabase();
+
+            String query = "INSERT INTO Devis (demande_id, fichier_pdf) VALUES (?, ?)";
+            PreparedStatement statement = myDatabase.prepareStatement(query);
+            statement.setInt(1, demandeId);
+            statement.setString(2, fileName);
+
+            statement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     // Méthode pour sauvegarder le chemin du fichier PDF
     public void savePdfPath(int id, String pdfPath) {
@@ -74,8 +87,6 @@ public class DevisDao {
             table.addCell(createCell(devis.demande_id() + ""));
             table.addCell(createCell("ID Fournisseur:"));
             table.addCell(createCell(devis.fournisseur_id() + ""));
-            table.addCell(createCell("Montant:"));
-            table.addCell(createCell(devis.montant() + ""));
             table.addCell(createCell("Etat:"));
             table.addCell(createCell(devis.etat().name()));
             table.addCell(createCell("Date de devis:"));
@@ -117,7 +128,7 @@ public class DevisDao {
                     resultSet.getInt("id"),
                     resultSet.getInt("demande_id"),
                     resultSet.getInt("fournisseur_id"),
-                    resultSet.getDouble("montant"),
+                    
                     resultSet.getString("fichier_pdf"),
                     Devis.Etat.valueOf(resultSet.getString("etat")),
                     resultSet.getTimestamp("date_devis"),

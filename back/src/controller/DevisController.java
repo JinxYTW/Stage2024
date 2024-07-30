@@ -18,6 +18,7 @@ public class DevisController {
     }
 
     public void uploadDevis(WebServerContext context) {
+        int demandeId = Integer.parseInt(context.getRequest().getQueryParams().get("demandeId"));
         try {
             // Récupérer le fichier envoyé dans la requête
             InputStream fileInputStream = context.getRequest().getInputStream();
@@ -37,6 +38,11 @@ public class DevisController {
 
             fileInputStream.close();
             fileOutputStream.close();
+
+            String filePath = file.getCanonicalPath();
+            System.out.println("Chemin du fichier : " + filePath);
+
+            DevisDao.saveDevisToDatabase(demandeId,filePath);
             
             context.getResponse().ok("Fichier téléchargé avec succès");
         } catch (IOException e) {

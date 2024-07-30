@@ -5,7 +5,7 @@ UtlisateurGroupe(#utilisateur_id,#groupe_id)
 Projet (id, nom, description)
 Fournisseur (id, nom, adresse, email, telephone)
 Demande (id, #utilisateur_id, #projet_id,referant,domaine,typeof,marque,reference,pour,ou,marche,justification, descriptif,additional_details quantite, urgence, etat, date_demande,pdfPath)
-Devis (id, #demande_id, #fournisseur_id, montant, fichier_pdf, etat, date_devis,nom_valideur)
+Devis (id, #demande_id, #fournisseur_id,  fichier_pdf, etat, date_devis,nom_valideur)
 BonCommande (id, #devis_id, #utilisateur_id, etat, fichier_pdf, date_creation,nom_editeur)
 Facture (id, #bon_commande_id, montant, fichier_pdf, etat, date_facture,date_livraison,lieu_livraison,nom_signataire,nom_transitaire)
 Relance (id, #bon_commande_id, date_relance, message, reponse)
@@ -71,8 +71,7 @@ CREATE TABLE Demande (
 CREATE TABLE Devis (
     id INT AUTO_INCREMENT PRIMARY KEY,
     demande_id INT,
-    fournisseur_id INT,
-    montant DECIMAL(10, 2) NOT NULL,
+    fournisseur_id INT DEFAULT NULL,
     fichier_pdf VARCHAR(255),
     etat ENUM('à_valider', 'validé', 'refusé') DEFAULT 'à_valider',
     date_devis TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -211,11 +210,11 @@ VALUES (1, 'La demande', FALSE),
 (3, 'Notification 3 pour Utilisateur 3', FALSE);
 
 -- Insérer un devis pour la demande avec ID 1
-INSERT INTO Devis (demande_id, fournisseur_id, montant, fichier_pdf, etat, nom_valideur)
+INSERT INTO Devis (demande_id, fournisseur_id,fichier_pdf, etat, nom_valideur)
 VALUES 
-(1, 1, 1500.00, 'back/src/pdf/Devis/devis_demandeur_date_domaine.pdf', 'à_valider', 'Validateur A'),
-(2, 2, 2500.00, 'back/src/pdf/Devis/devis_demandeur_date_domaine.pdf', 'validé', 'Validateur B'),
-(3, 3, 3500.00, 'back/src/pdf/Devis/devis_demandeur_date_domaine.pdf', 'refusé', 'Validateur C');
+(1, 1,'back/src/pdf/Devis/devis_demandeur_date_domaine.pdf', 'à_valider', 'Validateur A'),
+(2, 2,'back/src/pdf/Devis/devis_demandeur_date_domaine.pdf', 'validé', 'Validateur B'),
+(3, 3,'back/src/pdf/Devis/devis_demandeur_date_domaine.pdf', 'refusé', 'Validateur C');
 
 -- Insérer un bon de commande pour le devis avec ID 1 et l'utilisateur avec ID 1
 INSERT INTO BonCommande (devis_id, utilisateur_id, etat, fichier_pdf,nom_editeur)

@@ -1,7 +1,7 @@
 class detailServices{
     constructor() {}
 
-    async uploadFiles(formData) {
+    async uploadFiles(demandeId,formData) {
         try {
 
             // Afficher le contenu de formData pour déboguer
@@ -20,7 +20,7 @@ class detailServices{
             const fileName = formData.get('files[]').name;
             headers.append('filename', fileName);
             
-            const response = await fetch('http://127.0.0.1:8080/uploadDevis', {
+            const response = await fetch(`http://127.0.0.1:8080/uploadDevis?demandeId=${demandeId}`, {
                 method: 'POST',
                 body: formData,
                 headers: headers

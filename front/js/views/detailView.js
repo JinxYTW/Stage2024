@@ -305,7 +305,7 @@ async handleClickableZoneClick() {
     }
 
     const formData = new FormData(formElement);
-    const uploadSuccess = await this.detailServices.uploadFiles(formData);
+    const uploadSuccess = await this.detailServices.uploadFiles(demandeId,formData);
 
     if (uploadSuccess) {
         modal.style.display = "none";
