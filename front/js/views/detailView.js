@@ -272,8 +272,9 @@ async handleClickableZoneClick() {
             if (groupName === 'treatDevis') {
                 const demandeId = new URLSearchParams(window.location.search).get('demandeId');
                 const count = await this.detailServices.getDevisCount(demandeId);
+                const devis = await this.detailServices.isOneDevisValidate(demandeId);
 
-                if (count >= 3) {
+                if (count >= 3 || devis) {
                     button.disabled = true;
                     button.textContent = "Limite de 3 devis atteinte";
                 } else {
