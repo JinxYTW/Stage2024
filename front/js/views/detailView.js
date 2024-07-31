@@ -239,6 +239,7 @@ async handleClickableZoneClick() {
                     },
                     'button2': () => {
                         console.log('Action pour la gestion de la facture 2');
+                        this.openInvoiceValidationModal();
                         // Ajoutez la logique pour la seconde action d'inventaire
                     }
                 }
@@ -287,6 +288,16 @@ async handleClickableZoneClick() {
                         }
                     });
                     actionsButtonDiv.appendChild(button2);
+                    
+                        const count2 = await this.detailServices.isOneInvoiceValidate(demandeId);
+                        console.log('Facture validé:', count2);
+                        if (count2 >= 1) {
+                            button2.disabled = true;
+                            button2.textContent = "Facture déjà validé";
+                        } else {
+                            button2.disabled = false;
+                            button2.textContent = "Validation de la facture";
+                        }
     
                 } else {
                     // Créer un bouton pour les autres groupes
@@ -360,9 +371,11 @@ async handleClickableZoneClick() {
                     if (groupName === 'notifBcSend') {
                         const demandeId = new URLSearchParams(window.location.search).get('demandeId');
                         const bcSend = await this.detailServices.isOneNotifOnState(demandeId, 'bc_envoye_attente_livraison');
+                        const invoiceValidating = await this.detailServices.isOneNotifOnState(demandeId, 'facture_a_valider');
+                        const invoiceValidated = await this.detailServices.isOneNotifOnState(demandeId, 'commande_livree_finalisee');
                         console.log('BC envoyé:', bcSend);
 
-                        if (bcSend) {
+                        if (bcSend || invoiceValidating || invoiceValidated) {
                             button.disabled = true;
                             button.textContent = "Notification déjà envoyée";
                         } else {
@@ -677,6 +690,74 @@ async openInvoiceUploadModal() {
             // Optionnel : mettre à jour l'état ou notifier l'utilisateur
         }
     }.bind(this);
+}
+
+async openInvoiceValidationModal() {
+    const demandeId = new URLSearchParams(window.location.search).get('demandeId');
+
+    if (!demandeId) {
+        console.error('ID de demande manquant dans l\'URL');
+        return;
+    }
+
+    try {
+        const factures = await this.detailServices.getInvoicePaths(demandeId);
+
+        const modal = document.getElementById('invoiceValidationModal');
+        const span = modal.querySelector('.close');
+        const closeButton = document.getElementById('closeInvoiceValidationModal');
+        const invoiceListDiv = document.getElementById('invoiceList');
+
+        invoiceListDiv.innerHTML = '';
+
+        factures.forEach(pdfPath => {
+            const invoiceDiv = document.createElement('div');
+            invoiceDiv.className = 'invoice-item';
+
+            const viewButton = document.createElement('button');
+            viewButton.textContent = 'Voir le PDF';
+            viewButton.className = 'btn btn-info';
+            viewButton.onclick = () => window.open(pdfPath, '_blank');
+
+            const validateButton = document.createElement('button');
+            validateButton.textContent = 'Valider';
+            validateButton.className = 'btn btn-success';
+            validateButton.onclick = async () => {
+                const success = await this.detailServices.validateInvoice(pdfPath);
+                if (success) {
+                    alert('Facture validée avec succès');
+                    const newType = "commande_livree_finalisee";
+                    await this.detailServices.updateNotificationType(demandeId, newType);
+                    invoiceDiv.remove(); // Optionnel : retirer l'élément de la liste après validation
+                } else {
+                    alert('Erreur lors de la validation de la facture');
+                }
+            };
+
+            invoiceDiv.appendChild(viewButton);
+            invoiceDiv.appendChild(validateButton);
+
+            invoiceListDiv.appendChild(invoiceDiv);
+        });
+
+        modal.style.display = 'block';
+
+        span.onclick = function() {
+            modal.style.display = 'none';
+        };
+
+        closeButton.onclick = function() {
+            modal.style.display = 'none';
+        };
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        };
+    } catch (error) {
+        console.error('Erreur lors de l\'ouverture du modal de validation de la facture:', error);
+    }
 }
 
 

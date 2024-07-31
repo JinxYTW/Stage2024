@@ -123,7 +123,7 @@ CREATE TABLE Notif (
     id INT AUTO_INCREMENT PRIMARY KEY,
     demande_id INT,
     message TEXT,
-    type ENUM('demande_envoyee', 'demande_en_cours_de_traitement', 'devis_a_valider', 'devis_en_cours_de_validation', 'bc_a_editer', 'bc_en_cours_dedition', 'bc_a_valider', 'bc_en_cours_de_validation', 'bc_valide_envoi_fournisseur','envoi_fournisseur_en_cours', 'bc_envoye_attente_livraison','facture_a_valider', 'commande_annulee', 'commande_livrée_finalisee') NOT NULL,
+    type ENUM('demande_envoyee', 'demande_en_cours_de_traitement', 'devis_a_valider', 'devis_en_cours_de_validation', 'bc_a_editer', 'bc_en_cours_dedition', 'bc_a_valider', 'bc_en_cours_de_validation', 'bc_valide_envoi_fournisseur','envoi_fournisseur_en_cours', 'bc_envoye_attente_livraison','facture_a_valider', 'commande_annulee', 'commande_livree_finalisee') NOT NULL,
     lu BOOLEAN DEFAULT FALSE,
     date_notification TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

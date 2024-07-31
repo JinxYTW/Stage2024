@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import dao.BonCommandeDao;
@@ -15,6 +16,68 @@ import webserver.WebServerContext;
 import webserver.WebServerResponse;
 
 public class FactureController {
+
+     public void getInvoicePathsFromDemandId(WebServerContext context) {
+        WebServerResponse response = context.getResponse();
+        try {
+            int demandeId = Integer.parseInt(context.getRequest().getQueryParams().get("demandeId"));
+    
+            // Récupérer le chemin du bon de commande à partir de la demande
+            String bcPdfPath = FactureDao.getInvoicePathsFromDemandId(demandeId);
+    
+            // Préparer la réponse JSON
+            JsonArray jsonArray = new JsonArray();
+            if (bcPdfPath != null) {
+                jsonArray.add(bcPdfPath);
+            }
+    
+            // Envoyer le tableau JSON directement
+            response.json(jsonArray);
+    
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            response.serverError("Format incorrect pour le paramètre 'demandeId'");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.serverError("Erreur serveur");
+        }
+    }
+
+    public void isOneInvoiceValidate(WebServerContext context) {
+        WebServerResponse response = context.getResponse();
+        try {
+            int demandeId = Integer.parseInt(context.getRequest().getQueryParams().get("demandeId"));
+            int isOneInvoiceValidate = FactureDao.isOneInvoiceValidate(demandeId);
+            JsonObject json = new JsonObject();
+            json.addProperty("isOneInvoiceValidate", isOneInvoiceValidate);
+            response.json(json);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            response.serverError("Format incorrect pour le paramètre 'demandeId'");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.serverError("Erreur serveur");
+        }
+    }
+
+    public void validateInvoice(WebServerContext context) {
+        WebServerResponse response = context.getResponse();
+        try {
+            // Lire le corps de la requête en tant que chaîne JSON
+            JsonObject requestBody = context.extractBody(JsonObject.class);
+            String pdfPath = requestBody.get("pdfPath").getAsString();
+            System.out.println("pdfPath: " + pdfPath);
+    
+            // Valider la facture
+            String message = FactureDao.validateInvoice(pdfPath);
+    
+            response.ok(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.serverError("Erreur lors de la validation de la facture");
+        }
+    }
+    
 
     public void getFactureCountFromDemandId(WebServerContext context) {
         WebServerResponse response = context.getResponse();

@@ -23,6 +23,67 @@ import models.Facture;
 
 public class FactureDao {
 
+    public static int isOneInvoiceValidate(int demandeId) {
+        try {
+            SomethingDatabase myDatabase = new SomethingDatabase();
+
+            String query = "SELECT COUNT(*) FROM Facture WHERE bon_commande_id = (SELECT id FROM BonCommande WHERE devis_id = (SELECT id FROM Devis WHERE demande_id = ? AND etat = 'validé') AND etat = 'validé')AND etat = 'validée'";
+            PreparedStatement statement = myDatabase.prepareStatement(query);
+            statement.setInt(1, demandeId);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    public static String getInvoicePathsFromDemandId(int demandeId) {
+        try {
+            SomethingDatabase myDatabase = new SomethingDatabase();
+            String query = "SELECT fichier_pdf FROM Facture WHERE bon_commande_id = (SELECT id FROM BonCommande WHERE devis_id = (SELECT id FROM Devis WHERE demande_id = ? AND etat = 'validé') AND etat = 'validé')";
+            PreparedStatement statement = myDatabase.prepareStatement(query);
+            statement.setInt(1, demandeId);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getString("fichier_pdf");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    public static String validateInvoice(String pdfPath) {
+        try {
+            SomethingDatabase myDatabase = new SomethingDatabase();
+    
+            String query = "UPDATE Facture SET etat = 'validée' WHERE fichier_pdf = ?";
+            PreparedStatement statement = myDatabase.prepareStatement(query);
+            statement.setString(1, pdfPath);
+    
+            int rowsUpdated = statement.executeUpdate();
+            if (rowsUpdated > 0) {
+                return "Facture validée avec succès";
+            } else {
+                return "Aucune facture trouvée pour le chemin spécifié";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Erreur lors de la validation de la facture";
+        }
+    }
+    
+
     public static int getFactureCountFromDemandId(int demandeId) {
         try {
             SomethingDatabase myDatabase = new SomethingDatabase();

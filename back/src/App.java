@@ -284,6 +284,21 @@ public class App {
 
             //-------------- Facture --------------------------------
 
+            webserver.getRouter().get("/api/isOneInvoiceValidate", (WebServerContext context) -> {
+                
+                myfactureController.isOneInvoiceValidate(context);
+            });
+
+            webserver.getRouter().get("/api/getInvoicePaths", (WebServerContext context) -> {
+                
+                myfactureController.getInvoicePathsFromDemandId(context);
+            });
+
+            webserver.getRouter().post("/api/validateInvoice", (WebServerContext context) -> {
+                
+                myfactureController.validateInvoice(context);
+            });
+
             webserver.getRouter().get("/api/getFactureCountFromDemandId", (WebServerContext context) -> {
                 
                 myfactureController.getFactureCountFromDemandId(context);
