@@ -167,6 +167,20 @@ public class App {
 
         //-------------- BonCommande ----------------------------
 
+        webserver.getRouter().get("/api/isOneBcValidate", (WebServerContext context) -> {
+            
+            mybonCommandeController.isOneBcValidate(context);
+        });
+
+        webserver.getRouter().get("/api/getBcPdfPath", (WebServerContext context) -> {
+            
+            mybonCommandeController.getBcPdfPathFromDemandId(context);
+        });
+        webserver.getRouter().post("/api/validateBc", (WebServerContext context) -> {
+            
+            mybonCommandeController.validateBc(context);
+        });
+
         webserver.getRouter().get("/api/getBcCountFromDemandId", (WebServerContext context) -> {
             
             mybonCommandeController.getBcCountFromDemandId(context);

@@ -10,6 +10,63 @@ import models.BonCommande;
 
 public class BonCommandeDao {
 
+    public static boolean isOneBcValidate(int demandeId) {
+        try {
+            SomethingDatabase myDatabase = new SomethingDatabase();
+
+            String query = "SELECT COUNT(*) FROM BonCommande WHERE devis_id = (SELECT id FROM Devis WHERE demande_id = ? AND etat = 'validé') AND etat = 'validé'";
+            PreparedStatement statement = myDatabase.prepareStatement(query);
+            statement.setInt(1, demandeId);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getInt(1) > 0;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+    public static String validateBc(String pdfPath) {
+        try {
+            SomethingDatabase myDatabase = new SomethingDatabase();
+
+            String query = "UPDATE BonCommande SET etat = 'validé' WHERE fichier_pdf = ?";
+            PreparedStatement statement = myDatabase.prepareStatement(query);
+            statement.setString(1, pdfPath);
+
+            statement.executeUpdate();
+
+            return "Bon de commande validé avec succès";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "Erreur lors de la validation du bon de commande";
+    }
+
+
+    public static String getBcPdfPathFromDemandId(int demandeId) {
+        try {
+            SomethingDatabase myDatabase = new SomethingDatabase();
+            String query = "SELECT fichier_pdf FROM BonCommande WHERE devis_id = (SELECT id FROM Devis WHERE demande_id = ? AND etat = 'validé') AND etat = 'à_valider'";
+            PreparedStatement statement = myDatabase.prepareStatement(query);
+            statement.setInt(1, demandeId);
+
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getString("fichier_pdf");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static int getBcCountFromDemandId(int demandeId) {
         try {
             SomethingDatabase myDatabase = new SomethingDatabase();

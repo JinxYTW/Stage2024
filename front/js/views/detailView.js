@@ -230,7 +230,7 @@ async handleClickableZoneClick() {
                 },
                 'validateBc': () => {
                     console.log('Action pour valider les BC');
-                    // Ajoutez ici la logique pour valider les BC
+                    this.openBcValidationModal();
                 },
                 'notifBcSend': () => {
                     console.log('Action pour notifier l\'envoi des BC');
@@ -304,6 +304,18 @@ async handleClickableZoneClick() {
                 } else {
                     button.disabled = false;
                     button.textContent = "Traiter les BC";
+                }
+            }
+
+            if (groupName === 'validateBc') {
+                const demandeId = new URLSearchParams(window.location.search).get('demandeId');
+                const bc = await this.detailServices.isOneBcValidate(demandeId);
+                if (bc) {
+                    button.disabled = true;
+                    button.textContent = "BC déjà validé";
+                } else {
+                    button.disabled = false;
+                    button.textContent = "Valider les BC";
                 }
             }
                 
@@ -486,6 +498,81 @@ async openBcUploadModal() {
         }
     }.bind(this);
 }
+
+async  openBcValidationModal() {
+    const demandeId = new URLSearchParams(window.location.search).get('demandeId');
+
+    if (!demandeId) {
+        console.error('ID de demande manquant dans l\'URL');
+        return;
+    }
+
+    try {
+        // Récupérer les bons de commande pour la demande donnée
+        const bcs = await this.detailServices.getBcPaths(demandeId);
+
+        console.log('Bons de commande récupérés:', bcs);
+
+        const modal = document.getElementById('validateBcModal');
+        const span = modal.querySelector('.close');
+        const bcListDiv = document.getElementById('bcList');
+
+        // Réinitialiser la liste des bons de commande
+        bcListDiv.innerHTML = '';
+
+        // Créer un bouton pour chaque bon de commande
+        bcs.forEach(pdfPath => {
+            const bcDiv = document.createElement('div');
+            bcDiv.className = 'bc-item';
+
+            // Créer un bouton pour ouvrir le PDF
+            const viewButton = document.createElement('button');
+            viewButton.textContent = 'Voir le PDF';
+            viewButton.className = 'btn btn-info';
+            viewButton.onclick = () => window.open(pdfPath, '_blank'); // Ouvrir le PDF dans un nouvel onglet
+
+            // Créer un bouton pour valider le bon de commande
+            const validateButton = document.createElement('button');
+            validateButton.textContent = 'Valider';
+            validateButton.className = 'btn btn-success';
+            validateButton.onclick = async () => {
+                const success = await this.detailServices.validateBc(pdfPath);
+                if (success) {
+                    const newType = "bc_valide_envoi_fournisseur";
+                    await this.detailServices.updateNotificationType(demandeId, newType);
+                    alert('Bon de commande validé avec succès');
+                    
+                } else {
+                    alert('Erreur lors de la validation du bon de commande');
+                }
+            };
+
+            // Ajouter les boutons au div du bon de commande
+            bcDiv.appendChild(viewButton);
+            bcDiv.appendChild(validateButton);
+
+            // Ajouter le div au conteneur
+            bcListDiv.appendChild(bcDiv);
+        });
+
+        modal.style.display = 'block';
+
+        span.onclick = function() {
+            modal.style.display = 'none';
+        };
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        };
+    } catch (error) {
+        console.error('Erreur lors de l\'ouverture du modal de validation:', error);
+    }
+}
+
+
+
 
 
 

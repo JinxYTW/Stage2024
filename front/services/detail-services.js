@@ -1,6 +1,69 @@
 class detailServices{
     constructor() {}
 
+    async isOneBcValidate(demandeId) {
+        try {
+            const response = await fetch(`http://127.0.0.1:8080/api/isOneBcValidate?demandeId=${demandeId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data);
+                return data.isOneBcValidate; 
+            } else {
+                console.error('Erreur lors de la récupération du nombre de devis');
+                return 0;
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            return 0;
+        }
+    }
+
+    async getBcPaths(demandeId) {
+        try {
+            const response = await fetch(`http://127.0.0.1:8080/api/getBcPdfPath?demandeId=${demandeId}`);
+            if (response.ok) {
+                const data = await response.json();
+                return data; // Assurez-vous que `pdfPaths` est le nom correct dans votre réponse JSON
+            } else {
+                console.error('Erreur lors de la récupération des bons de commande');
+                return [];
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            return [];
+        }
+    }
+    
+    // Service pour valider un bon de commande
+    async validateBc(pdfPath) {
+        try {
+            const response = await fetch(`http://127.0.0.1:8080/api/validateBc`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ pdfPath: pdfPath })
+            });
+    
+            if (response.ok) {
+                console.log('Bon de commande validé avec succès');
+                return true;
+            } else {
+                console.error('Erreur lors de la validation du bon de commande');
+                return false;
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            return false;
+        }
+    }
+    
+
     async getBcCountFromDemandId(demandeId) {
         try {
             const response = await fetch(`http://127.0.0.1:8080/api/getBcCountFromDemandId?demandeId=${demandeId}`, {

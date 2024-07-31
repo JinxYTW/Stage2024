@@ -5,7 +5,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import dao.BonCommandeDao;
 import dao.DevisDao;
 import dao.UtilisateurDao;
@@ -14,6 +17,73 @@ import webserver.WebServerContext;
 import webserver.WebServerResponse;
 
 public class BonCommandeController {
+
+    public void isOneBcValidate(WebServerContext context) {
+        WebServerResponse response = context.getResponse();
+        try {
+            int demandeId = Integer.parseInt(context.getRequest().getQueryParams().get("demandeId"));
+            boolean isOneBcValidate = BonCommandeDao.isOneBcValidate(demandeId);
+            JsonObject json = new JsonObject();
+            json.addProperty("isOneBcValidate", isOneBcValidate);
+            response.json(json);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            response.serverError("Format incorrect pour le paramètre 'demandeId'");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.serverError("Erreur serveur");
+        }
+    }
+
+    public void validateBc(WebServerContext context) {
+        WebServerResponse response = context.getResponse();
+        try {
+            // Lire le corps de la requête en tant que chaîne JSON
+            String bodyAsString = context.getRequest().getBodyAsString();
+            JsonObject requestBody = JsonParser.parseString(bodyAsString).getAsJsonObject();
+            String pdfPath = requestBody.get("pdfPath").getAsString();
+            System.out.println("pdfPath: " + pdfPath);
+
+            // Valider le bon de commande
+            String success = BonCommandeDao.validateBc(pdfPath);
+
+            // Envoyer la réponse
+            JsonObject jsonResponse = new JsonObject();
+            jsonResponse.addProperty("success", success);
+            response.json(jsonResponse);
+
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.serverError("Erreur lors de la validation du bon de commande");
+        }
+    }
+
+    public void getBcPdfPathFromDemandId(WebServerContext context) {
+        WebServerResponse response = context.getResponse();
+        try {
+            int demandeId = Integer.parseInt(context.getRequest().getQueryParams().get("demandeId"));
+    
+            // Récupérer le chemin du bon de commande à partir de la demande
+            String bcPdfPath = BonCommandeDao.getBcPdfPathFromDemandId(demandeId);
+    
+            // Préparer la réponse JSON
+            JsonArray jsonArray = new JsonArray();
+            if (bcPdfPath != null) {
+                jsonArray.add(bcPdfPath);
+            }
+    
+            // Envoyer le tableau JSON directement
+            response.json(jsonArray);
+    
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            response.serverError("Format incorrect pour le paramètre 'demandeId'");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.serverError("Erreur serveur");
+        }
+    }
 
     public void getBcCountFromDemandId(WebServerContext context) {
         WebServerResponse response = context.getResponse();
