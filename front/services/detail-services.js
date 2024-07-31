@@ -1,6 +1,70 @@
 class detailServices{
     constructor() {}
 
+    async getFactureCountFromDemandId(demandeId) {
+        try {
+            const response = await fetch(`http://127.0.0.1:8080/api/getFactureCountFromDemandId?demandeId=${demandeId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                return data.factureCount; // Supposons que la réponse contient { count: nombreDeDevis }
+            } else {
+                console.error('Erreur lors de la récupération du nombre de devis');
+                return 0;
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            return 0;
+        }
+    }
+
+    async uploadInvoiceFiles(demandeId, formData) {
+        try {
+            // Afficher le contenu de formData pour déboguer
+            for (let [key, value] of formData.entries()) {
+                if (value instanceof File) {
+                    console.log(`Champ: ${key}, Fichier: ${value.name}`);
+                } else {
+                    console.log(`Champ: ${key}, Valeur: ${value}`);
+                }
+            }
+    
+            // Créer une instance de Headers
+            const headers = new Headers();
+    
+            // Supposer que le nom du fichier est disponible dans le formData
+            // Vous devez ajuster cette partie selon votre logique pour obtenir le nom du fichier
+            if (formData.has('invoiceFile')) {
+                const file = formData.get('invoiceFile');
+                headers.append('filename', file.name);
+            }
+    
+            // Envoyer les données au serveur
+            const response = await fetch(`http://127.0.0.1:8080/api/uploadInvoice?demandeId=${demandeId}`, {
+                method: 'POST',
+                body: formData,
+                headers: headers // Ajouter les headers si nécessaire
+            });
+    
+            if (response.ok) {
+                console.log('Facture téléversée avec succès');
+                return true;
+            } else {
+                console.error('Erreur lors du téléversement de la facture');
+                return false;
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            return false;
+        }
+    }
+    
+    
+
     async isOneNotifOnState(demandeId, type) {
         try {
             const response = await fetch(`http://127.0.0.1:8080/api/isOneNotifOnState?demandeId=${demandeId}&type=${type}`, {

@@ -234,6 +234,7 @@ async handleClickableZoneClick() {
                 'inventory': {
                     'button1': () => {
                         console.log('Action pour la gestion de la facture 1');
+                        this.openInvoiceUploadModal();
                         // Ajoutez la logique pour la première action d'inventaire
                     },
                     'button2': () => {
@@ -262,11 +263,23 @@ async handleClickableZoneClick() {
                         }
                     });
                     actionsButtonDiv.appendChild(button1);
+
+                    const demandeId = new URLSearchParams(window.location.search).get('demandeId');
+                        const count = await this.detailServices.getFactureCountFromDemandId(demandeId);
+                        if (count >= 1) {
+                            button1.disabled = true;
+                            button1.textContent = "Facture déjà traité";
+                        } else {
+                            button1.disabled = false;
+                            button1.textContent = "Depot de la facture";
+                        }
+
+
     
                     // Créer le deuxième bouton pour 'inventory'
                     const button2 = document.createElement('button');
                     button2.className = 'btn btn-info btn-block dynamic-button';
-                    button2.textContent = 'Validatoin de la facture'; // Texte spécifique pour le deuxième bouton
+                    button2.textContent = 'Validation de la facture'; // Texte spécifique pour le deuxième bouton
                     button2.setAttribute('data-id', 'inventory-button2');
                     button2.addEventListener('click', () => {
                         if (buttonActions['inventory'] && buttonActions['inventory']['button2']) {
@@ -347,6 +360,7 @@ async handleClickableZoneClick() {
                     if (groupName === 'notifBcSend') {
                         const demandeId = new URLSearchParams(window.location.search).get('demandeId');
                         const bcSend = await this.detailServices.isOneNotifOnState(demandeId, 'bc_envoye_attente_livraison');
+                        console.log('BC envoyé:', bcSend);
 
                         if (bcSend) {
                             button.disabled = true;
@@ -355,7 +369,7 @@ async handleClickableZoneClick() {
                             button.disabled = false;
                             button.textContent = "Notifier l'envoi des BC";
                         }
-                        
+
                     }
 
 
@@ -623,6 +637,48 @@ async notifyBcSend() {
 
 
 }
+
+async openInvoiceUploadModal() {
+    const modal = document.getElementById('invoiceUploadModal');
+    const span = modal.querySelector('.close');
+    
+    modal.style.display = "block";
+    
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+    
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    document.getElementById('invoiceUploadForm').onsubmit = async function(e) {
+        e.preventDefault();
+        
+        const formElement = document.getElementById('invoiceUploadForm');
+        if (!formElement) {
+            console.error('Le formulaire avec l\'ID "invoiceUploadForm" n\'a pas été trouvé.');
+            return;
+        }
+
+        const formData = new FormData(formElement);
+        const demandeId = new URLSearchParams(window.location.search).get('demandeId');
+
+        const uploadSuccess = await this.detailServices.uploadInvoiceFiles(demandeId, formData);
+        
+        if (uploadSuccess) {
+            modal.style.display = "none";
+            console.log('Facture téléversée avec succès');
+            const newType = "facture_a_valider";
+            await this.detailServices.updateNotificationType(demandeId, newType);
+            
+            // Optionnel : mettre à jour l'état ou notifier l'utilisateur
+        }
+    }.bind(this);
+}
+
 
 
 

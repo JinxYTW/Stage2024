@@ -140,6 +140,32 @@
     </div>
 </div>
 
+<!-- Modal pour le dépôt de la facture -->
+<div id="invoiceUploadModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Dépôt de Facture</h2>
+        <form id="invoiceUploadForm" enctype="multipart/form-data">
+            <input type="file" name="invoiceFile" accept=".pdf" required />
+            <button type="submit">Téléverser</button>
+        </form>
+    </div>
+</div>
+
+<div id="invoiceValidationModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Validation des Factures</h2>
+        <div id="invoiceList">
+            <!-- Les factures seront ajoutées ici dynamiquement -->
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button id="closeInvoiceValidationModal" class="btn btn-secondary">Fermer</button>
+    </div>
+</div>
+
+
 
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

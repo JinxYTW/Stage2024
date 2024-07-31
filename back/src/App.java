@@ -245,7 +245,7 @@ public class App {
                 
                 mynotifController.isOneNotifOnState(context);
             });
-               
+
         webserver.getRouter().get("/api/countNotifForUser", (WebServerContext context) -> {
                 
                 mynotifController.countNotifForUser(context);
@@ -281,6 +281,18 @@ public class App {
             
 
             //-------------- Relance --------------------------------
+
+            //-------------- Facture --------------------------------
+
+            webserver.getRouter().get("/api/getFactureCountFromDemandId", (WebServerContext context) -> {
+                
+                myfactureController.getFactureCountFromDemandId(context);
+            });
+
+            webserver.getRouter().post("/api/uploadInvoice", (WebServerContext context) -> {
+                
+                myfactureController.uploadInvoice(context);
+            });
 
         //-------------- SSE ----------------------------
         WebServer webServer = new WebServer();

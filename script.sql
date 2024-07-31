@@ -7,7 +7,7 @@ Fournisseur (id, nom, adresse, email, telephone)
 Demande (id, #utilisateur_id, #projet_id,referant,domaine,typeof,marque,reference,pour,ou,marche,justification, descriptif,additional_details quantite, urgence, etat, date_demande,pdfPath)
 Devis (id, #demande_id, #fournisseur_id,  fichier_pdf, etat, date_devis,nom_valideur)
 BonCommande (id, #devis_id,  etat, fichier_pdf, date_creation,nom_editeur)
-Facture (id, #bon_commande_id, montant, fichier_pdf, etat, date_facture,date_livraison,lieu_livraison,nom_signataire,nom_transitaire)
+Facture (id, #bon_commande_id, fichier_pdf, etat, date_facture,date_livraison,lieu_livraison,nom_signataire,nom_transitaire)
 Relance (id, #bon_commande_id, date_relance, message, reponse)
 Stock (id, #bon_commande_id, description,quantite)
 Notif (id, #utilisateur_id, message, lu, date_notification)
@@ -92,14 +92,13 @@ CREATE TABLE BonCommande (
 CREATE TABLE Facture (
     id INT AUTO_INCREMENT PRIMARY KEY,
     bon_commande_id INT,
-    montant DECIMAL(10, 2) NOT NULL,
     fichier_pdf VARCHAR(255),
     etat ENUM('à_valider', 'validée', 'refusée') DEFAULT 'à_valider',
     date_facture TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     date_livraison TIMESTAMP,
-    lieu_livraison VARCHAR(255),
-    nom_signataire VARCHAR(255),
-    nom_transitaire VARCHAR(255)
+    lieu_livraison VARCHAR(255) DEFAULT NULL,
+    nom_signataire VARCHAR(255) DEFAULT NULL,
+    nom_transitaire VARCHAR(255) DEFAULT NULL
 );
 
 -- Table Relance
@@ -223,11 +222,11 @@ VALUES
 (3, 'validé', 'back/src/pdf/BonCommande/bon_commande_demandeur_date.pdf', 'Editeur C');
 
 -- Insérer une facture pour le bon de commande avec ID 1
-INSERT INTO Facture (bon_commande_id, montant, fichier_pdf, etat, date_livraison, lieu_livraison, nom_signataire, nom_transitaire)
+INSERT INTO Facture (bon_commande_id, fichier_pdf, etat, date_livraison, lieu_livraison, nom_signataire, nom_transitaire)
 VALUES 
-(1, 1500.00, 'back/src/pdf/Facture/facture_demandeur_date.pdf', 'à_valider', '2023-07-01 00:00:00', 'Lieu A', 'Signataire A', 'Transitaire A'),
-(2, 2500.00, 'back/src/pdf/Facture/facture_demandeur_date.pdf', 'validée', '2023-08-01 00:00:00', 'Lieu B', 'Signataire B', 'Transitaire B'),
-(3, 3500.00, 'back/src/pdf/Facture/facture_demandeur_date.pdf', 'refusée', '2023-09-01 00:00:00', 'Lieu C', 'Signataire C', 'Transitaire C');
+(1, 'back/src/pdf/Facture/facture_demandeur_date.pdf', 'à_valider', '2023-07-01 00:00:00', 'Lieu A', 'Signataire A', 'Transitaire A'),
+(2, 'back/src/pdf/Facture/facture_demandeur_date.pdf', 'validée', '2023-08-01 00:00:00', 'Lieu B', 'Signataire B', 'Transitaire B'),
+(3, 'back/src/pdf/Facture/facture_demandeur_date.pdf', 'refusée', '2023-09-01 00:00:00', 'Lieu C', 'Signataire C', 'Transitaire C');
 
 -- Insérer des relances
 INSERT INTO Relance (bon_commande_id, date_relance, message, reponse) VALUES

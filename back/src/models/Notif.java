@@ -1,9 +1,7 @@
 package models;
 
 import java.sql.Timestamp;
-import java.util.List;
 
-import com.google.gson.JsonElement;
 
 public record Notif(
     int id,
