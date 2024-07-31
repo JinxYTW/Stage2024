@@ -240,6 +240,12 @@ public class App {
             
 
             //-------------- Notification --------------------------------
+        
+         webserver.getRouter().get("/api/isOneNotifOnState", (WebServerContext context) -> {
+                
+                mynotifController.isOneNotifOnState(context);
+            });
+               
         webserver.getRouter().get("/api/countNotifForUser", (WebServerContext context) -> {
                 
                 mynotifController.countNotifForUser(context);

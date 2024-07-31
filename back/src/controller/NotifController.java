@@ -15,6 +15,24 @@ import models.Notif;
 public class NotifController {
     public NotifController() {
     }
+    
+    public void isOneNotifOnState(WebServerContext context) {
+        WebServerResponse response = context.getResponse();
+        try {
+            String demandeId = context.getRequest().getQueryParams().get("demandeId");
+            String type = context.getRequest().getQueryParams().get("type");
+            boolean isOneNotifOnState = NotifDao.isOneNotifOnState(demandeId, type);
+            JsonObject json = new JsonObject();
+            json.addProperty("isOneNotifOnState", isOneNotifOnState);
+            response.json(json);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            response.serverError("Format incorrect pour le paramètre 'demandeId'");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.serverError("Erreur serveur");
+        }
+    }
 
     public void updateNotificationType(WebServerContext context) {
     try {

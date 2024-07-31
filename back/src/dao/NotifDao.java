@@ -16,6 +16,28 @@ public class NotifDao {
     public NotifDao() {
     }
 
+    public static boolean isOneNotifOnState(String demandeId, String type) {
+        try {
+            int demandeIdInt = Integer.parseInt(demandeId);
+            
+            SomethingDatabase database = new SomethingDatabase();
+            String query = "SELECT COUNT(*) FROM Notif WHERE demande_id = ? AND type = ?";
+            PreparedStatement statement = database.prepareStatement(query);
+            statement.setInt(1, demandeIdInt);
+            statement.setString(2, type);
+            ResultSet resultSet = statement.executeQuery();
+
+            
+            if (resultSet.next()) {
+                
+                return resultSet.getInt(1) > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public static void updateNotificationType(int demandeId, String newType) {
         try {
             SomethingDatabase database = new SomethingDatabase();

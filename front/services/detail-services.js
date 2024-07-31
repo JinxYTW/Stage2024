@@ -1,6 +1,28 @@
 class detailServices{
     constructor() {}
 
+    async isOneNotifOnState(demandeId, type) {
+        try {
+            const response = await fetch(`http://127.0.0.1:8080/api/isOneNotifOnState?demandeId=${demandeId}&type=${type}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data);
+                return data.isOneNotifOnState;
+            } else {
+                console.error('Erreur lors de la récupération du nombre de notifications');
+                return 0;
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            return 0;
+        }
+    }
+
     async isOneBcValidate(demandeId) {
         try {
             const response = await fetch(`http://127.0.0.1:8080/api/isOneBcValidate?demandeId=${demandeId}`, {
