@@ -75,17 +75,45 @@ Pour modifier le hashage appliqué au mot de passe, on va du côté de
 
 - La possibilité d'avoir des fichiers PDF (cf section Bug pour plus d'informations)
 
+- Implémentation de 7 groupes différents (= autorisations)
+
+- Affichage dynamique de la page en fonction des autorisations
+
+- La répartition d'actions possibles en fonction des autorisations possédées
+
+- Réaliser toute la validation d'une demande du début à la fin
+
+- Notifications tout au long du processus
+
+
   
 
 ## Fonction à implémenter :
 
-- La gestion des rôles afin de permettre l'avancée d'une demande.
+- Le rejet durant n'importe quelle étape de la demande
 
-- Le système de SSE pour gérer les notifications.
+- Certaines notifications n'arrivent pas à être lu et bloque l'affichage 
+
+- L'envoi des mails lors des notifications
+
+- L'affichages des bonnes informations sur la page "état de la commande"
 
 - Ouvrir les PDF via les liens de la page "état de la commande"
 
-- Finaliser la page "état de la demande" afin de permettre l'avancée d'une demande via des boutons.
+- Les lettres du domaines pour former l'id de la demande (exemple: SI)
+
+- Tri des pdf en dossier en fonction des demandes
+
+- L'aspect "Questionner les stocks"
+
+- Les demandes pour la téléphonie
+
+- Une nouvelle affichant toutes les notifications en cours (La méthode afin de créer l'API est déjà présente dans le code)
+
+
+
+
+
 
   
 
