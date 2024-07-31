@@ -142,10 +142,7 @@ public class App {
                 mydevisController.uploadDevis(context);
             });
 
-        webserver.getRouter().get("/api/generatePdfDevis", (WebServerContext context) -> {
-            
-            mydevisController.generatePdf(context);
-        });
+        
 
         webserver.getRouter().get("/pdf/Devis/:filename", (WebServerContext context) -> {
             String fileName = context.getRequest().getParam("filename");
@@ -169,10 +166,17 @@ public class App {
         });
 
         //-------------- BonCommande ----------------------------
-        webserver.getRouter().get("/api/generatePdfBonCommande", (WebServerContext context) -> {
+
+        webserver.getRouter().get("/api/getBcCountFromDemandId", (WebServerContext context) -> {
             
-            mybonCommandeController.generatePdfBonCommande(context);
+            mybonCommandeController.getBcCountFromDemandId(context);
         });
+
+        webserver.getRouter().post("/api/uploadBc", (WebServerContext context) -> {
+            
+            mybonCommandeController.uploadBc(context);
+        });
+        
 
         webserver.getRouter().get("/pdf/BonCommande/:filename", (WebServerContext context) -> {
             String fileName = context.getRequest().getParam("filename");
@@ -196,10 +200,7 @@ public class App {
         });
 
             //-------------- Facture ----------------------------
-        webserver.getRouter().get("/api/generatePdfFacture", (WebServerContext context) -> {
-                
-                myfactureController.generatePdf(context);
-            });
+        
 
         webserver.getRouter().get("/pdf/Facture/:filename", (WebServerContext context) -> {
             String fileName = context.getRequest().getParam("filename");

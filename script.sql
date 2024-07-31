@@ -6,7 +6,7 @@ Projet (id, nom, description)
 Fournisseur (id, nom, adresse, email, telephone)
 Demande (id, #utilisateur_id, #projet_id,referant,domaine,typeof,marque,reference,pour,ou,marche,justification, descriptif,additional_details quantite, urgence, etat, date_demande,pdfPath)
 Devis (id, #demande_id, #fournisseur_id,  fichier_pdf, etat, date_devis,nom_valideur)
-BonCommande (id, #devis_id, #utilisateur_id, etat, fichier_pdf, date_creation,nom_editeur)
+BonCommande (id, #devis_id,  etat, fichier_pdf, date_creation,nom_editeur)
 Facture (id, #bon_commande_id, montant, fichier_pdf, etat, date_facture,date_livraison,lieu_livraison,nom_signataire,nom_transitaire)
 Relance (id, #bon_commande_id, date_relance, message, reponse)
 Stock (id, #bon_commande_id, description,quantite)
@@ -75,18 +75,17 @@ CREATE TABLE Devis (
     fichier_pdf VARCHAR(255),
     etat ENUM('à_valider', 'validé', 'refusé') DEFAULT 'à_valider',
     date_devis TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    nom_valideur VARCHAR(255)
+    nom_valideur VARCHAR(255) DEFAULT NULL
 );
 
 -- Table BonCommande
 CREATE TABLE BonCommande (
     id INT AUTO_INCREMENT PRIMARY KEY,
     devis_id INT,
-    utilisateur_id INT,
-    etat ENUM('en_édition', 'à_valider', 'validé', 'envoyé', 'annulé', 'livré') DEFAULT 'en_édition',
+    etat ENUM('en_édition', 'à_valider', 'validé', 'envoyé', 'annulé', 'livré') DEFAULT 'à_valider',
     fichier_pdf VARCHAR(255),
     date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    nom_editeur VARCHAR(255)
+    nom_editeur VARCHAR(255) DEFAULT NULL
 );
 
 -- Table Facture
@@ -163,7 +162,7 @@ ALTER TABLE Devis ADD CONSTRAINT fk_devis_demande FOREIGN KEY (demande_id) REFER
 ALTER TABLE Devis ADD CONSTRAINT fk_devis_fournisseur FOREIGN KEY (fournisseur_id) REFERENCES Fournisseur(id);
 
 ALTER TABLE BonCommande ADD CONSTRAINT fk_boncommande_devis FOREIGN KEY (devis_id) REFERENCES Devis(id);
-ALTER TABLE BonCommande ADD CONSTRAINT fk_boncommande_utilisateur FOREIGN KEY (utilisateur_id) REFERENCES Utilisateur(id);
+
 
 ALTER TABLE Facture ADD CONSTRAINT fk_facture_boncommande FOREIGN KEY (bon_commande_id) REFERENCES BonCommande(id);
 
@@ -217,11 +216,11 @@ VALUES
 (3, 3,'back/src/pdf/Devis/devis_demandeur_date_domaine.pdf', 'refusé', 'Validateur C');
 
 -- Insérer un bon de commande pour le devis avec ID 1 et l'utilisateur avec ID 1
-INSERT INTO BonCommande (devis_id, utilisateur_id, etat, fichier_pdf,nom_editeur)
+INSERT INTO BonCommande (devis_id, etat, fichier_pdf,nom_editeur)
 VALUES 
-(1, 1, 'en_édition', 'back/src/pdf/BonCommande/bon_commande_demandeur_date.pdf', 'Editeur A'),
-(2, 2, 'à_valider', 'back/src/pdf/BonCommande/bon_commande_demandeur_date.pdf', 'Editeur B'),
-(3, 3, 'validé', 'back/src/pdf/BonCommande/bon_commande_demandeur_date.pdf', 'Editeur C');
+(1,'en_édition', 'back/src/pdf/BonCommande/bon_commande_demandeur_date.pdf', 'Editeur A'),
+(2, 'à_valider', 'back/src/pdf/BonCommande/bon_commande_demandeur_date.pdf', 'Editeur B'),
+(3, 'validé', 'back/src/pdf/BonCommande/bon_commande_demandeur_date.pdf', 'Editeur C');
 
 -- Insérer une facture pour le bon de commande avec ID 1
 INSERT INTO Facture (bon_commande_id, montant, fichier_pdf, etat, date_livraison, lieu_livraison, nom_signataire, nom_transitaire)

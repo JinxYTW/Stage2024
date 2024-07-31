@@ -1,23 +1,75 @@
 package dao;
 
-import java.io.FileOutputStream;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
-import com.itextpdf.kernel.colors.ColorConstants;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Table;
-import com.itextpdf.layout.borders.SolidBorder;
 
 import database.SomethingDatabase;
 import models.BonCommande;
 
 public class BonCommandeDao {
+
+    public static int getBcCountFromDemandId(int demandeId) {
+        try {
+            SomethingDatabase myDatabase = new SomethingDatabase();
+            String query = "SELECT COUNT(*) FROM BonCommande WHERE devis_id = (SELECT id FROM Devis WHERE demande_id = ? AND etat = 'validé')";
+            PreparedStatement statement = myDatabase.prepareStatement(query);
+            statement.setInt(1, demandeId);
+
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    // Méthode pour obtenir le devis_id à partir du demandeId
+    private static int getDevisIdFromDemandeId(int demandeId) {
+        int devisId = -1; // Valeur par défaut en cas d'erreur
+        try {
+            SomethingDatabase myDatabase = new SomethingDatabase();
+            String query = "SELECT id FROM Devis WHERE demande_id = ? AND etat = 'validé'";
+            PreparedStatement statement = myDatabase.prepareStatement(query);
+            statement.setInt(1, demandeId);
+
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                devisId = resultSet.getInt("id");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return devisId;
+    }
+
+    // Méthode pour sauvegarder le bon de commande dans la base de données
+    public static void saveBcToDatabase(int demandeId, String pdfPath) {
+        try {
+            int devisId = getDevisIdFromDemandeId(demandeId);
+
+            if (devisId == -1) {
+                System.err.println("Aucun devis trouvé pour la demande ID " + demandeId);
+                return;
+            }
+
+            SomethingDatabase myDatabase = new SomethingDatabase();
+            String query = "INSERT INTO BonCommande (devis_id, etat, fichier_pdf, date_creation) VALUES (?, ?, ?, NOW())";
+            PreparedStatement statement = myDatabase.prepareStatement(query);
+            statement.setInt(1, devisId);
+            statement.setString(2, "à_valider"); // État par défaut
+            statement.setString(3, pdfPath);
+            
+            statement.executeUpdate();
+            System.out.println("Bon de commande enregistré avec succès.");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public BonCommande findById(int id) {
         try {
@@ -33,7 +85,6 @@ public class BonCommandeDao {
                 return new BonCommande(
                     resultSet.getInt("id"),
                     resultSet.getInt("devis_id"),
-                    resultSet.getInt("utilisateur_id"),
                     BonCommande.Etat.valueOf(resultSet.getString("etat")),
                     resultSet.getString("fichier_pdf"),
                     resultSet.getTimestamp("date_creation"),
@@ -62,58 +113,5 @@ public class BonCommandeDao {
         }
     }
 
-    public String generatePdf(BonCommande bonCommande, String utilisateurName) {
-        LocalDate creationDate = bonCommande.date_creation().toLocalDateTime().toLocalDate();
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        String formattedDate = creationDate.format(dateFormatter);
-
-        String sanitizedUtilisateurName = utilisateurName.replaceAll("[^a-zA-Z0-9]", "_");
-
-        String pdfFileName = "bon_commande_" + sanitizedUtilisateurName + "_" + formattedDate + ".pdf";
-        String pdfPath = "back/src/pdf/BonCommande/" + pdfFileName;
-
-        try {
-            PdfWriter writer = new PdfWriter(new FileOutputStream(pdfPath));
-
-            PdfDocument pdfDoc = new PdfDocument(writer);
-
-            Document document = new Document(pdfDoc);
-
-            Paragraph title = new Paragraph("Bon de Commande de " + utilisateurName + " - " + formattedDate)
-                    .setFontSize(20)
-                    .setBold()
-                    .setMarginBottom(20);
-            document.add(title);
-
-            float[] columnWidths = {1, 3};
-            Table table = new Table(columnWidths);
-
-            table.addCell(createCell("ID:"));
-            table.addCell(createCell(bonCommande.id() + ""));
-            table.addCell(createCell("Devis ID:"));
-            table.addCell(createCell(bonCommande.devis_id() + ""));
-            table.addCell(createCell("Utilisateur ID:"));
-            table.addCell(createCell(bonCommande.utilisateur_id() + ""));
-            table.addCell(createCell("État:"));
-            table.addCell(createCell(bonCommande.etat().name()));
-            table.addCell(createCell("Date de création:"));
-            table.addCell(createCell(bonCommande.date_creation().toString()));
-
-            document.add(table);
-
-            document.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        return pdfPath;
-    }
-
-    private com.itextpdf.layout.element.Cell createCell(String content) {
-        com.itextpdf.layout.element.Cell cell = new com.itextpdf.layout.element.Cell().add(new Paragraph(content));
-        cell.setPadding(5);
-        cell.setBorder(new SolidBorder(ColorConstants.BLACK, 1));
-        return cell;
-    }
+   
 }

@@ -253,71 +253,8 @@ class homeServices {
         }
     }
 
-    async generatePdfDevis(devisId) {
-        console.log(`Generating PDF for demande ID: ${devisId}`);
-        try {
-            const response = await fetch(`http://127.0.0.1:8080/api/generatePdfDevis?id=${devisId}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            
-            
-            if (!response.ok) {
-                throw new Error('La génération du PDF a échoué');
-            }
-            const data = await response.json();
-            return data.pdfPath;
-        } catch (error) {
-            console.log("Erreur dans la génération du PDF", error);
-            return null;
-        }
-    }
-
-    async generatePdfBonCommande(bonCommandeId) {
-        console.log(`Generating PDF for bonCommande ID: ${bonCommandeId}`);
-        try {
-            const response = await fetch(`http://127.0.0.1:8080/api/generatePdfBonCommande?id=${bonCommandeId}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            
-
-            if (!response.ok) {
-                throw new Error('La génération du PDF a échoué');
-            }
-            const data = await response.json();
-            return data.pdfPath;
-        }catch (error) {
-            console.log("Erreur dans la génération du PDF", error);
-            return null;
-        }
-
-}
-    async generatePdfFacture(factureId) {
-        console.log(`Generating PDF for facture ID: ${factureId}`);
-        try {
-            const response = await fetch(`http://127.0.0.1:8080/api/generatePdfFacture?id=${factureId}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            console.log(`Response status: ${response.status}`); // Ajoutez ce log
-
-            if (!response.ok) {
-                throw new Error('La génération du PDF a échoué');
-            }
-            const data = await response.json();
-            return data.pdfPath;
-        }catch (error) {
-            console.log("Erreur dans la génération du PDF", error);
-            return null;
-        }
-    }
+    
+    
 
 
 

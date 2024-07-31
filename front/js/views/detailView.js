@@ -226,7 +226,7 @@ async handleClickableZoneClick() {
                 },
                 'treatBc': () => {
                     console.log('Action pour traiter les BC');
-                    // Ajoutez ici la logique pour traiter les BC
+                    this.openBcUploadModal();
                 },
                 'validateBc': () => {
                     console.log('Action pour valider les BC');
@@ -293,6 +293,20 @@ async handleClickableZoneClick() {
                     button.textContent = "Valider les devis";
                 }
             }
+
+            if (groupName === 'treatBc') {
+                const demandeId = new URLSearchParams(window.location.search).get('demandeId');
+                const count = await this.detailServices.getBcCountFromDemandId(demandeId);
+                
+                if (count >= 1) {
+                    button.disabled = true;
+                    button.textContent = "BC déjà traité";
+                } else {
+                    button.disabled = false;
+                    button.textContent = "Traiter les BC";
+                }
+            }
+                
         });
 
     
@@ -428,8 +442,57 @@ async openValidateModal() {
     }
 }
 
+async openBcUploadModal() {
+    const demandeId = new URLSearchParams(window.location.search).get('demandeId');
+
+    if (!demandeId) {
+        console.error('ID de demande manquant dans l\'URL');
+        return;
+    }
+
+    const modal = document.getElementById('bcUploadModal');
+    const span = modal.querySelector('.close');
+
+    modal.style.display = "block";
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    };
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    };
+
+    document.getElementById('bcUploadForm').onsubmit = async function(e) {
+        e.preventDefault();
+
+        const formElement = document.getElementById('bcUploadForm');
+        if (!formElement) {
+            console.error('Le formulaire avec l\'ID "bcUploadForm" n\'a pas été trouvé.');
+            return;
+        }
+
+        const formData = new FormData(formElement);
+        const uploadSuccess = await this.detailServices.uploadBcFiles(demandeId, formData);
+
+        if (uploadSuccess) {
+            modal.style.display = "none";
+
+            // Mettre à jour le type de notification après le téléversement réussi
+            const newType = "bc_a_valider";
+            await this.detailServices.updateNotificationType(demandeId, newType);
+        }
+    }.bind(this);
+}
+
+
+
+
         
     
     }
+
 
 export { detailView };

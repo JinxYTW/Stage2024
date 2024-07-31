@@ -143,9 +143,8 @@ class homeView{
         });
     
         this.generatePdfDemande();
-        this.generatePdfDevis();
-        this.generatePdfBonCommande();
-        this.generatePdfFacture();
+        
+        
         this.bindSearchDemandes();
         
 
@@ -249,104 +248,9 @@ class homeView{
 
     }
 
-    async generatePdfDevis(){
-        document.querySelectorAll('.generate_pdf_devis').forEach(button => {
-            button.addEventListener('click', async () => {
-                const devisId = button.getAttribute('data-devis-id');
-                console.log('Demande ID:', devisId);
+    
 
-                if (!devisId) {
-                    alert("L'identifiant de la demande est manquant.");
-                    return;
-                }
-
-                // Vérifier si l'utilisateur est authentifié
-                if (!utilisateurAuthentifie()) {
-                    alert("Vous devez être authentifié pour accéder à cette ressource.");
-                    return;
-                }
-                
-                const pdfPath = await this.homeServices.generatePdfDevis(devisId);
-                console.log('Opening PDF at:', pdfPath);
-                if (pdfPath) {
-                    const adjustedPdfUrl = `http://127.0.0.1:8080/${pdfPath.replace('back/src/', '')}`;
-                    console.log('Opening PDF at:', adjustedPdfUrl);
-
-                    // Ouvrir le PDF dans une nouvelle fenêtre
-                    window.open(adjustedPdfUrl, '_blank');
-                } else {
-                    alert("Échec de la génération du PDF.");
-                }
-            });
-        });
-
-    }
-
-    async generatePdfBonCommande(){
-        document.querySelectorAll('.generate_pdf_bc').forEach(button => {
-            button.addEventListener('click', async () => {
-                const bcId = button.getAttribute('data-bc-id');
-                console.log('Demande ID:', bcId);
-
-                if (!bcId) {
-                    alert("L'identifiant de la demande est manquant.");
-                    return;
-                }
-
-                // Vérifier si l'utilisateur est authentifié
-                if (!utilisateurAuthentifie()) {
-                    alert("Vous devez être authentifié pour accéder à cette ressource.");
-                    return;
-                }
-                
-                const pdfPath = await this.homeServices.generatePdfBonCommande(bcId);
-                console.log('Opening PDF at:', pdfPath);
-                if (pdfPath) {
-                    const adjustedPdfUrl = `http://127.0.0.1:8080/${pdfPath.replace('back/src/', '')}`;
-                    console.log('Opening PDF at:', adjustedPdfUrl);
-
-                    // Ouvrir le PDF dans une nouvelle fenêtre
-                    window.open(adjustedPdfUrl, '_blank');
-                } else {
-                    alert("Échec de la génération du PDF.");
-                }
-            });
-        });
-
-    }
-
-    async generatePdfFacture(){
-        document.querySelectorAll('.generate_pdf_livraison').forEach(button => {
-            button.addEventListener('click', async () => {
-                const livraisonId = button.getAttribute('data-livraison-id');
-                console.log('Demande ID:', livraisonId);
-
-                if (!livraisonId) {
-                    alert("L'identifiant de la demande est manquant.");
-                    return;
-                }
-
-                // Vérifier si l'utilisateur est authentifié
-                if (!utilisateurAuthentifie()) {
-                    alert("Vous devez être authentifié pour accéder à cette ressource.");
-                    return;
-                }
-                
-                const pdfPath = await this.homeServices.generatePdfFacture(livraisonId);
-                console.log('Opening PDF at:', pdfPath);
-                if (pdfPath) {
-                    const adjustedPdfUrl = `http://127.0.0.1:8080/${pdfPath.replace('back/src/', '')}`;
-                    console.log('Opening PDF at:', adjustedPdfUrl);
-
-                    // Ouvrir le PDF dans une nouvelle fenêtre
-                    window.open(adjustedPdfUrl, '_blank');
-                } else {
-                    alert("Échec de la génération du PDF.");
-                }
-            });
-        });
-
-    }
+   
     
     
 

@@ -1,6 +1,70 @@
 class detailServices{
     constructor() {}
 
+    async getBcCountFromDemandId(demandeId) {
+        try {
+            const response = await fetch(`http://127.0.0.1:8080/api/getBcCountFromDemandId?demandeId=${demandeId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                return data.bcCount; // Supposons que la réponse contient { count: nombreDeDevis }
+            } else {
+                console.error('Erreur lors de la récupération du nombre de devis');
+                return 0;
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            return 0;
+        }
+    }
+
+    async uploadBcFiles(demandeId, formData) {
+        try {
+            // Afficher le contenu de formData pour déboguer
+            for (let [key, value] of formData.entries()) {
+                if (value instanceof File) {
+                    console.log(`Champ: ${key}, Fichier: ${value.name}`);
+                } else {
+                    console.log(`Champ: ${key}, Valeur: ${value}`);
+                }
+            }
+    
+            // Créer une instance de Headers
+            const headers = new Headers();
+    
+            // Supposer que le nom du fichier est disponible dans le formData
+            // Vous devez ajuster cette partie selon votre logique pour obtenir le nom du fichier
+            if (formData.has('bcFile')) {
+                const file = formData.get('bcFile');
+                headers.append('filename', file.name);
+            }
+    
+            // Envoyer les données au serveur
+            const response = await fetch(`http://127.0.0.1:8080/api/uploadBc?demandeId=${demandeId}`, {
+                method: 'POST',
+                body: formData,
+                headers: headers // Ajouter les headers si nécessaire
+            });
+    
+            if (response.ok) {
+                console.log('Bon de commande téléversé avec succès');
+                return true;
+            } else {
+                console.error('Erreur lors du téléversement du bon de commande');
+                return false;
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            return false;
+        }
+    }
+    
+    
+
     async validateDevis(pdfPath) {
         try {
             const response = await fetch(`http://127.0.0.1:8080/api/validateDevis`, {

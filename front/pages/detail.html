@@ -119,6 +119,19 @@
         </div>
     </div>
 
+    <!-- Modal pour téléverser le bon de commande -->
+<div id="bcUploadModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeBcUploadModal">&times;</span>
+        <h2>Téléverser un Bon de Commande</h2>
+        <form id="bcUploadForm">
+            <input type="file" id="bcFileInput" name="bcFile" accept=".pdf" required>
+            <button type="submit" class="btn btn-primary">Téléverser</button>
+        </form>
+    </div>
+</div>
+
+
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
