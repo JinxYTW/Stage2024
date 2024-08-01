@@ -171,7 +171,7 @@ async handleClickableZoneClick() {
                 Livraison le <span style="color: blue;">${demandeDetails.livraison.date}</span> à <span style="color: blue;">${demandeDetails.livraison.lieu}</span><br>
                 BL signé par <span style="color: blue;">${demandeDetails.livraison.signePar}</span><br>
                 Numéro ou Nom Transitaire: <span style="color: blue;">${demandeDetails.livraison.transitaire}</span><br>
-                Commentaires:<br><a id="pathToFacture" href="${demandeDetails.livraison.path}">BL_${demandeDetails.livraison.numero}.pdf</a>
+                Commentaires:<br><a id="pathToFacture" href="${demandeDetails.livraison.path}">BLSigne_${demandeDetails.livraison.numero}.pdf</a>
             `;
     
             this.articleSelected.innerHTML = `<span style="color: blue;">${demandeDetails.quantite}x ${demandeDetails.typeof} ${demandeDetails.marque} ${demandeDetails.reference}</span>`;
