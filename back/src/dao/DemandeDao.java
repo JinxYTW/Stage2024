@@ -27,6 +27,20 @@ import models.Demande;
 
 public class DemandeDao {
 
+    public static void updateDemandeEtat (int demandeId,String newEtat){
+        try {
+            SomethingDatabase myDatabase = new SomethingDatabase();
+            String query = "UPDATE Demande SET etat = ? WHERE id = ?";
+            PreparedStatement statement = myDatabase.prepareStatement(query);
+            statement.setString(1, newEtat);
+            statement.setInt(2, demandeId);
+            statement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+    }
+
     /**
      * Retrieves the details of a specific demand from the database.
      *

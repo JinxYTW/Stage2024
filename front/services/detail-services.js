@@ -1,6 +1,29 @@
 class detailServices{
     constructor() {}
 
+    async updateDemandeEtat(demandeId, newEtat) {
+        try {
+            const response = await fetch(`http://127.0.0.1:8080/api/updateDemandeEtat`, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json' 
+                },
+                body: JSON.stringify({ demandeId, newEtat }) // Envoi des données nécessaires
+            });
+    
+            if (response.ok) {
+                console.log('Demande mise à jour avec succès');
+                return true;
+            } else {
+                console.error('Erreur lors de la mise à jour de la demande');
+                return false;
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            return false;
+        }
+    }
+
     async isOneInvoiceValidate(demandeId) {
         try {
             const response = await fetch(`http://127.0.0.1:8080/api/isOneInvoiceValidate?demandeId=${demandeId}`, {

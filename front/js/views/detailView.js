@@ -435,7 +435,9 @@ async handleClickableZoneClick() {
 
         const demandeId = new URLSearchParams(window.location.search).get('demandeId');
         const newType = "devis_a_valider"
+        const newEtat = "devis_a_valider"
         await this.detailServices.updateNotificationType(demandeId, newType);
+        await this.detailServices.updateDemandeEtat(demandeId, newEtat);
     }
 }.bind(this);
 
@@ -486,8 +488,10 @@ async openValidateModal() {
                 if (success) {
                     alert('Devis validé avec succès');
                     
-                    const newType = "devis_a_valider"
+                    const newType = "bc_a_editer"
+                    const newEtat = "bc_a_editer"
                     await this.detailServices.updateNotificationType(demandeId, newType);
+                    await this.detailServices.updateDemandeEtat(demandeId, newEtat);
                     // Vous pouvez ajouter ici du code pour rafraîchir la liste des devis si nécessaire
                 } else {
                     alert('Erreur lors de la validation du devis');
@@ -562,7 +566,9 @@ async openBcUploadModal() {
 
             // Mettre à jour le type de notification après le téléversement réussi
             const newType = "bc_a_valider";
+            const newEtat = "bc_a_valider";
             await this.detailServices.updateNotificationType(demandeId, newType);
+            await this.detailServices.updateDemandeEtat(demandeId, newEtat);
         }
     }.bind(this);
 }
@@ -607,7 +613,9 @@ async  openBcValidationModal() {
                 const success = await this.detailServices.validateBc(pdfPath);
                 if (success) {
                     const newType = "bc_valide_envoi_fournisseur";
+                    const newEtat = "bc_valide_envoi_fournisseur";
                     await this.detailServices.updateNotificationType(demandeId, newType);
+                    await this.detailServices.updateDemandeEtat(demandeId, newEtat);
                     alert('Bon de commande validé avec succès');
                     
                 } else {
@@ -642,8 +650,9 @@ async  openBcValidationModal() {
 async notifyBcSend() {
     const demandeId = new URLSearchParams(window.location.search).get('demandeId');
     const newType = "bc_envoye_attente_livraison";
+    const newEtat = "bc_envoye_attente_livraison";
     await this.detailServices.updateNotificationType(demandeId, newType);
-
+    await this.detailServices.updateDemandeEtat(demandeId, newEtat);
     alert('Notification envoyée avec succès');
 
     // Ajoutez ici la logique pour envoyer la notification
@@ -727,7 +736,9 @@ async openInvoiceValidationModal() {
                 if (success) {
                     alert('Facture validée avec succès');
                     const newType = "commande_livree_finalisee";
+                    const newEtat = "commande_livree_finalisee";
                     await this.detailServices.updateNotificationType(demandeId, newType);
+                    await this.detailServices.updateDemandeEtat(demandeId, newEtat);
                     invoiceDiv.remove(); // Optionnel : retirer l'élément de la liste après validation
                 } else {
                     alert('Erreur lors de la validation de la facture');

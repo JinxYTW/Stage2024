@@ -4,6 +4,7 @@ import dao.BonCommandeDao;
 import dao.DemandeDao;
 import dao.DevisDao;
 import dao.FactureDao;
+import dao.NotifDao;
 import dao.UtilisateurDao;
 import models.BonCommande;
 import models.Demande;
@@ -15,6 +16,7 @@ import webserver.WebServerResponse;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -24,6 +26,30 @@ import com.google.gson.JsonObject;
  * The controller class responsible for handling requests related to demandes.
  */
 public class DemandeController {
+
+    public void updateDemandeEtat(WebServerContext context) {
+    try {
+        // Extraire les données du corps de la requête
+        Map<String, String> requestBody = context.extractBody(Map.class);
+        String demandeId = requestBody.get("demandeId");
+        int demandeIdInt = Integer.parseInt(demandeId);
+        String newType = requestBody.get("newEtat");
+
+        DemandeDao.updateDemandeEtat(demandeIdInt, newType);
+
+
+
+        // Logique pour mettre à jour le type de notification
+        // Par exemple, mettre à jour dans la base de données
+        // notificationService.updateNotificationType(demandeId, newType);
+
+        // Répondre au client avec succès
+        context.getResponse().ok("Demande mise à jour avec succès");
+    } catch (Exception e) {
+        e.printStackTrace();
+        context.getResponse().serverError("Erreur lors de la mise à jour de la demande");
+    }
+}
 
     
     /**
