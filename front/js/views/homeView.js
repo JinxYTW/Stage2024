@@ -56,18 +56,18 @@ class homeView{
             this.handleClickableZoneClick();
         });
     }
-
+    /*
     async handleClickableZoneClick() {
         const notifId = document.getElementById('last_notif').dataset.id;
         const userId = new URLSearchParams(window.location.search).get('user');
         if (notifId && userId) {
             // Marquer la notification comme lue
-            const success = await this.homeServices.markNotifAsRead(notifId);
-            //const success = await this.homeServices.markNotifAsReadForUser(notifId, userId);
+           
+            const success = await this.homeServices.markNotifAsReadForUser(notifId, userId);
             console.log('Notification marked as read:', success);
             if (success) {
-                const updateSuccess = await this.homeServices.updateNotificationTypeRead(notifId);
-                //const updateSuccess = await this.homeServices.updateNotificationTypeReadForUser(notifId, userId);
+                
+                const updateSuccess = await this.homeServices.updateNotificationTypeReadForUser(notifId, userId);
                 console.log('Notification updated:', updateSuccess);
                 if (updateSuccess) {
                     // Recharger les notifications
@@ -82,11 +82,12 @@ class homeView{
             console.error('ID de notification ou ID utilisateur manquant');
         }
     }
+        */
 
 
 
 
-    /*
+    
     async handleClickableZoneClick() {
         const notifId = document.getElementById('last_notif').dataset.id;
         if (notifId) {
@@ -110,7 +111,7 @@ class homeView{
         }
             
     }
-    */
+    
     
 
     //----------------- Gère l'affichage des demandes -----------------//

@@ -9,15 +9,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 
-
-import com.itextpdf.kernel.colors.ColorConstants;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Table;
-import com.itextpdf.layout.borders.SolidBorder;
-
 import database.SomethingDatabase;
 import models.Facture;
 
@@ -60,6 +51,25 @@ public class FactureDao {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static String changeSignataireNameThanksToUserId(int userId,String pdfPath){
+        try {
+            SomethingDatabase myDatabase = new SomethingDatabase();
+
+            String query = "UPDATE Facture SET nom_signataire = (SELECT nom FROM Utilisateur WHERE id = ?) WHERE fichier_pdf = ? ";
+            PreparedStatement statement = myDatabase.prepareStatement(query);
+            statement.setInt(1, userId);
+            statement.setString(2, pdfPath);
+
+            statement.executeUpdate();
+
+            return "Nom du signataire changé avec succès";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Erreur lors du changement du nom du signataire";
+        }
     }
 
 
@@ -149,6 +159,35 @@ public class FactureDao {
     }
 
     
+    public Facture findValideInvoiceFromDemandId(int userId){
+        try {
+            SomethingDatabase myDatabase = new SomethingDatabase();
+
+            String query = "SELECT * FROM Facture WHERE bon_commande_id = (SELECT id FROM BonCommande WHERE devis_id = (SELECT id FROM Devis WHERE demande_id = ? AND etat = 'validé') AND etat = 'validé') AND etat = 'validée'";
+            PreparedStatement statement = myDatabase.prepareStatement(query);
+            statement.setInt(1, userId);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return new Facture(
+                    resultSet.getInt("id"),
+                    resultSet.getInt("bon_commande_id"),
+                    resultSet.getString("fichier_pdf"),
+                    Facture.Etat.valueOf(resultSet.getString("etat")),
+                    resultSet.getTimestamp("date_facture"),
+                    resultSet.getTimestamp("date_livraison"),
+                    resultSet.getString("lieu_livraison"),
+                    resultSet.getString("nom_signataire"),
+                    resultSet.getString("nom_transitaire")
+                );
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public Facture findById(int id) {
         try {

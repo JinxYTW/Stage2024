@@ -123,6 +123,11 @@ public class App {
 
             //-------------- Devis ----------------------------
 
+            webserver.getRouter().post("/api/changeValideurNameThanksToUserId", (WebServerContext context) -> {
+                
+                mydevisController.changeValideurNameThanksToUserId(context);
+            });
+
             webserver.getRouter().get("/api/isOneDevisValidate", (WebServerContext context) -> {
                 
                 mydevisController.isOneDevisValidate(context);
@@ -172,6 +177,11 @@ public class App {
 
         //-------------- BonCommande ----------------------------
 
+        webserver.getRouter().post("/api/changeEditeurNameThanksToUserId", (WebServerContext context) -> {
+                
+            mybonCommandeController.changeEditeurNameThanksToUserId(context);
+        });
+
         webserver.getRouter().get("/api/isOneBcValidate", (WebServerContext context) -> {
             
             mybonCommandeController.isOneBcValidate(context);
@@ -219,6 +229,11 @@ public class App {
         });
 
             //-------------- Facture ----------------------------
+
+            webserver.getRouter().post("/api/changeSignataireNameThanksToUserId", (WebServerContext context) -> {
+                
+                myfactureController.changeSignataireNameThanksToUserId(context);
+            });    
         
 
         webserver.getRouter().get("/pdf/Facture/:filename", (WebServerContext context) -> {

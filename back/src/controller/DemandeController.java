@@ -79,9 +79,9 @@ public class DemandeController {
             //A completer avec autre DAO pour obtenir info vis à vis validation etc etc
 
             Demande demande = demandeDao.getDetailsDemande(id);
-            Devis devis = devisDao.findById(id);
-            BonCommande bonCommande = bonCommandeDao.findById(id);
-            Facture facture = factureDao.findById(id);
+            Devis devis = devisDao.FindValideDevisFromDemandId(id);
+            BonCommande bonCommande = bonCommandeDao.FindValideBcFromDemandId(id);
+            Facture facture = factureDao.findValideInvoiceFromDemandId(id);
 
 
             if (demande != null) {
@@ -375,10 +375,13 @@ public class DemandeController {
         System.out.println("demandeId: " + demandeId);
 
         // Créer une notification pour la demande
+        int utilisateurId = demande.utilisateur_id();
         String notificationMessage = "La demande";
         String notificationType = "demande_envoyee"; // Vous pouvez ajuster le type selon vos besoins
         Timestamp notificationDate = new Timestamp(System.currentTimeMillis());
+
         int notifId = NotifDao.createNotification(demandeId, notificationMessage, notificationType, notificationDate);
+        //int notifId = NotifDao.createNotificationForUser(utilisateurId,demandeId, notificationMessage, notificationType, notificationDate);
         System.out.println("notificationId: " + notifId);
 
         // Construire la réponse JSON

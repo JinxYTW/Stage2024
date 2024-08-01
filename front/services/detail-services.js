@@ -1,6 +1,75 @@
 class detailServices{
     constructor() {}
 
+    async changeSignataireNameThanksToUserId(userId, pdfPath) {
+        try {
+            const response = await fetch(`http://127.0.0.1:8080/api/changeSignataireNameThanksToUserId`, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json' 
+                },
+                body: JSON.stringify({ userId, pdfPath }) // Envoi des données nécessaires
+            });
+    
+            if (response.ok) {
+                console.log('Valideur mise à jour avec succès');
+                return true;
+            } else {
+                console.error('Erreur lors de la mise à jour du valideur');
+                return false;
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            return false;
+        }
+    }
+
+    async changeEditeurNameThanksToUserId(userId, pdfPath) {
+        try {
+            const response = await fetch(`http://127.0.0.1:8080/api/changeEditeurNameThanksToUserId`, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json' 
+                },
+                body: JSON.stringify({ userId, pdfPath }) // Envoi des données nécessaires
+            });
+    
+            if (response.ok) {
+                console.log('Valideur mise à jour avec succès');
+                return true;
+            } else {
+                console.error('Erreur lors de la mise à jour du valideur');
+                return false;
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            return false;
+        }
+    }
+
+    async changeValideurNameThanksToUserId(userId, pdfPath) {
+        try {
+            const response = await fetch(`http://127.0.0.1:8080/api/changeValideurNameThanksToUserId`, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json' 
+                },
+                body: JSON.stringify({ userId, pdfPath }) // Envoi des données nécessaires
+            });
+    
+            if (response.ok) {
+                console.log('Valideur mise à jour avec succès');
+                return true;
+            } else {
+                console.error('Erreur lors de la mise à jour du valideur');
+                return false;
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            return false;
+        }
+    }
+
     async updateDemandeEtat(demandeId, newEtat) {
         try {
             const response = await fetch(`http://127.0.0.1:8080/api/updateDemandeEtat`, {

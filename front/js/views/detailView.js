@@ -158,13 +158,13 @@ async handleClickableZoneClick() {
             this.etatDevis.innerHTML = `
                 Devis validé par <span style="color: blue;">${demandeDetails.devis.validePar}</span> le <span style="color: blue;">${demandeDetails.devis.date_devis}</span><br>
                 Numéro de devis: <span style="color: blue;">${demandeDetails.devis.numero}</span><br>
-                Commentaires:<br><a id="pathToDevis" href="${demandeDetails.devis.fichier_pdf}">devis_${demandeDetails.devis.numero}.pdf</a>
+                Commentaires:<br><a id="pathToDevis" href="${demandeDetails.devis.fichier_pdf}">devisValide_${demandeDetails.devis.numero}.pdf</a>
             `;
     
             this.etatBc.innerHTML = `
                 BC édité par <span style="color: blue;">${demandeDetails.bc.editePar}</span> le <span style="color: blue;">${demandeDetails.bc.date}</span><br>
-                Numéro de commande: <span style="color: blue;">${demandeDetails.bc.numero}</span><br>
-                Commentaires:<br><a id="pathToBc" href="${demandeDetails.bc.path}">BC_${demandeDetails.bc.numero}.pdf</a>
+                Numéro de bon de commande: <span style="color: blue;">${demandeDetails.bc.numero}</span><br>
+                Commentaires:<br><a id="pathToBc" href="${demandeDetails.bc.path}">BCValide_${demandeDetails.bc.numero}.pdf</a>
             `;
     
             this.etatLivraison.innerHTML = `
@@ -446,6 +446,7 @@ async handleClickableZoneClick() {
         // Fonction pour ouvrir la modale de validation des devis
 async openValidateModal() {
     const demandeId = new URLSearchParams(window.location.search).get('demandeId');
+    const userId = new URLSearchParams(window.location.search).get('user');
 
     if (!demandeId) {
         console.error('ID de demande manquant dans l\'URL');
@@ -485,6 +486,7 @@ async openValidateModal() {
             validateButton.onclick = async () => {
                 // Utiliser l'ID du devis si nécessaire pour la validation
                 const success = await this.detailServices.validateDevis(pdfPath);
+                await this.detailServices.changeValideurNameThanksToUserId(userId,pdfPath);
                 if (success) {
                     alert('Devis validé avec succès');
                     
@@ -575,6 +577,7 @@ async openBcUploadModal() {
 
 async  openBcValidationModal() {
     const demandeId = new URLSearchParams(window.location.search).get('demandeId');
+    const userId = new URLSearchParams(window.location.search).get('user');
 
     if (!demandeId) {
         console.error('ID de demande manquant dans l\'URL');
@@ -611,6 +614,7 @@ async  openBcValidationModal() {
             validateButton.className = 'btn btn-success';
             validateButton.onclick = async () => {
                 const success = await this.detailServices.validateBc(pdfPath);
+                await this.detailServices.changeEditeurNameThanksToUserId(userId,pdfPath);
                 if (success) {
                     const newType = "bc_valide_envoi_fournisseur";
                     const newEtat = "bc_valide_envoi_fournisseur";
@@ -703,6 +707,7 @@ async openInvoiceUploadModal() {
 
 async openInvoiceValidationModal() {
     const demandeId = new URLSearchParams(window.location.search).get('demandeId');
+    const userId = new URLSearchParams(window.location.search).get('user');
 
     if (!demandeId) {
         console.error('ID de demande manquant dans l\'URL');
@@ -733,6 +738,7 @@ async openInvoiceValidationModal() {
             validateButton.className = 'btn btn-success';
             validateButton.onclick = async () => {
                 const success = await this.detailServices.validateInvoice(pdfPath);
+                await this.detailServices.changeSignataireNameThanksToUserId(userId,pdfPath);
                 if (success) {
                     alert('Facture validée avec succès');
                     const newType = "commande_livree_finalisee";

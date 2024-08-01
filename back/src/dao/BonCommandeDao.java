@@ -30,6 +30,25 @@ public class BonCommandeDao {
         return false;
     }
 
+    public static String changeEditeurNameThanksToUserId(int userId, String pdfPath) {
+        try {
+            SomethingDatabase myDatabase = new SomethingDatabase();
+
+            String query = "UPDATE BonCommande SET nom_editeur = (SELECT nom FROM Utilisateur WHERE id = ?) WHERE fichier_pdf = ?";
+            PreparedStatement statement = myDatabase.prepareStatement(query);
+            statement.setInt(1, userId);
+            statement.setString(2, pdfPath);
+
+            statement.executeUpdate();
+
+            return "Nom de l'éditeur changé avec succès";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "Erreur lors du changement du nom de l'éditeur";
+    }   
+
 
     public static String validateBc(String pdfPath) {
         try {
@@ -127,6 +146,32 @@ public class BonCommandeDao {
         }
     }
 
+    public BonCommande FindValideBcFromDemandId(int demandId){
+        try {
+            SomethingDatabase myDatabase = new SomethingDatabase();
+
+            String query = "SELECT * FROM BonCommande WHERE devis_id = (SELECT id FROM Devis WHERE demande_id = ? AND etat = 'validé') AND etat = 'validé'";
+            PreparedStatement statement = myDatabase.prepareStatement(query);
+            statement.setInt(1, demandId);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return new BonCommande(
+                    resultSet.getInt("id"),
+                    resultSet.getInt("devis_id"),
+                    BonCommande.Etat.valueOf(resultSet.getString("etat")),
+                    resultSet.getString("fichier_pdf"),
+                    resultSet.getTimestamp("date_creation"),
+                    resultSet.getString("nom_editeur")
+                );
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public BonCommande findById(int id) {
         try {

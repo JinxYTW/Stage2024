@@ -43,6 +43,25 @@ public class DevisDao {
         return false;
     }
 
+    public String changeValideurNameThanksToUserId(int userId,String pdfPath){
+        try {
+            SomethingDatabase myDatabase = new SomethingDatabase();
+
+            String query = "UPDATE Devis SET nom_valideur = (SELECT nom FROM Utilisateur WHERE id = ?) WHERE fichier_pdf = ? ";
+            PreparedStatement statement = myDatabase.prepareStatement(query);
+            statement.setInt(1, userId);
+            statement.setString(2, pdfPath);
+
+            statement.executeUpdate();
+
+            return "Nom du valideur changé avec succès";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "Erreur lors du changement du nom du valideur";
+    }
+
     public String validateDevis(String pdfPath){
         try {
             SomethingDatabase myDatabase = new SomethingDatabase();
@@ -52,6 +71,8 @@ public class DevisDao {
             statement.setString(1, pdfPath);
 
             statement.executeUpdate();
+
+            
 
             return "Devis validé avec succès";
 
@@ -120,6 +141,35 @@ public class DevisDao {
     }
 
     
+    public Devis FindValideDevisFromDemandId(int demandId){
+        try {
+            SomethingDatabase myDatabase = new SomethingDatabase();
+
+            String query = "SELECT * FROM Devis WHERE demande_id = ? AND etat = 'validé'";
+            PreparedStatement statement = myDatabase.prepareStatement(query);
+            statement.setInt(1, demandId);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return new Devis(
+                    resultSet.getInt("id"),
+                    resultSet.getInt("demande_id"),
+                    resultSet.getInt("fournisseur_id"),
+                    
+                    resultSet.getString("fichier_pdf"),
+                    Devis.Etat.valueOf(resultSet.getString("etat")),
+                    resultSet.getTimestamp("date_devis"),
+                    resultSet.getString("nom_valideur")
+                );
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     // Méthode pour trouver un devis par ID
     public Devis findById(int id) {

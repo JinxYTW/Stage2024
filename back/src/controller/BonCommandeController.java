@@ -35,6 +35,29 @@ public class BonCommandeController {
         }
     }
 
+    public void changeEditeurNameThanksToUserId(WebServerContext context) {
+        WebServerResponse response = context.getResponse();
+        try {
+            // Lire le corps de la requête en tant que chaîne JSON
+            String bodyAsString = context.getRequest().getBodyAsString();
+            JsonObject requestBody = JsonParser.parseString(bodyAsString).getAsJsonObject();
+            int userId = requestBody.get("userId").getAsInt();
+            String pdfPath = requestBody.get("pdfPath").getAsString();
+
+            // Changer le nom de l'éditeur
+            String success = BonCommandeDao.changeEditeurNameThanksToUserId(userId, pdfPath);
+
+            // Envoyer la réponse
+            JsonObject jsonResponse = new JsonObject();
+            jsonResponse.addProperty("success", success);
+            response.json(jsonResponse);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.serverError("Erreur lors du changement du nom de l'éditeur");
+        }
+    }
+
     public void validateBc(WebServerContext context) {
         WebServerResponse response = context.getResponse();
         try {

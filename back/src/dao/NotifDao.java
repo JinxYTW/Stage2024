@@ -46,7 +46,7 @@ public class NotifDao {
         }
     }
 
-    public static void createNotificationForUser(int utilisateurId, int demandeId, String message, String type, java.sql.Timestamp date) {
+    public static int createNotificationForUser(int utilisateurId, int demandeId, String message, String type, java.sql.Timestamp date) {
         try {
             SomethingDatabase database = new SomethingDatabase();
             
@@ -69,10 +69,12 @@ public class NotifDao {
                 userNotifStatement.setInt(1, utilisateurId);
                 userNotifStatement.setInt(2, notifId);
                 userNotifStatement.executeUpdate();
+
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return -1;
     }
 
     public static void markAsReadForUser(int utilisateurId, int notifId) {

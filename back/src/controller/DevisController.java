@@ -26,6 +26,30 @@ public class DevisController {
     public DevisController() {
     }
 
+    public void changeValideurNameThanksToUserId(webserver.WebServerContext context) {
+        WebServerResponse response = context.getResponse();
+        try {
+            // Lire le corps de la requête en tant que chaîne JSON
+            String bodyAsString = context.getRequest().getBodyAsString();
+            JsonObject requestBody = JsonParser.parseString(bodyAsString).getAsJsonObject();
+            int userId = requestBody.get("userId").getAsInt();
+            String pdfPath = requestBody.get("pdfPath").getAsString();
+
+            // Changer le nom du valideur
+            DevisDao devisDao = new DevisDao();
+            String success = devisDao.changeValideurNameThanksToUserId(userId, pdfPath);
+
+            // Envoyer la réponse
+            JsonObject jsonResponse = new JsonObject();
+            jsonResponse.addProperty("success", success);
+            response.json(jsonResponse);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.serverError("Erreur lors du changement du nom du valideur");
+        }
+    }
+
     public void isOneDevisValidate(WebServerContext context){
         WebServerResponse response = context.getResponse();
         try {
