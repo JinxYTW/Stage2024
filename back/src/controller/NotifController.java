@@ -15,6 +15,55 @@ import models.Notif;
 public class NotifController {
     public NotifController() {
     }
+
+    //Test
+
+    public void updateNotificationTypeReadForUser(WebServerContext context) {
+        WebServerResponse response = context.getResponse();
+        try {
+            int notifId = Integer.parseInt(context.getRequest().getQueryParams().get("notifId"));
+            int userId = Integer.parseInt(context.getRequest().getQueryParams().get("userId")); // Ajout de userId
+    
+            
+            
+            // Récupérer la notification
+            Notif notif = NotifDao.getNotificationById(notifId);
+    
+            if (notif == null) {
+                response.status(404, "Notification non trouvée");
+                return;
+            }
+    
+            // Déterminer le nouveau type
+            boolean newLuStatus = !notif.lu();
+            String newType = determineNewTypeRead(notif.type().toString());
+            
+            // Mettre à jour le type de notification
+            boolean updateSuccess = NotifDao.updateNotificationTypeForUser(userId, notifId, newLuStatus, newType);
+    
+            if (updateSuccess) {
+                response.json("{\"success\": true}");
+            } else {
+                response.status(500, "Échec de la mise à jour de la notification");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.status(500, "Internal Server Error");
+        }
+    }
+    
+    public void markAsReadForUser(WebServerContext context) {
+        WebServerResponse response = context.getResponse();
+        try {
+            int userId = Integer.parseInt(context.getRequest().getQueryParams().get("userId"));
+            int notifId = Integer.parseInt(context.getRequest().getQueryParams().get("notifId"));
+            NotifDao.markAsReadForUser(userId,notifId);
+            response.json("{\"success\": true}");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.status(500, "Internal Server Error");
+        }
+    }
     
     public void isOneNotifOnState(WebServerContext context) {
         WebServerResponse response = context.getResponse();

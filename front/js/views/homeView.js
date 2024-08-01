@@ -59,6 +59,36 @@ class homeView{
 
     async handleClickableZoneClick() {
         const notifId = document.getElementById('last_notif').dataset.id;
+        const userId = new URLSearchParams(window.location.search).get('user');
+        if (notifId && userId) {
+            // Marquer la notification comme lue
+            const success = await this.homeServices.markNotifAsRead(notifId);
+            //const success = await this.homeServices.markNotifAsReadForUser(notifId, userId);
+            console.log('Notification marked as read:', success);
+            if (success) {
+                const updateSuccess = await this.homeServices.updateNotificationTypeRead(notifId);
+                //const updateSuccess = await this.homeServices.updateNotificationTypeReadForUser(notifId, userId);
+                console.log('Notification updated:', updateSuccess);
+                if (updateSuccess) {
+                    // Recharger les notifications
+                    this.loadNotifications();
+                } else {
+                    console.error('Erreur lors de la mise à jour de la notification');
+                }
+            } else {
+                console.error('Erreur lors du marquage de la notification comme lue');
+            }
+        } else {
+            console.error('ID de notification ou ID utilisateur manquant');
+        }
+    }
+
+
+
+
+    /*
+    async handleClickableZoneClick() {
+        const notifId = document.getElementById('last_notif').dataset.id;
         if (notifId) {
             // Marquer la notification comme lue en utilisant la méthode dans homeServices
             const success = await this.homeServices.markNotifAsRead(notifId);
@@ -78,7 +108,9 @@ class homeView{
         } else {
             console.error('ID de notification manquant');
         }
+            
     }
+    */
     
 
     //----------------- Gère l'affichage des demandes -----------------//

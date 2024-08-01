@@ -3,7 +3,47 @@
  */
 class homeServices {
     constructor() {}
+//Test
+    async updateNotificationTypeReadForUser(notifId,userId) {
+        try {
+            const response = await fetch(`http://localhost:8080/api/updateNotificationTypeRead?notifId=${notifId}&userId=${userId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
 
+            if (response.status !== 200) {
+                throw new Error('Échec de la mise à jour de la notification');
+            }
+
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error("Erreur dans la mise à jour de la notification", error);
+            return false;
+        }
+    }
+
+    async markNotifAsReadForUser(notifId,userId) {
+        try {
+            const response = await fetch(`http://localhost:8080/api/markNotifAsRead?notifId=${notifId}&userId=${userId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (!response.ok) {
+                throw new Error('La mise à jour de la notification a échoué');
+            }
+            return true;
+        }
+        catch (error) {
+            console.error("Erreur dans la mise à jour de la notification", error);
+            return false;
+        }
+    }
+//
     async updateNotificationTypeRead(notifId) {
         try {
             const response = await fetch(`http://localhost:8080/api/updateNotificationTypeRead?notifId=${notifId}`, {

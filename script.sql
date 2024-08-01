@@ -152,6 +152,16 @@ CREATE TABLE UtilisateurGroupe (
     FOREIGN KEY (utilisateur_id) REFERENCES Utilisateur(id),
     FOREIGN KEY (groupe_id) REFERENCES Groupe(id)
 );
+-- Table intermédiaire pour la relation many-to-many entre Utilisateur et Notification pas encore implémentée
+CREATE TABLE UtilisateurNotification (
+    utilisateur_id INT,
+    notification_id INT,
+    lu BOOLEAN DEFAULT FALSE,
+    PRIMARY KEY (utilisateur_id, notification_id),
+    FOREIGN KEY (utilisateur_id) REFERENCES Utilisateur(id),
+    FOREIGN KEY (notification_id) REFERENCES Notif(id)
+);
+
 
 -- Ajout des clés étrangères
 ALTER TABLE Demande ADD CONSTRAINT fk_demande_utilisateur FOREIGN KEY (utilisateur_id) REFERENCES Utilisateur(id);

@@ -1,7 +1,9 @@
 package dao;
 
+import java.security.Timestamp;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -9,11 +11,135 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+
 import database.SomethingDatabase;
 import models.Notif;
 
 public class NotifDao {
     public NotifDao() {
+    }
+
+    // Test
+    public static boolean updateNotificationTypeForUser(int userId, int notifId, boolean newLuStatus, String newType) {
+        try {
+            SomethingDatabase database = new SomethingDatabase();
+            String query = "UPDATE Notif n " +
+                           "JOIN UtilisateurNotification un ON n.id = un.notification_id " +
+                           "SET n.lu = ?, n.type = ? " +
+                           "WHERE un.utilisateur_id = ? AND n.id = ?";
+            PreparedStatement statement = database.prepareStatement(query);
+            statement.setBoolean(1, newLuStatus);
+            statement.setString(2, newType);
+            statement.setInt(3, userId);
+            statement.setInt(4, notifId);
+            statement.executeUpdate();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static void createNotificationForUser(int utilisateurId, int demandeId, String message, String type, java.sql.Timestamp date) {
+        try {
+            SomethingDatabase database = new SomethingDatabase();
+            
+            // Créer la notification
+            String insertNotifQuery = "INSERT INTO Notif (demande_id, message, type, date_notification) VALUES (?, ?, ?, ?)";
+            PreparedStatement notifStatement = database.prepareStatement(insertNotifQuery, Statement.RETURN_GENERATED_KEYS);
+            notifStatement.setInt(1, demandeId);
+            notifStatement.setString(2, message);
+            notifStatement.setString(3, type);
+            notifStatement.setTimestamp(4, date);
+            notifStatement.executeUpdate();
+            
+            ResultSet resultSet = notifStatement.getGeneratedKeys();
+            if (resultSet.next()) {
+                int notifId = resultSet.getInt(1);
+                
+                // Ajouter l'entrée dans UtilisateurNotification
+                String insertUserNotifQuery = "INSERT INTO UtilisateurNotification (utilisateur_id, notification_id) VALUES (?, ?)";
+                PreparedStatement userNotifStatement = database.prepareStatement(insertUserNotifQuery);
+                userNotifStatement.setInt(1, utilisateurId);
+                userNotifStatement.setInt(2, notifId);
+                userNotifStatement.executeUpdate();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void markAsReadForUser(int utilisateurId, int notifId) {
+        try {
+            SomethingDatabase database = new SomethingDatabase();
+            String query = "UPDATE UtilisateurNotification SET lu = TRUE WHERE utilisateur_id = ? AND notification_id = ?";
+            PreparedStatement statement = database.prepareStatement(query);
+            statement.setInt(1, utilisateurId);
+            statement.setInt(2, notifId);
+            statement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static List<Notif> getNotificationsForUserInde(int utilisateurId) {
+        List<Notif> notifications = new ArrayList<>();
+        try {
+            SomethingDatabase database = new SomethingDatabase();
+            String query = "SELECT n.* FROM Notif n " +
+                           "JOIN UtilisateurNotification un ON n.id = un.notification_id " +
+                           "WHERE un.utilisateur_id = ? " +
+                           "ORDER BY n.date_notification DESC";
+            PreparedStatement statement = database.prepareStatement(query);
+            statement.setInt(1, utilisateurId);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Notif notif = new Notif(
+                    resultSet.getInt("id"),
+                    resultSet.getInt("demande_id"),
+                    resultSet.getString("message"),
+                    Notif.Type.valueOf(resultSet.getString("type")),
+                    resultSet.getBoolean("lu"),
+                    resultSet.getTimestamp("date_notification")
+                );
+                notifications.add(notif);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return notifications;
+    }
+    
+    
+
+    //
+
+    public static int createNotification(int demandeId, String message, String type,java.sql.Timestamp date) {
+        try {
+            SomethingDatabase database = new SomethingDatabase();
+            String query = "INSERT INTO Notif (demande_id, message, type, date_notification) VALUES (?, ?, ?, ?)";
+            PreparedStatement statement = database.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
+            statement.setInt(1, demandeId);
+            statement.setString(2, message);
+            statement.setString(3, type);
+            statement.setTimestamp(4, date);
+            statement.executeUpdate();
+
+            ResultSet resultSet = statement.getGeneratedKeys();
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 
     public static boolean isOneNotifOnState(String demandeId, String type) {
@@ -325,6 +451,8 @@ public class NotifDao {
         }
         return notifications;
     }
+
+    
 
     
     

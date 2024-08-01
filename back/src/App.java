@@ -276,6 +276,18 @@ public class App {
                 mynotifController.updateNotificationTypeRead(context);
             });
 
+            //Test
+
+            webserver.getRouter().post("/api/markNotifAsReadForUSer", (WebServerContext context) -> {
+                
+                mynotifController.markAsReadForUser(context);
+            });
+        
+        webserver.getRouter().post("/api/updateNotificationTypeRead", (WebServerContext context) -> {
+                
+                mynotifController.updateNotificationTypeReadForUser(context);
+            });
+
             
 
         webserver.getRouter().post("/api/updateNotificationType", (WebServerContext context) -> {

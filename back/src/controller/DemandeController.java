@@ -374,6 +374,13 @@ public class DemandeController {
         int demandeId = demandeDao.createDemande(demande);
         System.out.println("demandeId: " + demandeId);
 
+        // Créer une notification pour la demande
+        String notificationMessage = "La demande";
+        String notificationType = "demande_envoyee"; // Vous pouvez ajuster le type selon vos besoins
+        Timestamp notificationDate = new Timestamp(System.currentTimeMillis());
+        int notifId = NotifDao.createNotification(demandeId, notificationMessage, notificationType, notificationDate);
+        System.out.println("notificationId: " + notifId);
+
         // Construire la réponse JSON
         JsonObject responseJson = new JsonObject();
         responseJson.addProperty("demandeId", demandeId);
