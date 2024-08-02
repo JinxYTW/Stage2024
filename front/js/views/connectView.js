@@ -19,6 +19,7 @@ class connectView {
         });
     }
 
+    //Gère la connection de l'utilisateur en appelant la méthode login du service connectServices
     async handleLogin() {
         console.log("Handling login");
         const username = this.usernameField.value;
