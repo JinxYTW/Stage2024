@@ -11,8 +11,6 @@ import com.google.gson.JsonParser;
 
 import dao.BonCommandeDao;
 import dao.FactureDao;
-import dao.UtilisateurDao;
-import models.Facture;
 import webserver.WebServerContext;
 import webserver.WebServerResponse;
 

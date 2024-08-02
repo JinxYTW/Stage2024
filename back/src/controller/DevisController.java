@@ -1,15 +1,12 @@
 package controller;
 
-import java.io.BufferedReader;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.regex.Pattern;
-import java.nio.file.Path;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -19,8 +16,7 @@ import com.google.gson.JsonParser;
 import webserver.WebServerContext;
 import webserver.WebServerResponse;
 import dao.DevisDao;
-import dao.UtilisateurDao;
-import models.Devis;
+
 
 public class DevisController {
     public DevisController() {
@@ -155,9 +151,9 @@ public class DevisController {
             InputStream fileInputStream = context.getRequest().getInputStream();
             String fileName = context.getRequest().getHeader("filename");
             int demandeId = Integer.parseInt(context.getRequest().getQueryParams().get("demandeId"));
-            
+    
             // Définir le répertoire où les fichiers seront stockés
-            File directory = new File("back/src/pdf/Devis");
+            File directory = new File("back/src/pdf/Devis/Demande" + demandeId);
             if (!directory.exists()) {
                 directory.mkdirs(); // Crée le répertoire s'il n'existe pas
             }
@@ -174,11 +170,12 @@ public class DevisController {
             fileInputStream.close();
             fileOutputStream.close();
     
-            // Obtenez le chemin relatif du fichier
-            String relativePath = getRelativePath(file.getCanonicalPath(), directory.getCanonicalPath());
+            // Utiliser getRelativePath pour obtenir le chemin relatif
+            String baseDir = "back/src/pdf/Devis";
+            String relativePath = getRelativePath(file.getCanonicalPath(), new File(baseDir).getCanonicalPath());
             System.out.println("Relative path: " + relativePath);
     
-            // Enregistrez le chemin relatif dans la base de données
+            // Enregistrez le chemin relatif du fichier dans la base de données
             DevisDao.saveDevisToDatabase(demandeId, relativePath);
     
             context.getResponse().ok("Fichier téléchargé avec succès");
@@ -209,9 +206,10 @@ public class DevisController {
             }
     
             // Construire le chemin relatif personnalisé
-            String customRelativePath = "/back/src/pdf/Devis" + relativePath;
+            String customRelativePath = "back/src/pdf/Devis" + relativePath;
+            // Ajouter le préfixe requis
+            customRelativePath = "/" + customRelativePath;
     
-            
             System.out.println("Custom Relative path: " + customRelativePath);
     
             return customRelativePath;
@@ -221,6 +219,7 @@ public class DevisController {
             return "";
         }
     }
+    
     
     
     

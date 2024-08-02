@@ -431,6 +431,7 @@ async openValidateModal() {
                     await this.detailServices.updateNotificationType(demandeId, newType);
                     await this.detailServices.updateDemandeEtat(demandeId, newEtat);
                     // Vous pouvez ajouter ici du code pour rafraîchir la liste des devis si nécessaire
+                    window.location.reload();
                 } else {
                     alert('Erreur lors de la validation du devis');
                 }
@@ -564,6 +565,7 @@ async openBcValidationModal() {
                     await this.detailServices.updateNotificationType(demandeId, newType);
                     await this.detailServices.updateDemandeEtat(demandeId, newEtat);
                     alert('Bon de commande validé avec succès');
+                    window.location.reload();
                     // Vous pouvez ajouter ici du code pour rafraîchir la liste des bons de commande si nécessaire
                 } else {
                     alert('Erreur lors de la validation du bon de commande');

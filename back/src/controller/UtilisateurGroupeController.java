@@ -5,11 +5,10 @@ import java.util.List;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import com.sun.net.httpserver.Headers;
+
 
 import dao.UtilisateurGroupeDao;
-import models.UtilisateurGroupe;
-import utils.HashUtil;
+
 import webserver.WebServerContext;
 import webserver.WebServerResponse;
 

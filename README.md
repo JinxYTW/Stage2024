@@ -1,4 +1,7 @@
+
 # Stage CHU 2024
+
+  
 
   
 
@@ -8,7 +11,11 @@ Voici un projet qui m'a été demandé lors de mon stage. Le but de celui-ci est
 
   
 
+  
+
 ## Libs utilisé :
+
+  
 
   
 
@@ -16,7 +23,11 @@ Voici un projet qui m'a été demandé lors de mon stage. Le but de celui-ci est
 
   
 
+  
+
 - iText, pour la création de pdf
+
+  
 
   
 
@@ -24,7 +35,11 @@ Voici un projet qui m'a été demandé lors de mon stage. Le but de celui-ci est
 
   
 
+  
+
 - my sql connector
+
+  
 
   
 
@@ -36,7 +51,11 @@ Voici un projet qui m'a été demandé lors de mon stage. Le but de celui-ci est
 
   
 
+  
+
 - Cela se fait dans le fichier MySQLDatabase.java, ainsi que SomethingDatabase.
+
+  
 
   
 
@@ -44,7 +63,11 @@ Voici un projet qui m'a été demandé lors de mon stage. Le but de celui-ci est
 
   
 
+  
+
 - Il y a aussi la présence de *script.sql* si l'on veut modifier la bdd en elle même.
+
+  
 
   
 
@@ -56,7 +79,11 @@ Voici un projet qui m'a été demandé lors de mon stage. Le but de celui-ci est
 
   
 
+  
+
 - Pour créer une API, du côté Back, on crée la route dans App.java, route qui appelle un Controller qui lui même appelle le Dao adéquat. Du côté Front, l'appel à cette API se fera dans un fichier service correspondant à la page HTML, puis le nécessaire se fera en respectant le modèle MVC.
+
+  
 
   
 
@@ -68,11 +95,17 @@ Voici un projet qui m'a été demandé lors de mon stage. Le but de celui-ci est
 
   
 
+  
+
 - Afin de faire fonctionner le jwt, veuillez un fichier application.properties (voir *l.30 UtilisateurController*) , avec pour contenu :
 
   
 
+  
+
 >jwt.secret.key="insérer votre clé secrète"
+
+  
 
   
 
@@ -84,7 +117,11 @@ Voici un projet qui m'a été demandé lors de mon stage. Le but de celui-ci est
 
   
 
+  
+
 Pour modifier le hashage appliqué au mot de passe, on va du côté de
+
+  
 
   
 
@@ -94,7 +131,11 @@ Pour modifier le hashage appliqué au mot de passe, on va du côté de
 
   
 
+  
+
 ## Fonction implémentée :
+
+  
 
   
 
@@ -102,7 +143,11 @@ Pour modifier le hashage appliqué au mot de passe, on va du côté de
 
   
 
+  
+
 - La possibilité de réaliser une demande en rapport avec un projet ou non.
+
+  
 
   
 
@@ -110,7 +155,11 @@ Pour modifier le hashage appliqué au mot de passe, on va du côté de
 
   
 
+  
+
 - Le total fonctionnement de la zone de recherche.
+
+  
 
   
 
@@ -118,7 +167,11 @@ Pour modifier le hashage appliqué au mot de passe, on va du côté de
 
   
 
+  
+
 - La possibilité d'avoir des fichiers PDF (cf section Bug pour plus d'informations)
+
+  
 
   
 
@@ -126,7 +179,11 @@ Pour modifier le hashage appliqué au mot de passe, on va du côté de
 
   
 
+  
+
 - Affichage dynamique de la page en fonction des autorisations
+
+  
 
   
 
@@ -134,13 +191,18 @@ Pour modifier le hashage appliqué au mot de passe, on va du côté de
 
   
 
+  
+
 - Réaliser toute la validation d'une demande du début à la fin
+
+  
 
   
 
 - Notifications tout au long du processus
 
   
+
   
 
   
@@ -149,18 +211,25 @@ Pour modifier le hashage appliqué au mot de passe, on va du côté de
 
   
 
-- Le rejet durant n'importe quelle étape de la demande
+  
+
+
+
+  
 
   
 
 - L'envoi des mails lors des notifications
 
   
+
 - Les lettres du domaines pour former l'id de la demande (exemple: SI)
 
   
 
-- Tri des pdf en dossier en fonction des demandes
+
+
+  
 
   
 
@@ -168,17 +237,18 @@ Pour modifier le hashage appliqué au mot de passe, on va du côté de
 
   
 
+  
+
 - Les demandes pour la téléphonie
 
   
 
-- Une nouvelle affichant toutes les notifications en cours (La méthode afin de créer l'API est déjà présente dans le code)
+  
+
+- Une nouvelle page affichant toutes les notifications en cours (La méthode afin de créer l'API est déjà présente dans le code)
 
   
-  
-  
-  
-  
+
   
 
   
@@ -187,10 +257,15 @@ Pour modifier le hashage appliqué au mot de passe, on va du côté de
 
   
 
+  
+
 - La génération de PDF via generatePdf et savePdf rencontre un problème lié à la logique de fonctionnement. En effet, lors du premier appui, rien ne fonctionne, ce n'est qu'au second appui que les boutons menant aux PDF fonctionnent.
 
+  
+  
 
 - Certains états de notifications bloquent l'affichage.
+
   
 
   
@@ -201,11 +276,17 @@ Pour modifier le hashage appliqué au mot de passe, on va du côté de
 
   
 
+  
+
 Afin d'améliorer ce projet, un portage vers un framework est envisagé afin d'avoir une application plus robuste.
 
   
 
+  
+
 Parmi les choix possibles, mon attention s'est tourné vers Node.js et Spring, pour finalement choisir **Spring** afin de normalement avoir un portage plus simple et rapide, dû à la conservation du Java.
+
+  
 
   
 

@@ -180,6 +180,29 @@ public class App {
             }
         });
 
+        webserver.getRouter().get("/pdf/Devis/:demandeId/:filename", (WebServerContext context) -> {
+            String demandeId = context.getRequest().getParam("demandeId");
+            String fileName = context.getRequest().getParam("filename");
+            String filePath = "back/src/pdf/Devis/Demande" + demandeId + "/" + fileName;
+            
+            // Lire le fichier et le renvoyer en réponse
+            try {
+                File file = new File(filePath);
+                if (!file.exists()) {
+                    context.getResponse().notFound("Fichier non trouvé");
+                    return;
+                }
+                
+                // Renvoyer le fichier en réponse
+                context.getResponse().setContentType("application/pdf");
+                context.getResponse().sendFile(file);
+            } catch (Exception e) {
+                e.printStackTrace();
+                context.getResponse().serverError("Erreur serveur lors de la récupération du fichier PDF");
+            }
+        });
+        
+
         //-------------- BonCommande ----------------------------
 
         webserver.getRouter().post("/api/changeEditeurNameThanksToUserId", (WebServerContext context) -> {
