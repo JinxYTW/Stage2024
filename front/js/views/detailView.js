@@ -554,6 +554,7 @@ async openBcValidationModal() {
             const validateButton = document.createElement('button');
             validateButton.textContent = 'Valider';
             validateButton.className = 'btn btn-success';
+            validateButton.type = 'submit';
             validateButton.onclick = async () => {
                 const success = await this.detailServices.validateBc(pdfPath);
                 await this.detailServices.changeEditeurNameThanksToUserId(userId, pdfPath);
@@ -612,14 +613,21 @@ async notifyBcSend() {
     const demandeId = new URLSearchParams(window.location.search).get('demandeId');
     const newType = "bc_envoye_attente_livraison";
     const newEtat = "bc_envoye_attente_livraison";
-    await this.detailServices.updateNotificationType(demandeId, newType);
-    await this.detailServices.updateDemandeEtat(demandeId, newEtat);
-    alert('Notification envoyée avec succès');
 
-    // Ajoutez ici la logique pour envoyer la notification
+    try {
+        await this.detailServices.updateNotificationType(demandeId, newType);
+        await this.detailServices.updateDemandeEtat(demandeId, newEtat);
 
+        alert('Notification envoyée avec succès');
 
+        // Recharge la page après l'envoi de la notification
+        window.location.reload();
+    } catch (error) {
+        console.error('Erreur lors de l\'envoi de la notification:', error);
+        alert('Une erreur est survenue lors de l\'envoi de la notification.');
+    }
 }
+
 
 async openInvoiceUploadModal() {
     const modal = document.getElementById('invoiceUploadModal');
@@ -693,6 +701,7 @@ async openInvoiceValidationModal() {
             const validateButton = document.createElement('button');
             validateButton.textContent = 'Valider';
             validateButton.className = 'btn btn-success';
+            validateButton.type = 'submit';
             validateButton.onclick = async () => {
                 const success = await this.detailServices.validateInvoice(pdfPath);
                 await this.detailServices.changeSignataireNameThanksToUserId(userId,pdfPath);
