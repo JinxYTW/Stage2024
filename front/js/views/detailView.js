@@ -190,16 +190,10 @@ async handleClickableZoneClick() {
         }
     
         try {
-            // Récupérer les groupes auxquels l'utilisateur appartient
             const groupes = await this.detailServices.getGroupesNames(userId);
-    
-            // La div où les boutons seront ajoutés
             const actionsButtonDiv = document.getElementById('actions_button');
-    
-            // Supprimer les boutons existants (si besoin)
             actionsButtonDiv.querySelectorAll('.dynamic-button').forEach(button => button.remove());
     
-            // Mapping des groupes aux textes des boutons
             const buttonLabels = {
                 'treatDevis': 'Traiter les devis',
                 'validateDevis': 'Valider les devis',
@@ -209,226 +203,132 @@ async handleClickableZoneClick() {
                 'inventory': 'Depot de la facture'
             };
     
-            // Mapping des groupes aux fonctions d'action
             const buttonActions = {
-                'treatDevis': () => {
-                    console.log('Action pour traiter les devis');
-                    this.openUploadModal();
-                },
-                'validateDevis': () => {
-                    console.log('Action pour valider les devis');
-                    this.openValidateModal();
-                },
-                'treatBc': () => {
-                    console.log('Action pour traiter les BC');
-                    this.openBcUploadModal();
-                },
-                'validateBc': () => {
-                    console.log('Action pour valider les BC');
-                    this.openBcValidationModal();
-                },
-                'notifBcSend': () => {
-                    console.log('Action pour notifier l\'envoi des BC');
-                    this.notifyBcSend();
-                },
+                'treatDevis': this.openUploadModal.bind(this),
+                'validateDevis': this.openValidateModal.bind(this),
+                'treatBc': this.openBcUploadModal.bind(this),
+                'validateBc': this.openBcValidationModal.bind(this),
+                'notifBcSend': this.notifyBcSend.bind(this),
                 'inventory': {
-                    'button1': () => {
-                        console.log('Action pour la gestion de la facture 1');
-                        this.openInvoiceUploadModal();
-                        // Ajoutez la logique pour la première action d'inventaire
-                    },
-                    'button2': () => {
-                        console.log('Action pour la gestion de la facture 2');
-                        this.openInvoiceValidationModal();
-                        // Ajoutez la logique pour la seconde action d'inventaire
-                    }
+                    'button1': this.openInvoiceUploadModal.bind(this),
+                    'button2': this.openInvoiceValidationModal.bind(this)
                 }
             };
     
-            // Filtrer les groupes pour ne conserver que ceux qui sont dans le mapping
             const validGroupes = groupes.filter(group => buttonLabels.hasOwnProperty(group));
             console.log('Groupes valides:', validGroupes);
     
-            // Créer des boutons pour chaque groupe valide
-            validGroupes.forEach(async groupName => {
-                // Vérifier si le groupe est 'inventory'
+            for (const groupName of validGroupes) {
                 if (groupName === 'inventory') {
-                    // Créer le premier bouton pour 'inventory'
-                    const button1 = document.createElement('button');
-                    button1.className = 'btn btn-info btn-block dynamic-button';
-                    button1.textContent = 'Depot de la facture'; // Texte spécifique pour le premier bouton
-                    button1.setAttribute('data-id', 'inventory-button1');
-                    button1.addEventListener('click', () => {
-                        if (buttonActions['inventory'] && buttonActions['inventory']['button1']) {
-                            buttonActions['inventory']['button1'](); // Appel de la fonction d'action pour le premier bouton
-                        }
-                    });
-                    actionsButtonDiv.appendChild(button1);
-
-                    const demandeId = new URLSearchParams(window.location.search).get('demandeId');
-                        const count = await this.detailServices.getFactureCountFromDemandId(demandeId);
-                        if (count >= 1) {
-                            button1.disabled = true;
-                            button1.textContent = "Facture déjà traité";
-                        } else {
-                            button1.disabled = false;
-                            button1.textContent = "Depot de la facture";
-                        }
-                        const etat = await this.detailServices.getEtatDemande(demandeId);
-                        if (etat === 'commande_annulee') {
-                            button1.disabled = true;
-                            button1.textContent = "Commande annulée";
-                        }
-
-
-    
-                    // Créer le deuxième bouton pour 'inventory'
-                    const button2 = document.createElement('button');
-                    button2.className = 'btn btn-info btn-block dynamic-button';
-                    button2.textContent = 'Validation de la facture'; // Texte spécifique pour le deuxième bouton
-                    button2.setAttribute('data-id', 'inventory-button2');
-                    button2.addEventListener('click', () => {
-                        if (buttonActions['inventory'] && buttonActions['inventory']['button2']) {
-                            buttonActions['inventory']['button2'](); // Appel de la fonction d'action pour le deuxième bouton
-                        }
-                    });
-                    actionsButtonDiv.appendChild(button2);
-                    
-                        const count2 = await this.detailServices.isOneInvoiceValidate(demandeId);
-                        console.log('Facture validé:', count2);
-                        if (count2 >= 1) {
-                            button2.disabled = true;
-                            button2.textContent = "Facture déjà validé";
-                        } else {
-                            button2.disabled = false;
-                            button2.textContent = "Validation de la facture";
-                        }
-                        const etat2 = await this.detailServices.getEtatDemande(demandeId);
-                        if (etat === 'commande_annulee') {
-                            button2.disabled = true;
-                            button2.textContent = "Commande annulée";
-                        }
-    
+                    await this.createInventoryButtons(actionsButtonDiv, buttonActions);
                 } else {
-                    // Créer un bouton pour les autres groupes
-                    const button = document.createElement('button');
-                    button.className = 'btn btn-info btn-block dynamic-button';
-                    button.textContent = buttonLabels[groupName] || `Action pour ${groupName}`; // Texte par défaut si le groupe n'est pas dans le mapping
-                    button.setAttribute('data-id', groupName);
-    
-                    // Ajouter un gestionnaire d'événements avec l'action spécifique
-                    button.addEventListener('click', () => {
-                        if (buttonActions[groupName]) {
-                            buttonActions[groupName](); // Appel de la fonction d'action
-                        } else {
-                            console.log(`Aucune action définie pour le groupe : ${groupName}`);
-                        }
-                    });
-    
-                    // Ajouter le bouton à la div
-                    actionsButtonDiv.appendChild(button);
-    
-                    // Désactiver les boutons selon les conditions spécifiques
-                    if (groupName === 'treatDevis') {
-                        const demandeId = new URLSearchParams(window.location.search).get('demandeId');
-                        const count = await this.detailServices.getDevisCount(demandeId);
-                        const devis = await this.detailServices.isOneDevisValidate(demandeId);
-                        if (count >= 3 || devis) {
-                            button.disabled = true;
-                            button.textContent = "Limite de devis atteinte ou déjà traité";
-                        } else {
-                            button.disabled = false;
-                            button.textContent = "Traiter les devis";
-                        }
-
-                        const etat = await this.detailServices.getEtatDemande(demandeId);
-                        if (etat === 'commande_annulee') {
-                            button.disabled = true;
-                            button.textContent = "Commande annulée";
-                        }
-                    }
-    
-                    if (groupName === 'validateDevis') {
-                        const demandeId = new URLSearchParams(window.location.search).get('demandeId');
-                        const devis = await this.detailServices.isOneDevisValidate(demandeId);
-                        if (devis) {
-                            button.disabled = true;
-                            button.textContent = "Devis déjà validé";
-                        } else {
-                            button.disabled = false;
-                            button.textContent = "Valider les devis";
-                        }
-                        const etat = await this.detailServices.getEtatDemande(demandeId);
-                        if (etat === 'commande_annulee') {
-                            button.disabled = true;
-                            button.textContent = "Commande annulée";
-                        }
-                    }
-    
-                    if (groupName === 'treatBc') {
-                        const demandeId = new URLSearchParams(window.location.search).get('demandeId');
-                        const count = await this.detailServices.getBcCountFromDemandId(demandeId);
-                        if (count >= 1) {
-                            button.disabled = true;
-                            button.textContent = "BC déjà traité";
-                        } else {
-                            button.disabled = false;
-                            button.textContent = "Traiter les BC";
-                        }
-                        const etat = await this.detailServices.getEtatDemande(demandeId);
-                        if (etat === 'commande_annulee') {
-                            button.disabled = true;
-                            button.textContent = "Commande annulée";
-                        }
-                    }
-    
-                    if (groupName === 'validateBc') {
-                        const demandeId = new URLSearchParams(window.location.search).get('demandeId');
-                        const bc = await this.detailServices.isOneBcValidate(demandeId);
-                        if (bc) {
-                            button.disabled = true;
-                            button.textContent = "BC déjà validé";
-                        } else {
-                            button.disabled = false;
-                            button.textContent = "Valider les BC";
-                        }
-                        const etat = await this.detailServices.getEtatDemande(demandeId);
-                        if (etat === 'commande_annulee') {
-                            button.disabled = true;
-                            button.textContent = "Commande annulée";
-                        }
-                    }
-
-                    if (groupName === 'notifBcSend') {
-                        const demandeId = new URLSearchParams(window.location.search).get('demandeId');
-                        const bcSend = await this.detailServices.isOneNotifOnState(demandeId, 'bc_envoye_attente_livraison');
-                        const invoiceValidating = await this.detailServices.isOneNotifOnState(demandeId, 'facture_a_valider');
-                        const invoiceValidated = await this.detailServices.isOneNotifOnState(demandeId, 'commande_livree_finalisee');
-                        console.log('BC envoyé:', bcSend);
-
-                        if (bcSend || invoiceValidating || invoiceValidated) {
-                            button.disabled = true;
-                            button.textContent = "Notification déjà envoyée";
-                        } else {
-                            button.disabled = false;
-                            button.textContent = "Notifier l'envoi des BC";
-                        }
-                        const etat = await this.detailServices.getEtatDemande(demandeId);
-                        if (etat === 'commande_annulee') {
-                            button.disabled = true;
-                            button.textContent = "Commande annulée";
-                        }
-
-                    }
-
-
+                    await this.createActionButton(actionsButtonDiv, groupName, buttonLabels, buttonActions);
                 }
-            });
-    
+            }
         } catch (error) {
             console.error('Erreur lors de la récupération des groupes:', error);
         }
     }
+    
+    
+    async createActionButton(container, groupName, labels, actions) {
+        const button = document.createElement('button');
+        button.className = 'btn btn-info btn-block dynamic-button';
+        button.textContent = labels[groupName] || `Action pour ${groupName}`;
+        button.setAttribute('data-id', groupName);
+    
+        button.addEventListener('click', () => {
+            if (actions[groupName]) {
+                actions[groupName]();
+            } else {
+                console.log(`Aucune action définie pour le groupe : ${groupName}`);
+            }
+        });
+    
+        await this.updateButtonState(button, groupName);
+    
+        container.appendChild(button);
+    }
+    
+    async createInventoryButtons(container, buttonActions) {
+        const demandeId = new URLSearchParams(window.location.search).get('demandeId');
+    
+        const [factureCount, etat, invoiceCount] = await Promise.all([
+            this.detailServices.getFactureCountFromDemandId(demandeId),
+            this.detailServices.getEtatDemande(demandeId),
+            this.detailServices.isOneInvoiceValidate(demandeId)
+        ]);
+    
+        const createButton = (id, text, action, condition) => {
+            const button = document.createElement('button');
+            button.className = 'btn btn-info btn-block dynamic-button';
+            button.textContent = text;
+            button.setAttribute('data-id', id);
+    
+            button.addEventListener('click', action);
+    
+            if (condition) {
+                button.disabled = true;
+                button.textContent = condition;
+            }
+    
+            container.appendChild(button);
+            // Vérifier l'état du bouton si nécessaire
+        this.updateButtonState(button, id);
+        };
+    
+        createButton('inventory-button1', 'Depot de la facture', buttonActions['inventory']['button1'], factureCount >= 1 ? "Facture déjà traité" : null);
+        createButton('inventory-button2', 'Validation de la facture', buttonActions['inventory']['button2'], invoiceCount >= 1 ? "Facture déjà validé" : null);
+    }
+    
+    
+    async updateButtonState(button, groupName) {
+        const demandeId = new URLSearchParams(window.location.search).get('demandeId');
+    
+        if (groupName === 'treatDevis') {
+            const count = await this.detailServices.getDevisCount(demandeId);
+            const devis = await this.detailServices.isOneDevisValidate(demandeId);
+            if (count >= 3 || devis) {
+                button.disabled = true;
+                button.textContent = "Limite de devis atteinte ou déjà traité";
+            }
+        } else if (groupName === 'validateDevis') {
+            const devis = await this.detailServices.isOneDevisValidate(demandeId);
+            if (devis) {
+                button.disabled = true;
+                button.textContent = "Devis déjà validé";
+            }
+        } else if (groupName === 'treatBc') {
+            const count = await this.detailServices.getBcCountFromDemandId(demandeId);
+            if (count >= 1) {
+                button.disabled = true;
+                button.textContent = "BC déjà traité";
+            }
+        } else if (groupName === 'validateBc') {
+            const bc = await this.detailServices.isOneBcValidate(demandeId);
+            if (bc) {
+                button.disabled = true;
+                button.textContent = "BC déjà validé";
+            }
+        } else if (groupName === 'notifBcSend') {
+            const [bcSend, invoiceValidating, invoiceValidated] = await Promise.all([
+                this.detailServices.isOneNotifOnState(demandeId, 'bc_envoye_attente_livraison'),
+                this.detailServices.isOneNotifOnState(demandeId, 'facture_a_valider'),
+                this.detailServices.isOneNotifOnState(demandeId, 'commande_livree_finalisee')
+            ]);
+    
+            if (bcSend || invoiceValidating || invoiceValidated) {
+                button.disabled = true;
+                button.textContent = "Notification déjà envoyée";
+            }
+        }
+        const etat = await this.detailServices.getEtatDemande(demandeId);
+        if (etat === 'commande_annulee') {
+            button.disabled = true;
+            button.textContent = "Commande annulée";
+        }
+    }
+    
     
 
         // Fonction pour ouvrir la modale afin de déposer les devis
