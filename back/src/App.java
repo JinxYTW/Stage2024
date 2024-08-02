@@ -76,6 +76,11 @@ public class App {
 
             //-------------- Demande ----------------------------
 
+        webserver.getRouter().get("/api/getEtatDemande", (WebServerContext context) -> {
+            mydemandeController.getEtatDemande(context);
+        });
+        
+
             webserver.getRouter().post("/api/updateDemandeEtat", (WebServerContext context) -> {
                 
                 mydemandeController.updateDemandeEtat(context);

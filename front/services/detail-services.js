@@ -1,6 +1,28 @@
 class detailServices{
     constructor() {}
 
+    async getEtatDemande(demandeId) {
+        try {
+            const response = await fetch(`http://127.0.0.1:8080/api/getEtatDemande?demandeId=${demandeId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                
+                return data.etat; 
+            } else {
+                console.error('Erreur lors de la récupération du nombre de devis');
+                return 0;
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            return 0;
+        }
+    }
+
     async changeSignataireNameThanksToUserId(userId, pdfPath) {
         try {
             const response = await fetch(`http://127.0.0.1:8080/api/changeSignataireNameThanksToUserId`, {
@@ -12,7 +34,6 @@ class detailServices{
             });
     
             if (response.ok) {
-                console.log('Valideur mise à jour avec succès');
                 return true;
             } else {
                 console.error('Erreur lors de la mise à jour du valideur');
@@ -35,7 +56,6 @@ class detailServices{
             });
     
             if (response.ok) {
-                console.log('Valideur mise à jour avec succès');
                 return true;
             } else {
                 console.error('Erreur lors de la mise à jour du valideur');
@@ -58,7 +78,6 @@ class detailServices{
             });
     
             if (response.ok) {
-                console.log('Valideur mise à jour avec succès');
                 return true;
             } else {
                 console.error('Erreur lors de la mise à jour du valideur');
@@ -81,7 +100,6 @@ class detailServices{
             });
     
             if (response.ok) {
-                console.log('Demande mise à jour avec succès');
                 return true;
             } else {
                 console.error('Erreur lors de la mise à jour de la demande');
@@ -103,7 +121,6 @@ class detailServices{
             });
             if (response.ok) {
                 const data = await response.json();
-                console.log(data);
                 return data.isOneInvoiceValidate; 
             } else {
                 console.error('Erreur lors de la récupération du nombre de devis');
@@ -142,7 +159,6 @@ class detailServices{
             });
     
             if (response.ok) {
-                console.log('Facture validée avec succès');
                 return true;
             } else {
                 console.error('Erreur lors de la validation de la facture');

@@ -274,6 +274,11 @@ async handleClickableZoneClick() {
                             button1.disabled = false;
                             button1.textContent = "Depot de la facture";
                         }
+                        const etat = await this.detailServices.getEtatDemande(demandeId);
+                        if (etat === 'commande_annulee') {
+                            button1.disabled = true;
+                            button1.textContent = "Commande annulée";
+                        }
 
 
     
@@ -297,6 +302,11 @@ async handleClickableZoneClick() {
                         } else {
                             button2.disabled = false;
                             button2.textContent = "Validation de la facture";
+                        }
+                        const etat2 = await this.detailServices.getEtatDemande(demandeId);
+                        if (etat === 'commande_annulee') {
+                            button2.disabled = true;
+                            button2.textContent = "Commande annulée";
                         }
     
                 } else {
@@ -330,6 +340,12 @@ async handleClickableZoneClick() {
                             button.disabled = false;
                             button.textContent = "Traiter les devis";
                         }
+
+                        const etat = await this.detailServices.getEtatDemande(demandeId);
+                        if (etat === 'commande_annulee') {
+                            button.disabled = true;
+                            button.textContent = "Commande annulée";
+                        }
                     }
     
                     if (groupName === 'validateDevis') {
@@ -341,6 +357,11 @@ async handleClickableZoneClick() {
                         } else {
                             button.disabled = false;
                             button.textContent = "Valider les devis";
+                        }
+                        const etat = await this.detailServices.getEtatDemande(demandeId);
+                        if (etat === 'commande_annulee') {
+                            button.disabled = true;
+                            button.textContent = "Commande annulée";
                         }
                     }
     
@@ -354,6 +375,11 @@ async handleClickableZoneClick() {
                             button.disabled = false;
                             button.textContent = "Traiter les BC";
                         }
+                        const etat = await this.detailServices.getEtatDemande(demandeId);
+                        if (etat === 'commande_annulee') {
+                            button.disabled = true;
+                            button.textContent = "Commande annulée";
+                        }
                     }
     
                     if (groupName === 'validateBc') {
@@ -365,6 +391,11 @@ async handleClickableZoneClick() {
                         } else {
                             button.disabled = false;
                             button.textContent = "Valider les BC";
+                        }
+                        const etat = await this.detailServices.getEtatDemande(demandeId);
+                        if (etat === 'commande_annulee') {
+                            button.disabled = true;
+                            button.textContent = "Commande annulée";
                         }
                     }
 
@@ -381,6 +412,11 @@ async handleClickableZoneClick() {
                         } else {
                             button.disabled = false;
                             button.textContent = "Notifier l'envoi des BC";
+                        }
+                        const etat = await this.detailServices.getEtatDemande(demandeId);
+                        if (etat === 'commande_annulee') {
+                            button.disabled = true;
+                            button.textContent = "Commande annulée";
                         }
 
                     }

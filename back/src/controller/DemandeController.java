@@ -27,6 +27,24 @@ import com.google.gson.JsonObject;
  */
 public class DemandeController {
 
+    public void getEtatDemande(WebServerContext context) {
+        try {
+            // Extraire les données du corps de la requête
+            
+            String demandeId = context.getRequest().getQueryParams().get("demandeId");
+            int demandeIdInt = Integer.parseInt(demandeId);
+            String etat = DemandeDao.getEtatDemande(demandeIdInt);
+            JsonObject json = new JsonObject();
+            json.addProperty("etat", etat);
+            context.getResponse().json(json);
+            
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            context.getResponse().serverError("Erreur lors de la récupération de l'état de la demande");
+        }
+    }
+
     public void updateDemandeEtat(WebServerContext context) {
     try {
         // Extraire les données du corps de la requête

@@ -27,6 +27,23 @@ import models.Demande;
 
 public class DemandeDao {
 
+    public static String getEtatDemande(int demandId){
+        String etat = null;
+        try {
+            SomethingDatabase myDatabase = new SomethingDatabase();
+            String query = "SELECT etat FROM Demande WHERE id = ?";
+            PreparedStatement statement = myDatabase.prepareStatement(query);
+            statement.setInt(1, demandId);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                etat = resultSet.getString("etat");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();    
+        }
+        return etat;
+    }
+
     public static void updateDemandeEtat (int demandeId,String newEtat){
         try {
             SomethingDatabase myDatabase = new SomethingDatabase();
