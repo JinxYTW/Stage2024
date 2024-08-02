@@ -508,21 +508,26 @@ async openValidateModal() {
             devisListDiv.appendChild(devisDiv);
         });
 
-        modal.style.display = 'block';
-
-        span.onclick = function() {
-            modal.style.display = 'none';
-        };
-
-        closeButton.onclick = function() {
-            modal.style.display = 'none';
-        };
-
-        window.onclick = function(event) {
-            if (event.target == modal) {
+        // Ajouter le gestionnaire d'événement pour le bouton "Refuser"
+        refuserButton.onclick = async () => {
+            const confirmRefuser = confirm("Êtes-vous sûr de vouloir refuser la demande ?");
+            if (confirmRefuser) {
+                const newType = "commande_annulee";
+                const newEtat = "commande_annulee";
+                await this.detailServices.updateNotificationType(demandeId, newType);
+                await this.detailServices.updateDemandeEtat(demandeId, newEtat);
+                alert('La demande a été annulée.');
+                // Vous pouvez ajouter ici du code pour rafraîchir la liste des devis ou fermer le modal si nécessaire
                 modal.style.display = 'none';
             }
         };
+
+        // Ajouter les gestionnaires d'événements pour fermer la modal
+        span.onclick = () => modal.style.display = 'none';
+        closeButton.onclick = () => modal.style.display = 'none';
+
+        // Afficher la modal
+        modal.style.display = 'block';
     } catch (error) {
         console.error('Erreur lors de l\'ouverture du modal de validation:', error);
     }
@@ -575,7 +580,7 @@ async openBcUploadModal() {
     }.bind(this);
 }
 
-async  openBcValidationModal() {
+async openBcValidationModal() {
     const demandeId = new URLSearchParams(window.location.search).get('demandeId');
     const userId = new URLSearchParams(window.location.search).get('user');
 
@@ -593,6 +598,7 @@ async  openBcValidationModal() {
         const modal = document.getElementById('validateBcModal');
         const span = modal.querySelector('.close');
         const bcListDiv = document.getElementById('bcList');
+        const refuserButton = document.getElementById('refuserBcButton');
 
         // Réinitialiser la liste des bons de commande
         bcListDiv.innerHTML = '';
@@ -614,14 +620,14 @@ async  openBcValidationModal() {
             validateButton.className = 'btn btn-success';
             validateButton.onclick = async () => {
                 const success = await this.detailServices.validateBc(pdfPath);
-                await this.detailServices.changeEditeurNameThanksToUserId(userId,pdfPath);
+                await this.detailServices.changeEditeurNameThanksToUserId(userId, pdfPath);
                 if (success) {
                     const newType = "bc_valide_envoi_fournisseur";
                     const newEtat = "bc_valide_envoi_fournisseur";
                     await this.detailServices.updateNotificationType(demandeId, newType);
                     await this.detailServices.updateDemandeEtat(demandeId, newEtat);
                     alert('Bon de commande validé avec succès');
-                    
+                    // Vous pouvez ajouter ici du code pour rafraîchir la liste des bons de commande si nécessaire
                 } else {
                     alert('Erreur lors de la validation du bon de commande');
                 }
@@ -635,21 +641,36 @@ async  openBcValidationModal() {
             bcListDiv.appendChild(bcDiv);
         });
 
-        modal.style.display = 'block';
-
-        span.onclick = function() {
-            modal.style.display = 'none';
+        // Ajouter le gestionnaire d'événement pour le bouton "Refuser"
+        refuserButton.onclick = async () => {
+            const confirmRefuser = confirm("Êtes-vous sûr de vouloir refuser la demande ?");
+            if (confirmRefuser) {
+                const newType = "commande_annulee";
+                const newEtat = "commande_annulee";
+                await this.detailServices.updateNotificationType(demandeId, newType);
+                await this.detailServices.updateDemandeEtat(demandeId, newEtat);
+                alert('La demande a été annulée.');
+                // Vous pouvez ajouter ici du code pour rafraîchir la liste des bons de commande ou fermer le modal si nécessaire
+                modal.style.display = 'none';
+            }
         };
 
-        window.onclick = function(event) {
+        // Afficher le modal
+        modal.style.display = 'block';
+
+        // Ajouter les gestionnaires d'événements pour fermer le modal
+        span.onclick = () => modal.style.display = 'none';
+        window.onclick = (event) => {
             if (event.target == modal) {
                 modal.style.display = 'none';
             }
         };
+
     } catch (error) {
         console.error('Erreur lors de l\'ouverture du modal de validation:', error);
     }
 }
+
 
 async notifyBcSend() {
     const demandeId = new URLSearchParams(window.location.search).get('demandeId');

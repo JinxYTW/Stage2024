@@ -115,6 +115,7 @@
             <div id="devisList">
                 <!-- Les boutons pour chaque devis seront ajoutés ici dynamiquement -->
             </div>
+            <button type="submit" id="refuserButton" class="btn btn-danger">Refuser</button>
             <button id="closeValidateModal" class="btn btn-secondary">Fermer</button>
         </div>
     </div>
@@ -135,8 +136,9 @@
 <div id="validateBcModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <h2>Valider Bon de Commande</h2>
         <div id="bcList"></div>
+        <button id="refuserBcButton" class="btn btn-danger">Refuser</button>
+        <button type="submit" id="closeBcModal" class="btn btn-secondary">Fermer</button>
     </div>
 </div>
 
@@ -161,7 +163,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button id="closeInvoiceValidationModal" class="btn btn-secondary">Fermer</button>
+        <button type="submit" id="closeInvoiceValidationModal" class="btn btn-secondary">Fermer</button>
     </div>
 </div>
 
