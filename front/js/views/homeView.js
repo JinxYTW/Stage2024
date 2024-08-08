@@ -26,7 +26,7 @@ class homeView{
         const userId = this.getDemandeIdFromUrl();
         if (userId) {
             try {
-                const notificationCount = await this.homeServices.countNotifForUser(userId);
+                const notificationCount = await this.homeServices.countUnreadNotificationsForUser(userId);
                 const lastUrgentNotification = await this.homeServices.getOldestUrgentNotification(userId);
     
                 // Mettre à jour l'élément HTML avec le nombre de notifications
@@ -56,7 +56,9 @@ class homeView{
             this.handleClickableZoneClick();
         });
     }
-    /*
+
+
+    
     async handleClickableZoneClick() {
         const notifId = document.getElementById('last_notif').dataset.id;
         const userId = new URLSearchParams(window.location.search).get('user');
@@ -82,38 +84,11 @@ class homeView{
             console.error('ID de notification ou ID utilisateur manquant');
         }
     }
-        */
+        
 
 
 
-
-    
-    async handleClickableZoneClick() {
-        const notifId = document.getElementById('last_notif').dataset.id;
-        if (notifId) {
-            // Marquer la notification comme lue en utilisant la méthode dans homeServices
-            const success = await this.homeServices.markNotifAsRead(notifId);
-            if (success) {
-
-                
-                const updateSuccess = await this.homeServices.updateNotificationTypeRead(notifId);
-
-                if (updateSuccess) {
-                    // Recharger les notifications
-                    this.loadNotifications();
-                } else {
-                    console.error('Erreur lors de la mise à jour de la notification');
-                }
-            } else {
-                console.error('Erreur lors du marquage de la notification comme lue');
-            }
-        } else {
-            console.error('ID de notification manquant');
-        }
-            
-    }
-    
-    
+  
 
     //----------------- Gère l'affichage des demandes -----------------//
 

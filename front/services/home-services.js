@@ -3,7 +3,7 @@
  */
 class homeServices {
     constructor() {}
-    
+
 //Test pour implémentation nouveau système de notification *************************************************
     async updateNotificationTypeReadForUser(notifId,userId) {
         try {
@@ -69,69 +69,7 @@ class homeServices {
     }
 
 //*********************************************************************************** */
-    async updateNotificationTypeRead(notifId) {
-        try {
-            const response = await fetch(`http://localhost:8080/api/updateNotificationTypeRead?notifId=${notifId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            if (response.status !== 200) {
-                throw new Error('Échec de la mise à jour de la notification');
-            }
-
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            console.error("Erreur dans la mise à jour de la notification", error);
-            return false;
-        }
-    }
-
-    // Nouvelle méthode pour marquer une notification comme lue
-    async markNotifAsRead(notifId) {
-        try {
-            const response = await fetch(`http://localhost:8080/api/markNotifAsRead?notifId=${notifId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            if (!response.ok) {
-                throw new Error('La mise à jour de la notification a échoué');
-            }
-            return true;
-        }
-        catch (error) {
-            console.error("Erreur dans la mise à jour de la notification", error);
-            return false;
-        }
-    }
-
-    async countNotifForUser(userId) {
-        try {
-            const response = await fetch(`http://localhost:8080/api/countNotifForUser?userId=${userId}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            if (!response.ok) {
-                throw new Error('La récupération des notifications a échoué');
-            }
-            let data = await response.json();
-            
-            data = data.count;
-            
-            return data;
-        }
-        catch (error) {
-            console.error("Erreur dans la récupération des notifications", error);
-            return [];
-        }
-    }
+    
 
     
     async getOldestUrgentNotification(userId) {

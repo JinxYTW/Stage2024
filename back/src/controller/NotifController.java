@@ -105,8 +105,8 @@ public class NotifController {
     }
     
 
-    /* 
     
+
     public void updateNotificationType(WebServerContext context) {
         try {
             // Extraire les données du corps de la requête
@@ -159,8 +159,9 @@ public class NotifController {
         }
     }
     
-    */
-    //***************************************************************************************************************************************************** */
+    
+   
+
     public void isOneNotifOnState(WebServerContext context) {
         WebServerResponse response = context.getResponse();
         try {
@@ -179,67 +180,8 @@ public class NotifController {
         }
     }
 
-    public void updateNotificationType(WebServerContext context) {
-    try {
-        // Extraire les données du corps de la requête
-        Map<String, String> requestBody = context.extractBody(Map.class);
-        String demandeId = requestBody.get("demandeId");
-        int demandeIdInt = Integer.parseInt(demandeId);
-        String newType = requestBody.get("newType");
 
-        NotifDao.updateNotificationType(demandeIdInt, newType);
-
-
-
-        // Logique pour mettre à jour le type de notification
-        // Par exemple, mettre à jour dans la base de données
-        // notificationService.updateNotificationType(demandeId, newType);
-
-        // Répondre au client avec succès
-        context.getResponse().ok("Notification mise à jour avec succès");
-    } catch (Exception e) {
-        e.printStackTrace();
-        context.getResponse().serverError("Erreur lors de la mise à jour de la notification");
-    }
-}
-
-
-    public void updateNotificationTypeRead(WebServerContext context) {
-        WebServerResponse response = context.getResponse();
-        try {
-            int notifId = Integer.parseInt(context.getRequest().getQueryParams().get("notifId"));
-            Notif notif = NotifDao.getNotificationById(notifId);
     
-            if (notif == null) {
-                response.status(404, "Notification non trouvée");
-                return;
-            }
-    
-            
-            boolean newLuStatus = notif.lu(); 
-            String newType = notif.type().toString();
-    
-            if (notif.lu()) { 
-                newLuStatus = false; 
-                
-                newType = determineNewTypeRead(notif.type().toString()); 
-                
-            }
-    
-            
-            boolean updateSuccess = NotifDao.updateNotificationTypeRead(notifId, newLuStatus, newType);
-            System.out.println("updateSuccess: " + updateSuccess);
-    
-            if (updateSuccess) {
-                response.json(updateSuccess);
-            } else {
-                response.status(500, "Échec de la mise à jour de la notification");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.status(500, "Internal Server Error");
-        }
-    }
     
     
     private String determineNewTypeRead(String currentType) {
@@ -259,32 +201,6 @@ public class NotifController {
         }
     }
     
-
-    public void markAsRead(WebServerContext context) {
-        WebServerResponse response = context.getResponse();
-        try {
-            int notifId = Integer.parseInt(context.getRequest().getQueryParams().get("notifId"));
-            NotifDao.markAsRead(notifId);
-            response.json("{\"success\": true}");
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.status(500, "Internal Server Error");
-        }
-    }
-
-    public void countNotifForUser(WebServerContext context) {
-        WebServerResponse response = context.getResponse();
-        try {
-            int userId = Integer.parseInt(context.getRequest().getQueryParams().get("userId"));
-            int count = NotifDao.countNotifForUser(userId);
-            JsonObject jsonResponse = new JsonObject();
-            jsonResponse.addProperty("count", count);
-            response.json(jsonResponse);
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.status(500, "Internal Server Error");
-        }
-    }
 
     public void getOldestUrgentNotification(WebServerContext context) {
         WebServerResponse response = context.getResponse();
@@ -314,11 +230,11 @@ public class NotifController {
         }
     }
 
-    public void getNotificationsForUser(WebServerContext context) {
+    public void getNotificationsForUserInde(WebServerContext context) {
         WebServerResponse response = context.getResponse();
         try {
             int userId = Integer.parseInt(context.getRequest().getQueryParams().get("userId"));
-            List<Notif> notifs = NotifDao.getNotificationsForUser(userId);
+            List<Notif> notifs = NotifDao.getNotificationsForUserInde(userId);
             JsonArray jsonResponse = new JsonArray();
             for (Notif notif : notifs) {
                 JsonObject notifJson = new JsonObject();

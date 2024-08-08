@@ -294,10 +294,7 @@ public class App {
                 mynotifController.isOneNotifOnState(context);
             });
 
-        webserver.getRouter().get("/api/countNotifForUser", (WebServerContext context) -> {
-                
-                mynotifController.countNotifForUser(context);
-            });
+        
 
         webserver.getRouter().get("/api/getOldestUrgentNotification", (WebServerContext context) -> {
                 
@@ -306,20 +303,9 @@ public class App {
 
         webserver.getRouter().get("/api/getNotificationsForUser", (WebServerContext context) -> {
                 
-                mynotifController.getNotificationsForUser(context);
+                mynotifController.getNotificationsForUserInde(context);
             });
 
-        webserver.getRouter().post("/api/markNotifAsRead", (WebServerContext context) -> {
-                
-                mynotifController.markAsRead(context);
-            });
-        
-        webserver.getRouter().post("/api/updateNotificationTypeRead", (WebServerContext context) -> {
-                
-                mynotifController.updateNotificationTypeRead(context);
-            });
-
-            //Test
 
             webserver.getRouter().post("/api/markNotifAsReadForUSer", (WebServerContext context) -> {
                 

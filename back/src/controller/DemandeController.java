@@ -398,8 +398,9 @@ public class DemandeController {
         String notificationType = "demande_envoyee"; // Vous pouvez ajuster le type selon vos besoins
         Timestamp notificationDate = new Timestamp(System.currentTimeMillis());
 
-        int notifId = NotifDao.createNotification(demandeId, notificationMessage, notificationType, notificationDate);
-        //int notifId = NotifDao.createNotificationForDemandeurAndForTreatDevisGroup(utilisateurId,demandeId, notificationMessage, notificationType, notificationDate);
+        //int notifId = NotifDao.createNotification(demandeId, notificationMessage, notificationType, notificationDate);
+        int notifId = NotifDao.createNotificationForDemandeurAndForTreatDevisGroup(utilisateurId,demandeId, notificationMessage, notificationType, notificationDate);
+        
         System.out.println("notificationId: " + notifId);
 
         // Construire la réponse JSON

@@ -30,17 +30,18 @@ class detailView {
         this.loadNotifications();
     }
 
-   //----------------- Gère l'affichage des Notifications -----------------//
+  
    getDemandeIdFromUrl() {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('user');
 }
+ //----------------- Gère l'affichage des Notifications -----------------//
 
-   async loadNotifications() {
+ async loadNotifications() {
     const userId = this.getDemandeIdFromUrl();
     if (userId) {
         try {
-            const notificationCount = await this.homeServices.countNotifForUser(userId);
+            const notificationCount = await this.homeServices.countUnreadNotificationsForUser(userId);
             const lastUrgentNotification = await this.homeServices.getOldestUrgentNotification(userId);
 
             // Mettre à jour l'élément HTML avec le nombre de notifications
@@ -71,15 +72,20 @@ addClickableZoneListener() {
     });
 }
 
+
+
 async handleClickableZoneClick() {
     const notifId = document.getElementById('last_notif').dataset.id;
-    if (notifId) {
-        // Marquer la notification comme lue en utilisant la méthode dans homeServices
-        const success = await this.homeServices.markNotifAsRead(notifId);
+    const userId = new URLSearchParams(window.location.search).get('user');
+    if (notifId && userId) {
+        // Marquer la notification comme lue
+       
+        const success = await this.homeServices.markNotifAsReadForUser(notifId, userId);
+        console.log('Notification marked as read:', success);
         if (success) {
             
-            const updateSuccess = await this.homeServices.updateNotificationTypeRead(notifId);
-
+            const updateSuccess = await this.homeServices.updateNotificationTypeReadForUser(notifId, userId);
+            console.log('Notification updated:', updateSuccess);
             if (updateSuccess) {
                 // Recharger les notifications
                 this.loadNotifications();
@@ -90,10 +96,10 @@ async handleClickableZoneClick() {
             console.error('Erreur lors du marquage de la notification comme lue');
         }
     } else {
-        console.error('ID de notification manquant');
+        console.error('ID de notification ou ID utilisateur manquant');
     }
 }
-
+    
     async updateUserNames() {
         const userId = new URLSearchParams(window.location.search).get('user');
         const names = await this.homeServices.getNames(userId);
