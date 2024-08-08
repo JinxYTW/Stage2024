@@ -301,7 +301,8 @@ Parmi les choix possibles, mon attention s'est tourné vers Node.js et Spring, p
 
 - Actuellement au sein de NotifDao, il y a des méthodes "addNotification..." qui permettent d'ajouter à UtilisateurNotification, les utilisateurs censés voir les notifs.
 
--Il faudra aussi modifier updateNotificationType (méthode appelé par les boutons d'actions dans detailView) afin d'utiliser les méthodes "addNotification..."
+-Il faudra aussi modifier updateNotificationType dans NotifController.
+Il faut utiliser la version de la ligne 110 au lieu de la version de la ligne  182.
 
   
 

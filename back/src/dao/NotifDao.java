@@ -374,41 +374,37 @@ public class NotifDao {
 
     
     
-    public static boolean updateNotificationTypeForUser(int userId, int notifId, boolean newLuStatus, String newType) {
+   
+
+    
+    public static Notif getNotificationByDemandeId(int demandeIdInt) {
+        Notif notif = null;
         try {
             SomethingDatabase database = new SomethingDatabase();
-            String query = "UPDATE Notif n " +
-                           "JOIN UtilisateurNotification un ON n.id = un.notification_id " +
-                           "SET n.lu = ?, n.type = ? " +
-                           "WHERE un.utilisateur_id = ? AND n.id = ?";
+            String query = "SELECT * FROM Notif WHERE demande_id = ?";
             PreparedStatement statement = database.prepareStatement(query);
-            statement.setBoolean(1, newLuStatus);
-            statement.setString(2, newType);
-            statement.setInt(3, userId);
-            statement.setInt(4, notifId);
-            statement.executeUpdate();
-            return true;
+            statement.setInt(1, demandeIdInt);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                notif = new Notif(
+                    resultSet.getInt("id"),
+                    resultSet.getInt("demande_id"),
+                    resultSet.getString("message"),
+                    Notif.Type.valueOf(resultSet.getString("type")),
+                    resultSet.getBoolean("lu"),
+                    resultSet.getTimestamp("date_notification")
+                );
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
         }
+        return notif;
+        
     }
 
     
-    
 
     
-
-    
-
-
-
-
-
-
-
-
-
 
     // A optimiser
     public static List<Notif> getNotificationsForUserInde(int utilisateurId) {
@@ -774,6 +770,8 @@ public class NotifDao {
         }
         return notifications;
     }
+
+    
 
     
 

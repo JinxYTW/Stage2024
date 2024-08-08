@@ -105,6 +105,61 @@ public class NotifController {
     }
     
 
+    /* 
+    
+    public void updateNotificationType(WebServerContext context) {
+        try {
+            // Extraire les données du corps de la requête
+            Map<String, String> requestBody = context.extractBody(Map.class);
+            String demandeId = requestBody.get("demandeId");
+            int demandeIdInt = Integer.parseInt(demandeId);
+            String newType = requestBody.get("newType");
+    
+            // Mise à jour du type de notification dans la base de données
+            NotifDao.updateNotificationType(demandeIdInt, newType);
+    
+            // Obtenir l'ID de la notification mise à jour
+            Notif notif = NotifDao.getNotificationByDemandeId(demandeIdInt); // Méthode à créer si elle n'existe pas déjà
+            if (notif == null) {
+                context.getResponse().serverError("Notification non trouvée après mise à jour");
+                return;
+            }
+    
+            int notifId = notif.id(); // ID de la notification mise à jour
+            int demandeurId = NotifDao.getDemandeurId(notifId); // ID du demandeur, à adapter selon votre structure
+    
+            // Déterminer l'action appropriée en fonction du nouveau type
+            switch (newType) {
+                case "devis_a_valider":
+                    NotifDao.addNotificationForValidateDevis(demandeIdInt, demandeurId, notifId);
+                    break;
+                case "bc_a_editer":
+                    NotifDao.addNotificationForTreatBc(demandeIdInt, demandeurId, notifId);
+                    break;
+                case "bc_a_valider":
+                    NotifDao.addNotificationForValidateBc(demandeIdInt, demandeurId, notifId);
+                    break;
+                case "bc_valide_envoi_fournisseur":
+                    NotifDao.addNotificationForNotifBcSend(demandeIdInt, demandeurId, notifId);
+                    break;
+                case "bc_envoye_attente_livraison":
+                case "facture_a_valider":
+                    NotifDao.addNotificationForInventory(demandeIdInt, demandeurId, notifId);
+                    break;
+                default:
+                    // Pas d'action définie pour ce type
+                    break;
+            }
+    
+            // Répondre au client avec succès
+            context.getResponse().ok("Notification mise à jour avec succès");
+        } catch (Exception e) {
+            e.printStackTrace();
+            context.getResponse().serverError("Erreur lors de la mise à jour de la notification");
+        }
+    }
+    
+    */
     //***************************************************************************************************************************************************** */
     public void isOneNotifOnState(WebServerContext context) {
         WebServerResponse response = context.getResponse();
