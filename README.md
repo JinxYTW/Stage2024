@@ -292,10 +292,20 @@ Parmi les choix possibles, mon attention s'est tourné vers Node.js et Spring, p
 
   
 
-  
+## Utiliser la version expérimentale du système de notifications :
+
+- Dans DemandeController.java, il faut utiliser la ligne 402 au lieu de la ligne 401.
+
+- Dans les méthodes loadNotifications() du côté client, remplacer countNotifForUser par `countUnreadNotificationsForUser`.
+- De plus, au lieu d'utiliser handleClickableZoneClick de la ligne 91, il faut utiliser celui de la ligne 60.
+
+- Actuellement au sein de NotifDao, il y a des méthodes "addNotification..." qui permettent d'ajouter à UtilisateurNotification, les utilisateurs censés voir les notifs.
+
+-Il faudra aussi modifier updateNotificationType (méthode appelé par les boutons d'actions dans detailView) afin d'utiliser les méthodes "addNotification..."
 
   
 
   
 
-```
+  
+

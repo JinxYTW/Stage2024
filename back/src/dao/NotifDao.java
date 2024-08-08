@@ -20,7 +20,360 @@ public class NotifDao {
     public NotifDao() {
     }
 
-    // Test
+    // Test pour implémentation d'un nouveau système de notification****************************************************************************************************************
+
+    // Créer une notification pour un demandeur et pour les utilisateurs du groupe 'TreatDevis' au sein de la table 'UtilisateurNotification'
+    public static void createNotificationForDemandeurAndForTreatDevisGroup(int utilisateurId, int demandeId, String message, String type, java.sql.Timestamp date) {
+        try {
+            SomethingDatabase database = new SomethingDatabase();
+            int notifId = -1;
+            
+            // Créer la notification
+            String insertNotifQuery = "INSERT INTO Notif (demande_id, message, type, date_notification) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement notifStatement = database.prepareStatement(insertNotifQuery, Statement.RETURN_GENERATED_KEYS)) {
+                notifStatement.setInt(1, demandeId);
+                notifStatement.setString(2, message);
+                notifStatement.setString(3, type);
+                notifStatement.setTimestamp(4, date);
+                notifStatement.executeUpdate();
+                
+                try (ResultSet resultSet = notifStatement.getGeneratedKeys()) {
+                    if (resultSet.next()) {
+                        notifId = resultSet.getInt(1);
+                    }
+                }
+            }
+            
+            if (notifId != -1) {
+                // Ajouter l'entrée pour le demandeur
+                String insertUserNotifQuery1 = "INSERT INTO UtilisateurNotification (utilisateur_id, notification_id) VALUES (?, ?)";
+                try (PreparedStatement userNotifStatement1 = database.prepareStatement(insertUserNotifQuery1)) {
+                    userNotifStatement1.setInt(1, utilisateurId);
+                    userNotifStatement1.setInt(2, notifId);
+                    userNotifStatement1.executeUpdate();
+                }
+                
+                // Ajouter les utilisateurs du groupe 'TreatDevis' (id 2)
+                String insertUserNotifQuery2 = "INSERT INTO UtilisateurNotification (utilisateur_id, notification_id) " +
+                                               "SELECT u.id, ? FROM Utilisateur u " +
+                                               "JOIN UtilisateurGroupe ug ON u.id = ug.utilisateur_id " +
+                                               "WHERE ug.groupe_id = 2"; // Remplacez 2 par l'ID du groupe 'TreatDevis'
+                try (PreparedStatement userNotifStatement2 = database.prepareStatement(insertUserNotifQuery2)) {
+                    userNotifStatement2.setInt(1, notifId);
+                    userNotifStatement2.executeUpdate();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Permet de compter le nombre de notifications non lues pour un utilisateur spécifique grâce à la table 'UtilisateurNotification'
+    public static int countUnreadNotificationsForUser(int utilisateurId) {
+        int nbNotif = 0;
+        try {
+            SomethingDatabase database = new SomethingDatabase();
+            
+            // Requête SQL pour compter les notifications non lues pour un utilisateur spécifique
+            String query = "SELECT COUNT(*) FROM UtilisateurNotification WHERE utilisateur_id = ? AND lu = FALSE";
+            
+            try (PreparedStatement statement = database.prepareStatement(query)) {
+                statement.setInt(1, utilisateurId);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        nbNotif = resultSet.getInt(1);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return nbNotif;
+    }
+    
+    //Permet de marquer une notification comme lue pour un utilisateur spécifique grâce à la table 'UtilisateurNotification'
+    public static void markAsReadForUser(int utilisateurId, int notifId) {
+        try {
+            SomethingDatabase database = new SomethingDatabase();
+            String query = "UPDATE UtilisateurNotification SET lu = TRUE WHERE utilisateur_id = ? AND notification_id = ?";
+            PreparedStatement statement = database.prepareStatement(query);
+            statement.setInt(1, utilisateurId);
+            statement.setInt(2, notifId);
+            statement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //L'idée sera de créer les notifications pour les différents groupes de traitement de demande au sein de la table 'UtilisateurNotification' au fur et à mesure de l'avancement de la demande
+
+    //Permet d'ajouter à la table 'UtilisateurNotification' une notification les utilisateurs du groupe 'TreatDevis' pour une demande spécifique ainsi que de réinitialiser le champ 'lu' pour le demandeur
+    public static void addNotificationForTreatDevis(int demandeId, int demandeurId, int notifId) {
+        try {
+            SomethingDatabase database = new SomethingDatabase();
+            
+            // Supprimer les notifications existantes pour les groupes 'validateDevis', 'treatDevis'
+            String deletePreviousNotifsQuery = "DELETE FROM UtilisateurNotification " +
+                                               "WHERE utilisateur_id IN (SELECT utilisateur_id " +
+                                               "FROM UtilisateurGroupe ug JOIN Groupe g ON ug.groupe_id = g.id " +
+                                               "WHERE g.nom IN ('validateDevis', 'treatDevis')) " +
+                                               "AND notification_id IN (SELECT id FROM Notif WHERE demande_id = ?)";
+            PreparedStatement deletePreviousNotifsStatement = database.prepareStatement(deletePreviousNotifsQuery);
+            deletePreviousNotifsStatement.setInt(1, demandeId);
+            deletePreviousNotifsStatement.executeUpdate();
+    
+            // Ajouter des entrées pour le groupe 'treatDevis'
+            String insertUserNotifQuery = "INSERT INTO UtilisateurNotification (utilisateur_id, notification_id, lu) " +
+                                           "SELECT u.id, ?, FALSE FROM Utilisateur u " +
+                                           "JOIN UtilisateurGroupe ug ON u.id = ug.utilisateur_id " +
+                                           "JOIN Groupe g ON ug.groupe_id = g.id " +
+                                           "WHERE g.nom = 'treatDevis'";
+            PreparedStatement userNotifStatement = database.prepareStatement(insertUserNotifQuery);
+            userNotifStatement.setInt(1, notifId);
+            userNotifStatement.executeUpdate();
+    
+            // Réinitialiser le champ 'lu' pour le demandeur
+            String resetUserNotifQuery = "UPDATE UtilisateurNotification un " +
+                                         "JOIN Notif n ON un.notification_id = n.id " +
+                                         "SET n.lu = FALSE " +
+                                         "WHERE n.demande_id = ? " +
+                                         "AND un.utilisateur_id = ?";
+            PreparedStatement resetUserNotifStatement = database.prepareStatement(resetUserNotifQuery);
+            resetUserNotifStatement.setInt(1, demandeId);
+            resetUserNotifStatement.setInt(2, demandeurId);
+            resetUserNotifStatement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+
+    //Permet d'ajouter à la table 'UtilisateurNotification' une notification les utilisateurs du groupe 'ValidateDevis' pour une demande spécifique ainsi que de réinitialiser le champ 'lu' pour le demandeur
+    public static void addNotificationForValidateDevis(int demandeId, int demandeurId, int notifId) {
+        try {
+            SomethingDatabase database = new SomethingDatabase();
+            
+            // Supprimer les notifications existantes pour les groupes 'treatDevis', 'validateDevis'
+            String deletePreviousNotifsQuery = "DELETE FROM UtilisateurNotification " +
+                                               "WHERE utilisateur_id IN (SELECT utilisateur_id " +
+                                               "FROM UtilisateurGroupe ug JOIN Groupe g ON ug.groupe_id = g.id " +
+                                               "WHERE g.nom IN ('treatDevis', 'validateDevis')) " +
+                                               "AND notification_id IN (SELECT id FROM Notif WHERE demande_id = ?)";
+            PreparedStatement deletePreviousNotifsStatement = database.prepareStatement(deletePreviousNotifsQuery);
+            deletePreviousNotifsStatement.setInt(1, demandeId);
+            deletePreviousNotifsStatement.executeUpdate();
+    
+            // Ajouter des entrées pour le groupe 'validateDevis'
+            String insertUserNotifQuery = "INSERT INTO UtilisateurNotification (utilisateur_id, notification_id, lu) " +
+                                           "SELECT u.id, ?, FALSE FROM Utilisateur u " +
+                                           "JOIN UtilisateurGroupe ug ON u.id = ug.utilisateur_id " +
+                                           "JOIN Groupe g ON ug.groupe_id = g.id " +
+                                           "WHERE g.nom = 'validateDevis'";
+            PreparedStatement userNotifStatement = database.prepareStatement(insertUserNotifQuery);
+            userNotifStatement.setInt(1, notifId);
+            userNotifStatement.executeUpdate();
+    
+            // Réinitialiser le champ 'lu' pour le demandeur
+            String resetUserNotifQuery = "UPDATE UtilisateurNotification un " +
+                                         "JOIN Notif n ON un.notification_id = n.id " +
+                                         "SET n.lu = FALSE " +
+                                         "WHERE n.demande_id = ? " +
+                                         "AND un.utilisateur_id = ?";
+            PreparedStatement resetUserNotifStatement = database.prepareStatement(resetUserNotifQuery);
+            resetUserNotifStatement.setInt(1, demandeId);
+            resetUserNotifStatement.setInt(2, demandeurId);
+            resetUserNotifStatement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+
+    //Permet d'ajouter à la table 'UtilisateurNotification' une notification les utilisateurs du groupe 'TreatBc' pour une demande spécifique ainsi que de réinitialiser le champ 'lu' pour le demandeur
+    public static void addNotificationForTreatBc(int demandeId, int demandeurId, int notifId) {
+        try {
+            SomethingDatabase database = new SomethingDatabase();
+            
+            // Supprimer les notifications existantes pour les groupes 'validateDevis', 'treatBc'
+            String deletePreviousNotifsQuery = "DELETE FROM UtilisateurNotification " +
+                                               "WHERE utilisateur_id IN (SELECT utilisateur_id " +
+                                               "FROM UtilisateurGroupe ug JOIN Groupe g ON ug.groupe_id = g.id " +
+                                               "WHERE g.nom IN ('validateDevis', 'treatBc')) " +
+                                               "AND notification_id IN (SELECT id FROM Notif WHERE demande_id = ?)";
+            PreparedStatement deletePreviousNotifsStatement = database.prepareStatement(deletePreviousNotifsQuery);
+            deletePreviousNotifsStatement.setInt(1, demandeId);
+            deletePreviousNotifsStatement.executeUpdate();
+    
+            // Ajouter des entrées pour le groupe 'treatBc'
+            String insertUserNotifQuery = "INSERT INTO UtilisateurNotification (utilisateur_id, notification_id, lu) " +
+                                           "SELECT u.id, ?, FALSE FROM Utilisateur u " +
+                                           "JOIN UtilisateurGroupe ug ON u.id = ug.utilisateur_id " +
+                                           "JOIN Groupe g ON ug.groupe_id = g.id " +
+                                           "WHERE g.nom = 'treatBc'";
+            PreparedStatement userNotifStatement = database.prepareStatement(insertUserNotifQuery);
+            userNotifStatement.setInt(1, notifId);
+            userNotifStatement.executeUpdate();
+    
+            // Réinitialiser le champ 'lu' pour le demandeur
+            String resetUserNotifQuery = "UPDATE UtilisateurNotification un " +
+                                         "JOIN Notif n ON un.notification_id = n.id " +
+                                         "SET n.lu = FALSE " +
+                                         "WHERE n.demande_id = ? " +
+                                         "AND un.utilisateur_id = ?";
+            PreparedStatement resetUserNotifStatement = database.prepareStatement(resetUserNotifQuery);
+            resetUserNotifStatement.setInt(1, demandeId);
+            resetUserNotifStatement.setInt(2, demandeurId);
+            resetUserNotifStatement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+
+    //Permet d'ajouter à la table 'UtilisateurNotification' une notification les utilisateurs du groupe 'ValidateBc' pour une demande spécifique ainsi que de réinitialiser le champ 'lu' pour le demandeur
+    public static void addNotificationForValidateBc(int demandeId, int demandeurId, int notifId) {
+        try {
+            SomethingDatabase database = new SomethingDatabase();
+            
+            // Supprimer les notifications existantes pour les groupes 'treatBc', 'validateBc'
+            String deletePreviousNotifsQuery = "DELETE FROM UtilisateurNotification " +
+                                               "WHERE utilisateur_id IN (SELECT utilisateur_id " +
+                                               "FROM UtilisateurGroupe ug JOIN Groupe g ON ug.groupe_id = g.id " +
+                                               "WHERE g.nom IN ('treatBc', 'validateBc')) " +
+                                               "AND notification_id IN (SELECT id FROM Notif WHERE demande_id = ?)";
+            PreparedStatement deletePreviousNotifsStatement = database.prepareStatement(deletePreviousNotifsQuery);
+            deletePreviousNotifsStatement.setInt(1, demandeId);
+            deletePreviousNotifsStatement.executeUpdate();
+    
+            // Ajouter des entrées pour le groupe 'validateBc'
+            String insertUserNotifQuery = "INSERT INTO UtilisateurNotification (utilisateur_id, notification_id, lu) " +
+                                           "SELECT u.id, ?, FALSE FROM Utilisateur u " +
+                                           "JOIN UtilisateurGroupe ug ON u.id = ug.utilisateur_id " +
+                                           "JOIN Groupe g ON ug.groupe_id = g.id " +
+                                           "WHERE g.nom = 'validateBc'";
+            PreparedStatement userNotifStatement = database.prepareStatement(insertUserNotifQuery);
+            userNotifStatement.setInt(1, notifId);
+            userNotifStatement.executeUpdate();
+    
+            // Réinitialiser le champ 'lu' pour le demandeur
+            String resetUserNotifQuery = "UPDATE UtilisateurNotification un " +
+                                         "JOIN Notif n ON un.notification_id = n.id " +
+                                         "SET n.lu = FALSE " +
+                                         "WHERE n.demande_id = ? " +
+                                         "AND un.utilisateur_id = ?";
+            PreparedStatement resetUserNotifStatement = database.prepareStatement(resetUserNotifQuery);
+            resetUserNotifStatement.setInt(1, demandeId);
+            resetUserNotifStatement.setInt(2, demandeurId);
+            resetUserNotifStatement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+
+    //Permet d'ajouter à la table 'UtilisateurNotification' une notification les utilisateurs du groupe 'NotifBcSend' pour une demande spécifique ainsi que de réinitialiser le champ 'lu' pour le demandeur
+    public static void addNotificationForNotifBcSend(int demandeId, int demandeurId, int notifId) {
+        try {
+            SomethingDatabase database = new SomethingDatabase();
+            
+            // Supprimer les notifications existantes pour les groupes 'treatBc', 'validateBc', 'notifBcSend'
+            String deletePreviousNotifsQuery = "DELETE FROM UtilisateurNotification " +
+                                               "WHERE utilisateur_id IN (SELECT utilisateur_id " +
+                                               "FROM UtilisateurGroupe ug JOIN Groupe g ON ug.groupe_id = g.id " +
+                                               "WHERE g.nom IN ('treatBc', 'validateBc', 'notifBcSend')) " +
+                                               "AND notification_id IN (SELECT id FROM Notif WHERE demande_id = ?)";
+            PreparedStatement deletePreviousNotifsStatement = database.prepareStatement(deletePreviousNotifsQuery);
+            deletePreviousNotifsStatement.setInt(1, demandeId);
+            deletePreviousNotifsStatement.executeUpdate();
+    
+            // Ajouter des entrées pour le groupe 'notifBcSend'
+            String insertUserNotifQuery = "INSERT INTO UtilisateurNotification (utilisateur_id, notification_id, lu) " +
+                                           "SELECT u.id, ?, FALSE FROM Utilisateur u " +
+                                           "JOIN UtilisateurGroupe ug ON u.id = ug.utilisateur_id " +
+                                           "JOIN Groupe g ON ug.groupe_id = g.id " +
+                                           "WHERE g.nom = 'notifBcSend'";
+            PreparedStatement userNotifStatement = database.prepareStatement(insertUserNotifQuery);
+            userNotifStatement.setInt(1, notifId);
+            userNotifStatement.executeUpdate();
+    
+            // Réinitialiser le champ 'lu' pour le demandeur
+            String resetUserNotifQuery = "UPDATE UtilisateurNotification un " +
+                                         "JOIN Notif n ON un.notification_id = n.id " +
+                                         "SET n.lu = FALSE " +
+                                         "WHERE n.demande_id = ? " +
+                                         "AND un.utilisateur_id = ?";
+            PreparedStatement resetUserNotifStatement = database.prepareStatement(resetUserNotifQuery);
+            resetUserNotifStatement.setInt(1, demandeId);
+            resetUserNotifStatement.setInt(2, demandeurId);
+            resetUserNotifStatement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    //Permet d'ajouter à la table 'UtilisateurNotification' une notification les utilisateurs du groupe 'ValidateFacture' pour une demande spécifique ainsi que de réinitialiser le champ 'lu' pour le demandeur
+    public static void addNotificationForInventory(int demandeId, int demandeurId, int notifId) {
+        try {
+            SomethingDatabase database = new SomethingDatabase();
+            
+            // Supprimer les notifications existantes pour les groupes 'notifBcSend', 'inventory'
+            String deletePreviousNotifsQuery = "DELETE FROM UtilisateurNotification " +
+                                               "WHERE utilisateur_id IN (SELECT utilisateur_id " +
+                                               "FROM UtilisateurGroupe ug JOIN Groupe g ON ug.groupe_id = g.id " +
+                                               "WHERE g.nom IN ('notifBcSend', 'inventory')) " +
+                                               "AND notification_id IN (SELECT id FROM Notif WHERE demande_id = ?)";
+            PreparedStatement deletePreviousNotifsStatement = database.prepareStatement(deletePreviousNotifsQuery);
+            deletePreviousNotifsStatement.setInt(1, demandeId);
+            deletePreviousNotifsStatement.executeUpdate();
+    
+            // Ajouter des entrées pour le groupe 'inventory'
+            String insertUserNotifQuery = "INSERT INTO UtilisateurNotification (utilisateur_id, notification_id, lu) " +
+                                           "SELECT u.id, ?, FALSE FROM Utilisateur u " +
+                                           "JOIN UtilisateurGroupe ug ON u.id = ug.utilisateur_id " +
+                                           "JOIN Groupe g ON ug.groupe_id = g.id " +
+                                           "WHERE g.nom = 'inventory'";
+            PreparedStatement userNotifStatement = database.prepareStatement(insertUserNotifQuery);
+            userNotifStatement.setInt(1, notifId);
+            userNotifStatement.executeUpdate();
+    
+            // Réinitialiser le champ 'lu' pour le demandeur
+            String resetUserNotifQuery = "UPDATE UtilisateurNotification un " +
+                                         "JOIN Notif n ON un.notification_id = n.id " +
+                                         "SET n.lu = FALSE " +
+                                         "WHERE n.demande_id = ? " +
+                                         "AND un.utilisateur_id = ?";
+            PreparedStatement resetUserNotifStatement = database.prepareStatement(resetUserNotifQuery);
+            resetUserNotifStatement.setInt(1, demandeId);
+            resetUserNotifStatement.setInt(2, demandeurId);
+            resetUserNotifStatement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+
+    public static int getDemandeurId(int notifId) {
+        int demandeurId = -1;
+        try {
+            SomethingDatabase database = new SomethingDatabase();
+            String query = "SELECT d.utilisateur_id FROM Notif n " +
+                           "JOIN Demande d ON n.demande_id = d.id " +
+                           "WHERE n.id = ?";
+            PreparedStatement statement = database.prepareStatement(query);
+            statement.setInt(1, notifId);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                demandeurId = resultSet.getInt("utilisateur_id");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return demandeurId;
+    }
+    
+
+    
+    
     public static boolean updateNotificationTypeForUser(int userId, int notifId, boolean newLuStatus, String newType) {
         try {
             SomethingDatabase database = new SomethingDatabase();
@@ -41,50 +394,23 @@ public class NotifDao {
         }
     }
 
-    public static int createNotificationForUser(int utilisateurId, int demandeId, String message, String type, java.sql.Timestamp date) {
-        try {
-            SomethingDatabase database = new SomethingDatabase();
-            
-            // Créer la notification
-            String insertNotifQuery = "INSERT INTO Notif (demande_id, message, type, date_notification) VALUES (?, ?, ?, ?)";
-            PreparedStatement notifStatement = database.prepareStatement(insertNotifQuery, Statement.RETURN_GENERATED_KEYS);
-            notifStatement.setInt(1, demandeId);
-            notifStatement.setString(2, message);
-            notifStatement.setString(3, type);
-            notifStatement.setTimestamp(4, date);
-            notifStatement.executeUpdate();
-            
-            ResultSet resultSet = notifStatement.getGeneratedKeys();
-            if (resultSet.next()) {
-                int notifId = resultSet.getInt(1);
-                
-                // Ajouter l'entrée dans UtilisateurNotification
-                String insertUserNotifQuery = "INSERT INTO UtilisateurNotification (utilisateur_id, notification_id) VALUES (?, ?)";
-                PreparedStatement userNotifStatement = database.prepareStatement(insertUserNotifQuery);
-                userNotifStatement.setInt(1, utilisateurId);
-                userNotifStatement.setInt(2, notifId);
-                userNotifStatement.executeUpdate();
+    
+    
 
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return -1;
-    }
+    
 
-    public static void markAsReadForUser(int utilisateurId, int notifId) {
-        try {
-            SomethingDatabase database = new SomethingDatabase();
-            String query = "UPDATE UtilisateurNotification SET lu = TRUE WHERE utilisateur_id = ? AND notification_id = ?";
-            PreparedStatement statement = database.prepareStatement(query);
-            statement.setInt(1, utilisateurId);
-            statement.setInt(2, notifId);
-            statement.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    
 
+
+
+
+
+
+
+
+
+
+    // A optimiser
     public static List<Notif> getNotificationsForUserInde(int utilisateurId) {
         List<Notif> notifications = new ArrayList<>();
         try {
@@ -115,7 +441,7 @@ public class NotifDao {
     
     
 
-    //
+    //*********************************************************************************************** */
 
     public static int createNotification(int demandeId, String message, String type,java.sql.Timestamp date) {
         try {

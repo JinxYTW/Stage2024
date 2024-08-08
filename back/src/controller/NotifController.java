@@ -16,33 +16,70 @@ public class NotifController {
     public NotifController() {
     }
 
-    //Test
+    //Test pour implémentation nouveau système de notification********************************************************************************************
+    public void countUnreadNotificationsForUser(WebServerContext context) {
+        WebServerResponse response = context.getResponse();
+        try {
+            int userId = Integer.parseInt(context.getRequest().getQueryParams().get("userId"));
+            int count = NotifDao.countUnreadNotificationsForUser(userId);
+            JsonObject jsonResponse = new JsonObject();
+            jsonResponse.addProperty("count", count);
+            response.json(jsonResponse);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.status(500, "Internal Server Error");
+        }
+    }
+
 
     public void updateNotificationTypeReadForUser(WebServerContext context) {
         WebServerResponse response = context.getResponse();
         try {
             int notifId = Integer.parseInt(context.getRequest().getQueryParams().get("notifId"));
-            int userId = Integer.parseInt(context.getRequest().getQueryParams().get("userId")); // Ajout de userId
-    
-            
-            
-            // Récupérer la notification
             Notif notif = NotifDao.getNotificationById(notifId);
+            int demandeurId = NotifDao.getDemandeurId(notifId);
     
             if (notif == null) {
                 response.status(404, "Notification non trouvée");
                 return;
             }
     
-            // Déterminer le nouveau type
-            boolean newLuStatus = !notif.lu();
-            String newType = determineNewTypeRead(notif.type().toString());
-            
-            // Mettre à jour le type de notification
-            boolean updateSuccess = NotifDao.updateNotificationTypeForUser(userId, notifId, newLuStatus, newType);
+            boolean newLuStatus = notif.lu();
+            String newType = notif.type().toString();
+    
+            if (notif.lu()) {
+                newLuStatus = false;
+                newType = determineNewTypeRead(notif.type().toString());
+            }
+    
+            // Mise à jour du type et du statut 'lu'
+            boolean updateSuccess = NotifDao.updateNotificationTypeRead(notifId, newLuStatus, newType);
+            System.out.println("updateSuccess: " + updateSuccess);
     
             if (updateSuccess) {
-                response.json("{\"success\": true}");
+                // Déterminer et exécuter les actions en fonction du nouveau type
+                switch (newType) {
+                    case "demande_en_cours_de_traitement":
+                        NotifDao.addNotificationForTreatDevis(notif.demandeId(), demandeurId, notifId);
+                        break;
+                    case "devis_en_cours_de_validation":
+                        NotifDao.addNotificationForValidateDevis(notif.demandeId(), demandeurId, notifId);
+                        break;
+                    case "bc_en_cours_dedition":
+                        NotifDao.addNotificationForTreatBc(notif.demandeId(), demandeurId, notifId);
+                        break;
+                    case "bc_en_cours_de_validation":
+                        NotifDao.addNotificationForValidateBc(notif.demandeId(), demandeurId, notifId);
+                        break;
+                    case "envoi_fournisseur_en_cours":
+                        NotifDao.addNotificationForNotifBcSend(notif.demandeId(), demandeurId, notifId);
+                        break;
+                    default:
+                        // Si le type ne correspond à aucun des cas définis, ne pas effectuer d'action supplémentaire
+                        break;
+                }
+    
+                response.json(updateSuccess);
             } else {
                 response.status(500, "Échec de la mise à jour de la notification");
             }
@@ -51,6 +88,8 @@ public class NotifController {
             response.status(500, "Internal Server Error");
         }
     }
+
+
     
     public void markAsReadForUser(WebServerContext context) {
         WebServerResponse response = context.getResponse();
@@ -65,6 +104,8 @@ public class NotifController {
         }
     }
     
+
+    //***************************************************************************************************************************************************** */
     public void isOneNotifOnState(WebServerContext context) {
         WebServerResponse response = context.getResponse();
         try {

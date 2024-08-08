@@ -95,6 +95,7 @@ class homeView{
             const success = await this.homeServices.markNotifAsRead(notifId);
             if (success) {
 
+                
                 const updateSuccess = await this.homeServices.updateNotificationTypeRead(notifId);
 
                 if (updateSuccess) {

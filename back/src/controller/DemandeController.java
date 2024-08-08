@@ -399,7 +399,7 @@ public class DemandeController {
         Timestamp notificationDate = new Timestamp(System.currentTimeMillis());
 
         int notifId = NotifDao.createNotification(demandeId, notificationMessage, notificationType, notificationDate);
-        //int notifId = NotifDao.createNotificationForUser(utilisateurId,demandeId, notificationMessage, notificationType, notificationDate);
+        //int notifId = NotifDao.createNotificationForDemandeurAndForTreatDevisGroup(utilisateurId,demandeId, notificationMessage, notificationType, notificationDate);
         System.out.println("notificationId: " + notifId);
 
         // Construire la réponse JSON

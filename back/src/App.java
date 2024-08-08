@@ -326,7 +326,7 @@ public class App {
                 mynotifController.markAsReadForUser(context);
             });
         
-        webserver.getRouter().post("/api/updateNotificationTypeRead", (WebServerContext context) -> {
+        webserver.getRouter().post("/api/updateNotificationTypeReadForUser", (WebServerContext context) -> {
                 
                 mynotifController.updateNotificationTypeReadForUser(context);
             });
@@ -338,6 +338,10 @@ public class App {
                 mynotifController.updateNotificationType(context);
             });
 
+        webserver.getRouter().get("/api/countUnreadNotificationsForUser", (WebServerContext context) -> {
+                
+                mynotifController.countUnreadNotificationsForUser(context);
+            });
             
 
             //-------------- Relance --------------------------------

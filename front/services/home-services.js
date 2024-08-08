@@ -3,10 +3,11 @@
  */
 class homeServices {
     constructor() {}
-//Test
+    
+//Test pour implémentation nouveau système de notification *************************************************
     async updateNotificationTypeReadForUser(notifId,userId) {
         try {
-            const response = await fetch(`http://localhost:8080/api/updateNotificationTypeRead?notifId=${notifId}&userId=${userId}`, {
+            const response = await fetch(`http://localhost:8080/api/updateNotificationTypeReadForUser?notifId=${notifId}&userId=${userId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -43,7 +44,31 @@ class homeServices {
             return false;
         }
     }
-//
+
+    async countUnreadNotificationsForUser(userId) {
+        try {
+            const response = await fetch(`http://localhost:8080/api/countUnreadNotificationsForUser?userId=${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (!response.ok) {
+                throw new Error('La récupération des notifications a échoué');
+            }
+            let data = await response.json();
+            
+            data = data.count;
+            
+            return data;
+        }
+        catch (error) {
+            console.error("Erreur dans la récupération des notifications", error);
+            return [];
+        }
+    }
+
+//*********************************************************************************** */
     async updateNotificationTypeRead(notifId) {
         try {
             const response = await fetch(`http://localhost:8080/api/updateNotificationTypeRead?notifId=${notifId}`, {
@@ -108,6 +133,7 @@ class homeServices {
         }
     }
 
+    
     async getOldestUrgentNotification(userId) {
         try {
             const response = await fetch(`http://localhost:8080/api/getOldestUrgentNotification?userId=${userId}`, {
