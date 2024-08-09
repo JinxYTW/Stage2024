@@ -139,9 +139,11 @@ public class NotifDao {
                                                "WHERE utilisateur_id IN (SELECT utilisateur_id " +
                                                "FROM UtilisateurGroupe ug JOIN Groupe g ON ug.groupe_id = g.id " +
                                                "WHERE g.nom = 'validateDevis') " +
-                                               "AND notification_id IN (SELECT id FROM Notif WHERE demande_id = ?)";
+                                               "AND notification_id IN (SELECT id FROM Notif WHERE demande_id = ?)"+
+                                               "AND utilisateur_id != ?";
             PreparedStatement deletePreviousNotifsStatement = database.prepareStatement(deletePreviousNotifsQuery);
             deletePreviousNotifsStatement.setInt(1, demandeId);
+            deletePreviousNotifsStatement.setInt(2, demandeurId);
             deletePreviousNotifsStatement.executeUpdate();
     
             
@@ -149,11 +151,10 @@ public class NotifDao {
             
             System.out.println("Le champ lu a été réinitialisé pour le demandeur");
             // Réinitialiser le champ 'lu' pour le demandeur
-            String resetUserNotifQuery = "UPDATE UtilisateurNotification un " +
-                                         "JOIN Notif n ON un.notification_id = n.id " +
-                                         "SET n.lu = FALSE " +
-                                         "WHERE n.demande_id = ? " +
-                                         "AND un.utilisateur_id = ?";
+            String resetUserNotifQuery = "UPDATE UtilisateurNotification " +
+                                     "SET lu = FALSE " +
+                                     "WHERE notification_id IN (SELECT id FROM Notif WHERE demande_id = ?) " +
+                                     "AND utilisateur_id = ?";
             PreparedStatement resetUserNotifStatement = database.prepareStatement(resetUserNotifQuery);
             resetUserNotifStatement.setInt(1, demandeId);
             resetUserNotifStatement.setInt(2, demandeurId);
@@ -174,9 +175,11 @@ public class NotifDao {
                                                "WHERE utilisateur_id IN (SELECT utilisateur_id " +
                                                "FROM UtilisateurGroupe ug JOIN Groupe g ON ug.groupe_id = g.id " +
                                                "WHERE g.nom IN ('treatDevis', 'validateDevis')) " +
-                                               "AND notification_id IN (SELECT id FROM Notif WHERE demande_id = ?)";
+                                               "AND notification_id IN (SELECT id FROM Notif WHERE demande_id = ?)"+
+                                               "AND utilisateur_id != ?";
             PreparedStatement deletePreviousNotifsStatement = database.prepareStatement(deletePreviousNotifsQuery);
             deletePreviousNotifsStatement.setInt(1, demandeId);
+            deletePreviousNotifsStatement.setInt(2, demandeurId);
             deletePreviousNotifsStatement.executeUpdate();
     
             // Ajouter des entrées pour le groupe 'validateDevis'
@@ -190,11 +193,10 @@ public class NotifDao {
             userNotifStatement.executeUpdate();
     
             // Réinitialiser le champ 'lu' pour le demandeur
-            String resetUserNotifQuery = "UPDATE UtilisateurNotification un " +
-                                         "JOIN Notif n ON un.notification_id = n.id " +
-                                         "SET n.lu = FALSE " +
-                                         "WHERE n.demande_id = ? " +
-                                         "AND un.utilisateur_id = ?";
+            String resetUserNotifQuery = "UPDATE UtilisateurNotification " +
+                                     "SET lu = FALSE " +
+                                     "WHERE notification_id IN (SELECT id FROM Notif WHERE demande_id = ?) " +
+                                     "AND utilisateur_id = ?";
             PreparedStatement resetUserNotifStatement = database.prepareStatement(resetUserNotifQuery);
             resetUserNotifStatement.setInt(1, demandeId);
             resetUserNotifStatement.setInt(2, demandeurId);
@@ -215,9 +217,11 @@ public class NotifDao {
                                                "WHERE utilisateur_id IN (SELECT utilisateur_id " +
                                                "FROM UtilisateurGroupe ug JOIN Groupe g ON ug.groupe_id = g.id " +
                                                "WHERE g.nom IN ('validateDevis', 'treatBc')) " +
-                                               "AND notification_id IN (SELECT id FROM Notif WHERE demande_id = ?)";
+                                               "AND notification_id IN (SELECT id FROM Notif WHERE demande_id = ?)"+
+                                               "AND utilisateur_id != ?";
             PreparedStatement deletePreviousNotifsStatement = database.prepareStatement(deletePreviousNotifsQuery);
             deletePreviousNotifsStatement.setInt(1, demandeId);
+            deletePreviousNotifsStatement.setInt(2, demandeurId);
             deletePreviousNotifsStatement.executeUpdate();
     
             // Ajouter des entrées pour le groupe 'treatBc'
@@ -231,11 +235,10 @@ public class NotifDao {
             userNotifStatement.executeUpdate();
     
             // Réinitialiser le champ 'lu' pour le demandeur
-            String resetUserNotifQuery = "UPDATE UtilisateurNotification un " +
-                                         "JOIN Notif n ON un.notification_id = n.id " +
-                                         "SET n.lu = FALSE " +
-                                         "WHERE n.demande_id = ? " +
-                                         "AND un.utilisateur_id = ?";
+            String resetUserNotifQuery = "UPDATE UtilisateurNotification " +
+                                     "SET lu = FALSE " +
+                                     "WHERE notification_id IN (SELECT id FROM Notif WHERE demande_id = ?) " +
+                                     "AND utilisateur_id = ?";
             PreparedStatement resetUserNotifStatement = database.prepareStatement(resetUserNotifQuery);
             resetUserNotifStatement.setInt(1, demandeId);
             resetUserNotifStatement.setInt(2, demandeurId);
@@ -256,9 +259,11 @@ public class NotifDao {
                                                "WHERE utilisateur_id IN (SELECT utilisateur_id " +
                                                "FROM UtilisateurGroupe ug JOIN Groupe g ON ug.groupe_id = g.id " +
                                                "WHERE g.nom IN ('treatBc', 'validateBc')) " +
-                                               "AND notification_id IN (SELECT id FROM Notif WHERE demande_id = ?)";
+                                               "AND notification_id IN (SELECT id FROM Notif WHERE demande_id = ?)"+
+                                               "AND utilisateur_id != ?";
             PreparedStatement deletePreviousNotifsStatement = database.prepareStatement(deletePreviousNotifsQuery);
             deletePreviousNotifsStatement.setInt(1, demandeId);
+            deletePreviousNotifsStatement.setInt(2, demandeurId);
             deletePreviousNotifsStatement.executeUpdate();
     
             // Ajouter des entrées pour le groupe 'validateBc'
@@ -272,11 +277,10 @@ public class NotifDao {
             userNotifStatement.executeUpdate();
     
             // Réinitialiser le champ 'lu' pour le demandeur
-            String resetUserNotifQuery = "UPDATE UtilisateurNotification un " +
-                                         "JOIN Notif n ON un.notification_id = n.id " +
-                                         "SET n.lu = FALSE " +
-                                         "WHERE n.demande_id = ? " +
-                                         "AND un.utilisateur_id = ?";
+            String resetUserNotifQuery = "UPDATE UtilisateurNotification " +
+                                     "SET lu = FALSE " +
+                                     "WHERE notification_id IN (SELECT id FROM Notif WHERE demande_id = ?) " +
+                                     "AND utilisateur_id = ?";
             PreparedStatement resetUserNotifStatement = database.prepareStatement(resetUserNotifQuery);
             resetUserNotifStatement.setInt(1, demandeId);
             resetUserNotifStatement.setInt(2, demandeurId);
@@ -297,9 +301,11 @@ public class NotifDao {
                                                "WHERE utilisateur_id IN (SELECT utilisateur_id " +
                                                "FROM UtilisateurGroupe ug JOIN Groupe g ON ug.groupe_id = g.id " +
                                                "WHERE g.nom IN ('treatBc', 'validateBc', 'notifBcSend')) " +
-                                               "AND notification_id IN (SELECT id FROM Notif WHERE demande_id = ?)";
+                                               "AND notification_id IN (SELECT id FROM Notif WHERE demande_id = ?)"+
+                                               "AND utilisateur_id != ?";
             PreparedStatement deletePreviousNotifsStatement = database.prepareStatement(deletePreviousNotifsQuery);
             deletePreviousNotifsStatement.setInt(1, demandeId);
+            deletePreviousNotifsStatement.setInt(2, demandeurId);
             deletePreviousNotifsStatement.executeUpdate();
     
             // Ajouter des entrées pour le groupe 'notifBcSend'
@@ -313,11 +319,10 @@ public class NotifDao {
             userNotifStatement.executeUpdate();
     
             // Réinitialiser le champ 'lu' pour le demandeur
-            String resetUserNotifQuery = "UPDATE UtilisateurNotification un " +
-                                         "JOIN Notif n ON un.notification_id = n.id " +
-                                         "SET n.lu = FALSE " +
-                                         "WHERE n.demande_id = ? " +
-                                         "AND un.utilisateur_id = ?";
+            String resetUserNotifQuery = "UPDATE UtilisateurNotification " +
+                                     "SET lu = FALSE " +
+                                     "WHERE notification_id IN (SELECT id FROM Notif WHERE demande_id = ?) " +
+                                     "AND utilisateur_id = ?";
             PreparedStatement resetUserNotifStatement = database.prepareStatement(resetUserNotifQuery);
             resetUserNotifStatement.setInt(1, demandeId);
             resetUserNotifStatement.setInt(2, demandeurId);
@@ -337,9 +342,11 @@ public class NotifDao {
                                                "WHERE utilisateur_id IN (SELECT utilisateur_id " +
                                                "FROM UtilisateurGroupe ug JOIN Groupe g ON ug.groupe_id = g.id " +
                                                "WHERE g.nom IN ('notifBcSend', 'inventory')) " +
-                                               "AND notification_id IN (SELECT id FROM Notif WHERE demande_id = ?)";
+                                               "AND notification_id IN (SELECT id FROM Notif WHERE demande_id = ?)"+
+                                               "AND utilisateur_id != ?";
             PreparedStatement deletePreviousNotifsStatement = database.prepareStatement(deletePreviousNotifsQuery);
             deletePreviousNotifsStatement.setInt(1, demandeId);
+            deletePreviousNotifsStatement.setInt(2, demandeurId);
             deletePreviousNotifsStatement.executeUpdate();
     
             // Ajouter des entrées pour le groupe 'inventory'
@@ -353,11 +360,10 @@ public class NotifDao {
             userNotifStatement.executeUpdate();
     
             // Réinitialiser le champ 'lu' pour le demandeur
-            String resetUserNotifQuery = "UPDATE UtilisateurNotification un " +
-                                         "JOIN Notif n ON un.notification_id = n.id " +
-                                         "SET n.lu = FALSE " +
-                                         "WHERE n.demande_id = ? " +
-                                         "AND un.utilisateur_id = ?";
+            String resetUserNotifQuery ="UPDATE UtilisateurNotification " +
+                                     "SET lu = FALSE " +
+                                     "WHERE notification_id IN (SELECT id FROM Notif WHERE demande_id = ?) " +
+                                     "AND utilisateur_id = ?";
             PreparedStatement resetUserNotifStatement = database.prepareStatement(resetUserNotifQuery);
             resetUserNotifStatement.setInt(1, demandeId);
             resetUserNotifStatement.setInt(2, demandeurId);
