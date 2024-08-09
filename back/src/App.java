@@ -307,7 +307,7 @@ public class App {
             });
 
 
-            webserver.getRouter().post("/api/markNotifAsReadForUSer", (WebServerContext context) -> {
+            webserver.getRouter().post("/api/markNotifAsReadForUser", (WebServerContext context) -> {
                 
                 mynotifController.markAsReadForUser(context);
             });
@@ -327,6 +327,11 @@ public class App {
         webserver.getRouter().get("/api/countUnreadNotificationsForUser", (WebServerContext context) -> {
                 
                 mynotifController.countUnreadNotificationsForUser(context);
+            });
+
+            webserver.getRouter().get("/api/getMostImportantNotificationForUser", (WebServerContext context) -> {
+                
+                mynotifController.getMostImportantNotificationForUser(context);
             });
             
 

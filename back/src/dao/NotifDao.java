@@ -24,9 +24,9 @@ public class NotifDao {
 
     // Créer une notification pour un demandeur et pour les utilisateurs du groupe 'TreatDevis' au sein de la table 'UtilisateurNotification'
     public static int createNotificationForDemandeurAndForTreatDevisGroup(int utilisateurId, int demandeId, String message, String type, java.sql.Timestamp date) {
+        int notifId = -1;
         try {
             SomethingDatabase database = new SomethingDatabase();
-            int notifId = -1;
             
             // Créer la notification
             String insertNotifQuery = "INSERT INTO Notif (demande_id, message, type, date_notification) VALUES (?, ?, ?, ?)";
@@ -45,6 +45,14 @@ public class NotifDao {
             }
             
             if (notifId != -1) {
+                // Supprimer les notifications existantes pour le demandeur
+                String deleteUserNotifQuery1 = "DELETE FROM UtilisateurNotification WHERE utilisateur_id = ? AND notification_id = ?";
+                try (PreparedStatement deleteStatement1 = database.prepareStatement(deleteUserNotifQuery1)) {
+                    deleteStatement1.setInt(1, utilisateurId);
+                    deleteStatement1.setInt(2, notifId);
+                    deleteStatement1.executeUpdate();
+                }
+                
                 // Ajouter l'entrée pour le demandeur
                 String insertUserNotifQuery1 = "INSERT INTO UtilisateurNotification (utilisateur_id, notification_id) VALUES (?, ?)";
                 try (PreparedStatement userNotifStatement1 = database.prepareStatement(insertUserNotifQuery1)) {
@@ -53,11 +61,20 @@ public class NotifDao {
                     userNotifStatement1.executeUpdate();
                 }
                 
-                // Ajouter les utilisateurs du groupe 'TreatDevis' (id 2)
+                // Supprimer les notifications existantes pour le groupe 'TreatDevis'
+                String deleteUserNotifQuery2 = "DELETE FROM UtilisateurNotification WHERE utilisateur_id IN " +
+                                               "(SELECT utilisateur_id FROM UtilisateurGroupe WHERE groupe_id = 2) " +
+                                               "AND notification_id = ?";
+                try (PreparedStatement deleteStatement2 = database.prepareStatement(deleteUserNotifQuery2)) {
+                    deleteStatement2.setInt(1, notifId);
+                    deleteStatement2.executeUpdate();
+                }
+                
+                // Ajouter les utilisateurs du groupe 'TreatDevis'
                 String insertUserNotifQuery2 = "INSERT INTO UtilisateurNotification (utilisateur_id, notification_id) " +
                                                "SELECT u.id, ? FROM Utilisateur u " +
                                                "JOIN UtilisateurGroupe ug ON u.id = ug.utilisateur_id " +
-                                               "WHERE ug.groupe_id = 2"; // Remplacez 2 par l'ID du groupe 'TreatDevis'
+                                               "WHERE ug.groupe_id = 2";
                 try (PreparedStatement userNotifStatement2 = database.prepareStatement(insertUserNotifQuery2)) {
                     userNotifStatement2.setInt(1, notifId);
                     userNotifStatement2.executeUpdate();
@@ -66,8 +83,9 @@ public class NotifDao {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return -1;
+        return notifId;
     }
+    
 
     //Permet de compter le nombre de notifications non lues pour un utilisateur spécifique grâce à la table 'UtilisateurNotification'
     public static int countUnreadNotificationsForUser(int utilisateurId) {
@@ -94,11 +112,14 @@ public class NotifDao {
     
     //Permet de marquer une notification comme lue pour un utilisateur spécifique grâce à la table 'UtilisateurNotification'
     public static void markAsReadForUser(int utilisateurId, int notifId) {
+        
         try {
             SomethingDatabase database = new SomethingDatabase();
             String query = "UPDATE UtilisateurNotification SET lu = TRUE WHERE utilisateur_id = ? AND notification_id = ?";
             PreparedStatement statement = database.prepareStatement(query);
+            System.out.println("utilisateurId : " + utilisateurId);
             statement.setInt(1, utilisateurId);
+            System.out.println("notifId : " + notifId);
             statement.setInt(2, notifId);
             statement.executeUpdate();
         } catch (Exception e) {
@@ -117,22 +138,16 @@ public class NotifDao {
             String deletePreviousNotifsQuery = "DELETE FROM UtilisateurNotification " +
                                                "WHERE utilisateur_id IN (SELECT utilisateur_id " +
                                                "FROM UtilisateurGroupe ug JOIN Groupe g ON ug.groupe_id = g.id " +
-                                               "WHERE g.nom IN ('validateDevis', 'treatDevis')) " +
+                                               "WHERE g.nom = 'validateDevis') " +
                                                "AND notification_id IN (SELECT id FROM Notif WHERE demande_id = ?)";
             PreparedStatement deletePreviousNotifsStatement = database.prepareStatement(deletePreviousNotifsQuery);
             deletePreviousNotifsStatement.setInt(1, demandeId);
             deletePreviousNotifsStatement.executeUpdate();
     
-            // Ajouter des entrées pour le groupe 'treatDevis'
-            String insertUserNotifQuery = "INSERT INTO UtilisateurNotification (utilisateur_id, notification_id, lu) " +
-                                           "SELECT u.id, ?, FALSE FROM Utilisateur u " +
-                                           "JOIN UtilisateurGroupe ug ON u.id = ug.utilisateur_id " +
-                                           "JOIN Groupe g ON ug.groupe_id = g.id " +
-                                           "WHERE g.nom = 'treatDevis'";
-            PreparedStatement userNotifStatement = database.prepareStatement(insertUserNotifQuery);
-            userNotifStatement.setInt(1, notifId);
-            userNotifStatement.executeUpdate();
-    
+            
+
+            
+            System.out.println("Le champ lu a été réinitialisé pour le demandeur");
             // Réinitialiser le champ 'lu' pour le demandeur
             String resetUserNotifQuery = "UPDATE UtilisateurNotification un " +
                                          "JOIN Notif n ON un.notification_id = n.id " +
@@ -402,6 +417,48 @@ public class NotifDao {
         return notif;
         
     }
+
+    public static Notif getMostImportantNotificationForUser(int utilisateurId) {
+        Notif notif = null;
+        try {
+            SomethingDatabase database = new SomethingDatabase();
+            
+            // Requête SQL pour obtenir la notification la plus importante pour l'utilisateur
+            String query = "SELECT n.*, d.urgence " +
+                           "FROM Notif n " +
+                           "JOIN Demande d ON n.demande_id = d.id " +
+                           "JOIN UtilisateurNotification un ON n.id = un.notification_id " +
+                           "WHERE un.utilisateur_id = ? AND un.lu = FALSE " + // Notifications non lues pour l'utilisateur
+                           "ORDER BY " +
+                           "    CASE d.urgence " +
+                           "        WHEN 'haute' THEN 1 " +
+                           "        WHEN 'moyenne' THEN 2 " +
+                           "        WHEN 'basse' THEN 3 " +
+                           "    END, " +
+                           "    n.date_notification ASC " + // Plus ancienne en premier
+                           "LIMIT 1";
+            
+            PreparedStatement statement = database.prepareStatement(query);
+            statement.setInt(1, utilisateurId);
+            ResultSet resultSet = statement.executeQuery();
+            
+            if (resultSet.next()) {
+                notif = new Notif(
+                    resultSet.getInt("id"),
+                    resultSet.getInt("demande_id"),
+                    resultSet.getString("message"),
+                    Notif.Type.valueOf(resultSet.getString("type")),
+                    resultSet.getBoolean("lu"),
+                    resultSet.getTimestamp("date_notification")
+                );
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return notif;
+    }
+    
+    
 
     
 

@@ -28,7 +28,7 @@ class homeServices {
 
     async markNotifAsReadForUser(notifId,userId) {
         try {
-            const response = await fetch(`http://localhost:8080/api/markNotifAsRead?notifId=${notifId}&userId=${userId}`, {
+            const response = await fetch(`http://localhost:8080/api/markNotifAsReadForUser?notifId=${notifId}&userId=${userId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -60,6 +60,26 @@ class homeServices {
             
             data = data.count;
             
+            return data;
+        }
+        catch (error) {
+            console.error("Erreur dans la récupération des notifications", error);
+            return [];
+        }
+    }
+
+    async getMostImportantNotificationForUser(userId) {
+        try {
+            const response = await fetch(`http://localhost:8080/api/getMostImportantNotificationForUser?userId=${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (!response.ok) {
+                throw new Error('La récupération des notifications a échoué');
+            }
+            const data = await response.json();
             return data;
         }
         catch (error) {

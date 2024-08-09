@@ -95,7 +95,10 @@ public class NotifController {
         WebServerResponse response = context.getResponse();
         try {
             int userId = Integer.parseInt(context.getRequest().getQueryParams().get("userId"));
+            
             int notifId = Integer.parseInt(context.getRequest().getQueryParams().get("notifId"));
+            
+
             NotifDao.markAsReadForUser(userId,notifId);
             response.json("{\"success\": true}");
         } catch (Exception e) {
@@ -160,7 +163,31 @@ public class NotifController {
     }
     
     
-   
+   public void getMostImportantNotificationForUser(WebServerContext context) {
+        WebServerResponse response = context.getResponse();
+        try {
+            int userId = Integer.parseInt(context.getRequest().getQueryParams().get("userId"));
+            Notif notif = NotifDao.getMostImportantNotificationForUser(userId);
+            if (notif == null) {
+                response.status(204, "No Content");
+                return;
+            }
+            JsonObject jsonResponse = new JsonObject();
+            jsonResponse.addProperty("id", notif.id());
+            jsonResponse.addProperty("demandeId", notif.demandeId());
+            jsonResponse.addProperty("message", notif.message());
+            jsonResponse.addProperty("type", notif.type().toString());
+            jsonResponse.addProperty("lu", notif.lu());
+            jsonResponse.addProperty("dateNotification", notif.dateNotification().toString());
+            response.json(jsonResponse);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.status(500, "Internal Server Error");
+        }
+    }
+
+
+
 
     public void isOneNotifOnState(WebServerContext context) {
         WebServerResponse response = context.getResponse();
