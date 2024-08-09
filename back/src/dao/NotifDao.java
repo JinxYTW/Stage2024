@@ -387,11 +387,6 @@ public class NotifDao {
         return demandeurId;
     }
     
-
-    
-    
-   
-
     
     public static Notif getNotificationByDemandeId(int demandeIdInt) {
         Notif notif = null;
@@ -457,8 +452,30 @@ public class NotifDao {
         }
         return notif;
     }
-    
-    
+
+
+    //Méthode pour obtenir les adresses email des utilisateurs pour lesquels une notification a été créée    
+    public static List<String> getEmailAddressesForNotification(int notifId) {
+        List<String> emailAddresses = new ArrayList<>();
+        try {
+            SomethingDatabase database = new SomethingDatabase();
+            String query = "SELECT u.email " +
+                           "FROM Utilisateur u " +
+                           "JOIN UtilisateurNotification un ON u.id = un.utilisateur_id " +
+                           "WHERE un.notification_id = ?";
+            PreparedStatement statement = database.prepareStatement(query);
+            statement.setInt(1, notifId);
+            ResultSet resultSet = statement.executeQuery();
+            
+            while (resultSet.next()) {
+                emailAddresses.add(resultSet.getString("email"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return emailAddresses;
+    }
+       
 
     
 

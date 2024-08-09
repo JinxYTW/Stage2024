@@ -31,7 +31,7 @@ class askView{
         if (userId) {
             try {
                 const notificationCount = await this.homeServices.countUnreadNotificationsForUser(userId);
-                const lastUrgentNotification = await this.homeServices.getOldestUrgentNotification(userId);
+                const lastUrgentNotification = await this.homeServices.getMostImportantNotificationForUser(userId);
     
                 // Mettre à jour l'élément HTML avec le nombre de notifications
                 const notifZone = document.getElementById('notif_zone');

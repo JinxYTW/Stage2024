@@ -35,6 +35,9 @@
         "back/lib/itext/commons-8.0.4.jar",
         "back/lib/itext/io-8.0.4.jar",
         "back/lib/itext/kernel-8.0.4.jar",
-        "back/lib/itext/layout-8.0.4.jar"
+        "back/lib/itext/layout-8.0.4.jar",
+        "back/lib/mail-1.4.7.jar",
+        "back/lib/javax.mail-api-1.6.2.jar",
+        "back/lib/javax.mail-1.6.2.jar"
     ]
 }
